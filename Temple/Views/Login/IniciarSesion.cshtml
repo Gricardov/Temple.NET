@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewBag.Title = "Iniciar Sesion";
+    Layout = "~/Views/Shared/_LayoutBienvenida.cshtml";
+}
+<div id="panel-login" class="panel panel-default">
+    <h2>Inicia sesión con tu cuenta de Temple</h2><br />
+    <div class="panel-body">
+
+        @using (Html.BeginForm())
+        {
+
+            <div class="input-group">
+                <label for="usuario">Usuario</label> <input type="text"
+                                                            class="form-control" id="usuario" name="usuario"
+                                                            placeholder="Introduce tu usuario" maxlength=50 required>
+                <div class="help-block with-errors"></div>
+            </div><br />
+
+            <div class="input-group">
+                <label for="contrasena">Contraseña</label> <input type="password"
+                                                                  class="form-control" id="contrasena" name="contrasena"
+                                                                  placeholder="Introduce tu contraseña" maxlength=50
+                                                                  required>
+                <div class="help-block with-errors"></div>
+
+            </div><br />
+
+            <input type="submit" class="btn btn-primary" value="Ingresar" />
+
+
+        }
+    </div>
+         
+</div>
+
+<script>
+        if ('@ViewBag.mensaje' != '') {
+
+            var div = '<div class="alert alert-danger" role="alert">@ViewBag.mensaje</div>'
+            $('#panel-login').append(div);
+        }
+
+</script>

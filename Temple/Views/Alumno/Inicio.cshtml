@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewBag.Title = "Inicio";
+    Layout = "~/Views/Shared/_LayoutTemple.cshtml";
+}
+
+<h2>Recomendados para ti</h2>
+@{
+    const int cartasVisibles = 7;
+    int contador = 0;
+
+}
+@foreach (var r in ViewBag.recomendados)
+{
+    <h2>@r.prefApr.desSub</h2>
+
+    <div class="cycle-slideshow"
+         data-cycle-fx="carousel"
+         data-cycle-timeout=0
+         data-cycle-carousel-visible=@cartasVisibles
+         data-cycle-next="#next@(contador)"
+         data-cycle-prev="#prev@(contador)"
+         data-cycle-pager="#pager"
+         data-cycle-slides="> div"
+         data-allow-wrap="false">
+
+        @foreach (var ci in r.instructores)
+        {
+
+            <div class="thumbnail carta">
+                <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
+                     alt="...">
+                <div class="caption">
+                    <h4 class="text-center">@ci.nombres  @ci.apPaterno</h4>
+                    <h5 class="text-center text-muted">@ci.especialidad</h5>
+                    <h6 class="text-center text-muted">@ci.distancia</h6>
+
+                    <!-- Itera para mostrar la calificación -->
+                    <div class="text-center">
+                        @for (int cal = 1; cal <= 5; cal++)
+                        {
+
+                            if (cal <= ci.calificacion)
+                            {
+
+                                <span class="fa fa-star checked"></span>
+
+                            }
+                            else
+                            {
+                                <span class="fa fa-star"></span>
+
+                            }
+
+
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+        }
+
+
+    </div>
+
+    <div class="center">
+        <a href="#" id="prev@(contador)">&lt;&lt; Prev </a>
+        <a href="#" id="next@(contador)"> Next &gt;&gt; </a>
+    </div>
+    contador++;
+}
+
+<h2>O busca nuevos expertos</h2>
+@using (Html.BeginForm())
+{
+
+    @Html.DropDownList("cboCategoria", (SelectList)ViewBag.categorias, null, new { @class = "form-control" });
+
+
+
+
+}
+
+<label class="switch">
+    <input type="checkbox" checked>
+    <span class="slider round"></span>
+</label>
+
+
+<script>
+    $(document).ready(function () {
+
+        $('.cycle-slideshow').css('width', '100%');
+        $('cboCategoria').click(function () {
+            alert(this.value);
+        });
+        // style = "white-space: nowrap; overflow: hidden; text-overflow: ellipsis; word-wrap: normal;"
+
+    });
+
+</script>
