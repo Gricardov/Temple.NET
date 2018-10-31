@@ -13,5 +13,6 @@ namespace Temple.Models
         public string pr { get; set; }
         public string pr2 { get; set; }
         public string pr3 { get; set; }
+        public string pr4 { get; set; }
     }
 }
