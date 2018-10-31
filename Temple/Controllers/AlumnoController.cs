@@ -205,5 +205,11 @@ namespace Temple.Controllers
             return View();
 
         }
+
+        public static string GetCurrentTime()
+        {
+            return "Hola bola";
+        }
+
     }
 }

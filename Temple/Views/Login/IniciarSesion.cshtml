@@ -39,6 +39,23 @@
 
             var div = '<div class="alert alert-danger" role="alert">@ViewBag.mensaje</div>'
             $('#panel-login').append(div);
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:56455/GetCurrentTime",
+        //data: "{name: bob }",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+
+            alert(response);
+
+        },
+        failure: function (response) {
+            alert(response);
         }
+
+    });
 
 </script>

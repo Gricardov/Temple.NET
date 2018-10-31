@@ -77,12 +77,16 @@
 
 <div class="row">
     <div class="col-sm-4">
+        <label>Categoría</label>
         @Html.DropDownList("cboCategoria", (SelectList)ViewBag.categorias, null, new { @class = "form-control" })
     </div>
     <div class="col-sm-4">
+        <label>Subctegoría</label>
         @Html.DropDownList("cboSubcategoria", (SelectList)ViewBag.subcategorias, null, new { @class = "form-control" })
     </div>
     <div class="col-sm-4">
+        <label>Mapa</label>
+
         <label class="switch" style="float:right">
             <input type="checkbox" checked>
             <span class="slider round"></span>
@@ -103,9 +107,11 @@
     $(document).ready(function () {
 
         $('.cycle-slideshow').css('width', '100%');
-        $('cboCategoria').click(function () {
-            alert(this.value);
-        });
+
+       
+
+
+
         // style = "white-space: nowrap; overflow: hidden; text-overflow: ellipsis; word-wrap: normal;"
 
     });
