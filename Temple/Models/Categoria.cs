@@ -12,5 +12,6 @@ namespace Temple.Models
         public string descripcion { get; set; }
         public string pr { get; set; }
         public string pr2 { get; set; }
+        public string pr3 { get; set; }
     }
 }
