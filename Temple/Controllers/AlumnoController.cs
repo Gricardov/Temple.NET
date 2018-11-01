@@ -191,7 +191,7 @@ namespace Temple.Controllers
 
                 cboSubcategoria = (ListadoSubcategorias(cboCategoria).Count()>0?ListadoSubcategorias(cboCategoria).ElementAt(0).id:0);
             }
-
+    
             Debug.WriteLine(cboCategoria+" "+cboSubcategoria);
 
             ViewBag.usuario = Session["usuario"];
