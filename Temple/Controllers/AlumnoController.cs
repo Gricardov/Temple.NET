@@ -8,6 +8,7 @@ using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Diagnostics;
+using System.Web.Script.Serialization;
 
 namespace Temple.Controllers
 {
@@ -198,6 +199,8 @@ namespace Temple.Controllers
                 cboSubcategoria = ListadoSubcategorias(cboCategoria).ElementAt(0).id;
             }
 
+            Debug.WriteLine(cboCategoria+" "+cboSubcategoria);
+
             ViewBag.usuario = Session["usuario"];
             ViewBag.recomendados = ListadoInstructoresRecomendados();
             ViewBag.categorias = new SelectList(ListadoCategorias(), "id", "descripcion", cboCategoria);
@@ -206,9 +209,11 @@ namespace Temple.Controllers
 
         }
 
-        public static string GetCurrentTime()
+        [HttpPost]
+        public JsonResult ObtenerSubcategorias(int categoria)
         {
-            return "Hola bola";
+            string json = new JavaScriptSerializer().Serialize((ListadoSubcategorias(categoria)));
+            return Json(json);
         }
 
     }

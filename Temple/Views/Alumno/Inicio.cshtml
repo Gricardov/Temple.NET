@@ -76,15 +76,32 @@
 {
 
 <div class="row">
-    <div class="col-sm-4">
-        <label>Categoría</label>
-        @Html.DropDownList("cboCategoria", (SelectList)ViewBag.categorias, null, new { @class = "form-control" })
+    <div class="col-sm-3">
+        <div class="row">
+            <div class="col-sm-6 text-center" style="vertical-align:middle">
+                <label>Categoría</label>
+            </div>
+            <div class="col-sm-6">
+                @Html.DropDownList("cboCategoria", (SelectList)ViewBag.categorias, null, new { @class = "form-control" })
+            </div>
+        </div>
     </div>
-    <div class="col-sm-4">
-        <label>Subctegoría</label>
-        @Html.DropDownList("cboSubcategoria", (SelectList)ViewBag.subcategorias, null, new { @class = "form-control" })
+
+    <div class="col-sm-3">
+        <div class="row">
+            <div class="col-sm-6 text-center" style="vertical-align:middle">
+                <label>Subcategoría</label>
+            </div>
+            <div class="col-sm-6">
+                @Html.DropDownList("cboSubcategoria", (SelectList)ViewBag.subcategorias, null, new { @class = "form-control" })
+            </div>
+        </div>
     </div>
-    <div class="col-sm-4">
+
+    <div class="col-sm-3">
+        <input type="submit" class="btn btn-primary" value="Buscar" />
+    </div>
+    <div class="col-sm-3">
         <label>Mapa</label>
 
         <label class="switch" style="float:right">
@@ -98,17 +115,51 @@
 
 
 
-}
+        }
 
 
 
 
-<script>
+        <script>
     $(document).ready(function () {
 
         $('.cycle-slideshow').css('width', '100%');
 
-       
+        $("#cboCategoria").change(function () {
+
+            var url ="@Url.Action("ObtenerSubcategorias", "Alumno")";
+            var valor = $("#cboCategoria").val();
+            var data = { categoria: valor };
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                dataType: "json",
+                success: function (response) {
+
+                    $("#cboSubcategoria").empty();
+
+                    var lista = JSON.parse(response);
+
+                    for (var i in lista) {
+
+                        var descripcion = lista[i].descripcion;
+                        var id = lista[i].id;
+
+                        $("#cboSubcategoria").append("<option value'" + id + "'>" + descripcion + "</option>");
+
+                    }
+
+
+
+                  }
+
+
+
+            });
+
+        });
 
 
 
@@ -116,4 +167,4 @@
 
     });
 
-</script>
+        </script>
