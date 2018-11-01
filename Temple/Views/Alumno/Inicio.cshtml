@@ -75,52 +75,57 @@
 @using (Html.BeginForm())
 {
 
-<div class="row">
-    <div class="col-sm-3">
-        <div class="row">
-            <div class="col-sm-6 text-center" style="vertical-align:middle">
-                <label>Categoría</label>
-            </div>
-            <div class="col-sm-6">
-                @Html.DropDownList("cboCategoria", (SelectList)ViewBag.categorias, null, new { @class = "form-control" })
-            </div>
-        </div>
-    </div>
-
-    <div class="col-sm-3">
-        <div class="row">
-            <div class="col-sm-6 text-center" style="vertical-align:middle">
-                <label>Subcategoría</label>
-            </div>
-            <div class="col-sm-6">
-                @Html.DropDownList("cboSubcategoria", (SelectList)ViewBag.subcategorias, null, new { @class = "form-control" })
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="row">
+                <div class="col-sm-6 text-center" style="vertical-align:middle">
+                    <label>Categoría</label>
+                </div>
+                <div class="col-sm-6">
+                    @Html.DropDownList("cboCategoria", (SelectList)ViewBag.categorias, null, new { @class = "form-control" })
+                </div>
             </div>
         </div>
+
+        <div class="col-sm-3">
+            <div class="row">
+                <div class="col-sm-6 text-center" style="vertical-align:middle">
+                    <label>Subcategoría</label>
+                </div>
+                <div class="col-sm-6">
+                    @Html.DropDownList("cboSubcategoria", (SelectList)ViewBag.subcategorias, null, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <input type="submit" class="btn btn-primary" value="Buscar" />
+        </div>
+        <div class="col-sm-3">
+            <label>Mapa</label>
+
+            <label class="switch" style="float:right">
+                <input type="checkbox" checked>
+                <span class="slider round"></span>
+            </label>
+        </div>
     </div>
+    
+}
 
-    <div class="col-sm-3">
-        <input type="submit" class="btn btn-primary" value="Buscar" />
-    </div>
-    <div class="col-sm-3">
-        <label>Mapa</label>
-
-        <label class="switch" style="float:right">
-            <input type="checkbox" checked>
-            <span class="slider round"></span>
-        </label>
-    </div>
-</div>
-
-
-
-
+    <div>
+        @foreach (var i in ViewBag.busqueda)
+        {
+            <div>
+                @i.nombres
+            </div>
 
         }
+    </div>
 
 
 
-
-        <script>
+    <script>
     $(document).ready(function () {
 
         $('.cycle-slideshow').css('width', '100%');
@@ -167,4 +172,4 @@
 
     });
 
-        </script>
+    </script>

@@ -177,26 +177,19 @@ namespace Temple.Controllers
             return lista;
 
         }
-
-        /*[HttpPost]public ActionResult Inicio(int cboCategoria=0, int cboSubcategoria=0) {
-
-            return View();
-
-        }
-        */
-
+        
         public ActionResult Inicio(int cboCategoria = -1, int cboSubcategoria = -1)
         {
 
             if (cboCategoria == -1) {
 
-                cboCategoria = ListadoCategorias().ElementAt(0).id;
+                cboCategoria = (ListadoCategorias().Count()>0?ListadoCategorias().ElementAt(0).id:0);
 
             }
 
             if (cboSubcategoria == -1) {
 
-                cboSubcategoria = ListadoSubcategorias(cboCategoria).ElementAt(0).id;
+                cboSubcategoria = (ListadoSubcategorias(cboCategoria).Count()>0?ListadoSubcategorias(cboCategoria).ElementAt(0).id:0);
             }
 
             Debug.WriteLine(cboCategoria+" "+cboSubcategoria);
@@ -205,6 +198,7 @@ namespace Temple.Controllers
             ViewBag.recomendados = ListadoInstructoresRecomendados();
             ViewBag.categorias = new SelectList(ListadoCategorias(), "id", "descripcion", cboCategoria);
             ViewBag.subcategorias = new SelectList((ListadoSubcategorias(cboCategoria)), "id", "descripcion", cboSubcategoria);
+            ViewBag.busqueda = ListadoInstructoresBusqueda(cboCategoria, cboSubcategoria);
             return View();
 
         }
