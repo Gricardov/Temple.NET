@@ -267,6 +267,28 @@
             map.on('locationfound', onLocationFound);
             map.on('locationerror', onLocationError);
 
+            cargarUbicaciones();
+
+        }
+
+        function cargarUbicaciones() {
+           
+                @using System.Web.Script.Serialization;
+
+           @{
+
+                JavaScriptSerializer serializador=new JavaScriptSerializer();
+
+            }
+
+                var usuarioJSON = @serializador.Serialize(ViewBag.busqueda);
+             
+                alert(usuarioJSON);
+
+                /*var myIcon = L.divIcon({ className: 'my-div-icon' });
+                // you can set .my-div-icon styles in CSS
+                L.marker([50.505, 30.57], { icon: myIcon }).addTo(map);
+                */
         }
 
         function onLocationFound(e) {

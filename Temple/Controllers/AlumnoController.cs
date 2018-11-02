@@ -44,8 +44,10 @@ namespace Temple.Controllers
             return lista;
         }
 
-        private string obtenerDistanciaString(int codUsuarioObjetivo) {
-            
+        private string obtenerDistanciaString(TarjetaInstructor ti) {
+
+            int codUsuarioObjetivo = ti.codigo;
+
             //con.Open();
             Ubicacion uOrigen = new Ubicacion();
             Ubicacion uObjetivo = new Ubicacion();
@@ -64,6 +66,9 @@ namespace Temple.Controllers
                 uObjetivo.latitud = reader.GetDecimal(3);
 
             }
+
+            ti.ubicacion = uObjetivo;
+
             //reader.Close();
             //con.Close();
             double distanciaKM = obtenerDistanciaKM((double)uOrigen.latitud, (double)uOrigen.longitud, (double)uObjetivo.latitud, (double)uObjetivo.longitud);
@@ -122,7 +127,8 @@ namespace Temple.Controllers
                     i.numResenas = reader.GetInt32(6);
                     i.calificacion = reader.GetInt32(7);
                     i.verificado = reader.GetBoolean(8);
-                    i.distancia="A "+obtenerDistanciaString(i.codigo)+" de distancia";
+                    
+                    i.distancia="A "+obtenerDistanciaString(i)+" de distancia";
                     g.instructores.Add(i);
                     
                 }
@@ -157,12 +163,12 @@ namespace Temple.Controllers
                     i.apPaterno = reader.GetString(2);
                     i.apMaterno = reader.GetString(3);
                     i.especialidad = reader.GetString(4);
-                    i.distancia = reader.GetString(5);
                     i.numResenas = reader.GetInt32(6);
                     i.calificacion = reader.GetInt32(7);
                     i.verificado = reader.GetBoolean(8);
+                    i.distancia = "A " + obtenerDistanciaString(i) + " de distancia";
 
-                    lista.Add(i);
+                lista.Add(i);
 
                 }
                 reader.Close();
