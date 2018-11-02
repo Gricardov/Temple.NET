@@ -14,69 +14,84 @@
 {
     <h2>@r.prefApr.desSub</h2>
 
-    <div class="cycle-slideshow"
-         data-cycle-fx="carousel"
-         data-cycle-timeout=0
-         data-cycle-carousel-visible=@cartasVisibles
-         data-cycle-next="#next@(contador)"
-         data-cycle-prev="#prev@(contador)"
-         data-cycle-pager="#pager"
-         data-cycle-slides="> div"
-         data-allow-wrap="false">
+    if (r.instructores.Count <= 0)
+    {
 
-        @foreach (var ci in r.instructores)
-        {
+        <div class="well well-sm">
+            No hay recomendados
+        </div>
 
-            <div class="thumbnail carta">
-                <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
-                     alt="...">
-                <div class="caption">
-                    <h4 class="text-center">@ci.nombres  @ci.apPaterno</h4>
-                    <h5 class="text-center text-muted">@ci.especialidad</h5>
-                    <h6 class="text-center text-muted">@ci.distancia</h6>
+    }
+    else
+    {
 
-                    <!-- Itera para mostrar la calificación -->
-                    <div class="text-center">
-                        @for (int cal = 1; cal <= 5; cal++)
-                        {
+        <div class="cycle-slideshow"
+             data-cycle-fx="carousel"
+             data-cycle-timeout=0
+             data-cycle-carousel-visible=@cartasVisibles
+             data-cycle-next="#next@(contador)"
+             data-cycle-prev="#prev@(contador)"
+             data-cycle-pager="#pager"
+             data-cycle-slides="> div"
+             data-allow-wrap="false">
 
-                            if (cal <= ci.calificacion)
+
+
+            @foreach (var ci in r.instructores)
+            {
+                <div class="thumbnail carta">
+                    <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
+                         alt="...">
+                    <div class="caption">
+                        <h4 class="text-center">@ci.nombres  @ci.apPaterno</h4>
+                        <h5 class="text-center text-muted">@ci.especialidad</h5>
+                        <h6 class="text-center text-muted">@ci.distancia</h6>
+
+                        <!-- Itera para mostrar la calificación -->
+                        <div class="text-center">
+                            @for (int cal = 1; cal <= 5; cal++)
                             {
 
-                                <span class="fa fa-star checked"></span>
+                                if (cal <= ci.calificacion)
+                                {
+
+                                    <span class="fa fa-star checked"></span>
+
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star"></span>
+
+                                }
+
 
                             }
-                            else
-                            {
-                                <span class="fa fa-star"></span>
-
-                            }
-
-
-                        }
+                        </div>
                     </div>
                 </div>
+            }
+
+
+            <div class="center">
+                <a href="#" id="prev@(contador)">&lt;&lt; Prev </a>
+                <a href="#" id="next@(contador)"> Next &gt;&gt; </a>
             </div>
 
+            @contador++;
 
-        }
+        </div>
 
+    }
 
-    </div>
-
-    <div class="center">
-        <a href="#" id="prev@(contador)">&lt;&lt; Prev </a>
-        <a href="#" id="next@(contador)"> Next &gt;&gt; </a>
-    </div>
-    contador++;
 }
+
 
 <h2>O busca nuevos expertos</h2>
 @using (Html.BeginForm())
 {
 
-    <div class="row">
-        <div class="col-sm-3">
+    <div class="row" style="margin: 20px 0 20px 0;">
+        <div class="col-sm-4">
             <div class="row">
                 <div class="col-sm-6 text-center" style="vertical-align:middle">
                     <label>Categoría</label>
@@ -87,7 +102,7 @@
             </div>
         </div>
 
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="row">
                 <div class="col-sm-6 text-center" style="vertical-align:middle">
                     <label>Subcategoría</label>
@@ -98,37 +113,90 @@
             </div>
         </div>
 
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <input type="submit" class="btn btn-primary" value="Buscar" />
         </div>
-        <div class="col-sm-3">
-            <label>Mapa</label>
-
-            <label class="switch" style="float:right">
-                <input type="checkbox" checked>
-                <span class="slider round"></span>
-            </label>
+        <div class="col-sm-2">
+            <div class="col-sm-8 text-center" style="vertical-align:middle">
+                <label id="lblVista" for="chkVista">Vista de cuadrícula</label>
+            </div>
+            <div class="col-sm-4">
+                <label class="switch" style="float:right">
+                    <input type="checkbox" id="chkVista">
+                    <span class="slider round"></span>
+                </label>
+            </div>
         </div>
     </div>
-    
 }
 
-    <div>
-        @foreach (var i in ViewBag.busqueda)
-        {
-            <div>
-                @i.nombres
+
+
+
+<div id="mapid"></div>
+
+<div class="resultados">
+
+    @foreach (var i in ViewBag.busqueda)
+    {
+        <div class="thumbnail carta">
+            <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
+                 alt="...">
+            <div class="caption">
+                <h4 class="text-center">@i.nombres  @i.apPaterno</h4>
+                <h5 class="text-center text-muted">@i.especialidad</h5>
+                <h6 class="text-center text-muted">@i.distancia</h6>
+
+                <!-- Itera para mostrar la calificación -->
+                <div class="text-center">
+                    @for (int cal = 1; cal <= 5; cal++)
+                    {
+
+                        if (cal <= i.calificacion)
+                        {
+
+                            <span class="fa fa-star checked"></span>
+
+                        }
+                        else
+                        {
+                            <span class="fa fa-star"></span>
+
+                        }
+
+
+                    }
+                </div>
             </div>
+        </div>
+    }
 
-        }
-    </div>
+</div>
 
 
 
-    <script>
+
+
+
+
+<script>
     $(document).ready(function () {
 
         $('.cycle-slideshow').css('width', '100%');
+        $('.thumbnail').css('float', 'left');
+        $('.thumbnail').css('height', '350px');
+
+        // Cargo mi mapa
+        var map = L.map('mapid');
+        // placeholders for the L.marker and L.circle representing user's current position and accuracy    
+        var current_position, current_accuracy;
+
+        // Al hacer click
+        map.on('click', onMapClick);
+
+        function onMapClick(e) {
+            alert("You clicked the map at " + e.latlng);
+        }
 
         $("#cboCategoria").change(function () {
 
@@ -166,10 +234,61 @@
 
         });
 
+        $('#chkVista').change(
+            function () {
+                if (this.checked) {
+                    $('#lblVista').text="Vista de mapa"
+                    $('.resultados').hide();
+                    $('#mapid').show();
+                    cargarMapa();
+                } else {
+                    $('#lblVista').text = "Vista de cuadrícula"
+                    $('.resultados').show();
+                    $('#mapid').hide();
 
 
-        // style = "white-space: nowrap; overflow: hidden; text-overflow: ellipsis; word-wrap: normal;"
+                }
+            });
+
+
+        function cargarMapa() {
+
+           //map = L.map('mapid').setView([51.505, -0.09], 13);
+            L.tileLayer('https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.{format}?access_token={accessToken}', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 18,
+                id: 'mapbox.streets',
+                format: 'jpg70',
+                accessToken: 'sk.eyJ1IjoiZ3JpY2FyZG92IiwiYSI6ImNqbnphd3FicjAwNHAzcG85bmowaWFyMDUifQ.CxTAN8PiT2jZkldTwukmPg'
+            }).addTo(map);
+
+            map.locate({ setView: true, maxZoom: 16 });
+
+            map.on('locationfound', onLocationFound);
+            map.on('locationerror', onLocationError);
+
+        }
+
+        function onLocationFound(e) {
+            // if position defined, then remove the existing position marker and accuracy circle from the map
+            if (current_position) {
+                map.removeLayer(current_position);
+                map.removeLayer(current_accuracy);
+            }
+
+            var radius = e.accuracy / 2;
+
+            current_position = L.marker(e.latlng).addTo(map)
+                .bindPopup("Estás a aproximadamente " + radius + " metros de este punto").openPopup();
+
+            current_accuracy = L.circle(e.latlng, radius).addTo(map);
+        }
+
+        function onLocationError(e) {
+            alert(e.message);
+        }
+
 
     });
 
-    </script>
+</script>

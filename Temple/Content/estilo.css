@@ -7,7 +7,7 @@
     width: 95%;
     height: auto;
     float: left;
-    margin: 0 2% 0 2%;
+    margin: 0 2% 20px 2%;
     padding: 0px;
 }
 
@@ -34,8 +34,7 @@ header, nav, footer {
 .carta {
     margin-right: 20px;
     width: 200px;
-    height: auto;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
 }
 
@@ -46,6 +45,8 @@ header, nav, footer {
 .checked {
     color: orange;
 }
+
+
 
 /*Para el switch toggle*/
 
@@ -72,6 +73,7 @@ header, nav, footer {
     background-color: #ccc;
     -webkit-transition: .4s;
     transition: .4s;
+    
 }
 
     .slider:before {
@@ -108,3 +110,12 @@ input:checked + .slider:before {
     .slider.round:before {
         border-radius: 50%;
     }
+
+.resultados {
+}
+
+
+#mapid {
+    display: none;
+    height: 500px;
+}

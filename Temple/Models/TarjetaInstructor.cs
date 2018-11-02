@@ -7,6 +7,13 @@ namespace Temple.Models
 {
     public class TarjetaInstructor
     {
+        public TarjetaInstructor() {
+            ubicacion = new Ubicacion();
+
+        }
+
+        
+
         public int codigo { get; set; }
         public string nombres { get; set; }
         public string apPaterno { get; set; }
@@ -16,6 +23,7 @@ namespace Temple.Models
         public int numResenas { get; set; }
         public int calificacion { get; set; }
         public bool verificado { get; set; }
+        public Ubicacion ubicacion { get; set; }
 
     }
 }
