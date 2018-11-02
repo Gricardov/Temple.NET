@@ -76,8 +76,10 @@
                 <a href="#" id="prev@(contador)">&lt;&lt; Prev </a>
                 <a href="#" id="next@(contador)"> Next &gt;&gt; </a>
             </div>
-
-            @contador++;
+            @{
+                contador++;
+                
+            }
 
         </div>
 
@@ -274,16 +276,17 @@
         function cargarUbicaciones() {
            
                 @using System.Web.Script.Serialization;
-
+                @using Temple.Models;
            @{
-
-                JavaScriptSerializer serializador=new JavaScriptSerializer();
-
+               
+               var json=@Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.busqueda));
             }
+            //var json = serializador.Deserialize<List<TarjetaInstructor>>(ViewBag.busqueda);
+                //Html.Raw(ViewBag.busqueda);
 
-                var usuarioJSON = @serializador.Serialize(ViewBag.busqueda);
+                //var usuarioJSON = serializador.Serialize();
              
-                alert(usuarioJSON);
+                alert('@json');
 
                 /*var myIcon = L.divIcon({ className: 'my-div-icon' });
                 // you can set .my-div-icon styles in CSS
