@@ -120,3 +120,121 @@ input:checked + .slider:before {
     display: none;
     height: 500px;
 }
+
+/*Para la carta pequeña*/
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+.content {
+    position: relative;
+    animation: animatop 0.9s cubic-bezier(0.425, 1.14, 0.47, 1.125) forwards;
+}
+
+.card {
+    width: 250px;
+    min-height: 50px;
+    height: 80px;
+    padding: 0px;
+    border-radius: 3px;
+    background-color: white;
+    /*box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);*/
+    position: relative;
+    overflow: visible;
+}
+/*
+    .card:after {
+        content: '';
+        display: block;
+        width: 100px;
+        height: 300px;
+        background: cadetblue;
+        position: absolute;
+        animation: rotatemagic 0.75s cubic-bezier(0.425, 1.04, 0.47, 1.105) 1s both;
+    }
+    */
+
+.firstinfo {
+    flex-direction: row;
+    z-index: 2;
+    position: relative;
+    float:left;
+    width:100%;
+}
+
+    .firstinfo img {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        float:left;
+        margin-right: 5px;
+    }
+
+    .firstinfo .profileinfo {
+        padding:0px;
+        margin: 0px;
+        width:100%;
+    }
+
+        .firstinfo .profileinfo h1 {
+            margin: 5px 0 5px 0;
+            font-size: 15px;
+            width:100%;
+            }
+
+        .firstinfo .profileinfo h3 {
+            float:left;
+            font-size: 8px;
+            color: black;
+            font-style: italic;
+            margin: 2px 0 2px 0;
+        }
+
+        .firstinfo .profileinfo p.bio {
+            margin-top: 5px;
+            color: #5A5A5A;
+            line-height: 1.2;
+            font-style: initial;
+            float: left;
+            font-size:10px;
+        }
+/*
+@keyframes animatop {
+    0% {
+        opacity: 0;
+        bottom: -500px;
+    }
+
+    100% {
+        opacity: 1;
+        bottom: 0px;
+    }
+}
+
+@keyframes animainfos {
+    0% {
+        bottom: 10px;
+    }
+
+    100% {
+        bottom: -42px;
+    }
+}
+
+@keyframes rotatemagic {
+    0% {
+        opacity: 0;
+        transform: rotate(0deg);
+        top: -24px;
+        left: -253px;
+    }
+
+    100% {
+        transform: rotate(-30deg);
+        top: -24px;
+        left: -78px;
+    }
+    }
+
+*/
+

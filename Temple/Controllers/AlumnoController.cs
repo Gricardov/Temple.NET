@@ -60,10 +60,10 @@ namespace Temple.Controllers
 
             while (reader.Read())
             {
-                uOrigen.longitud = reader.GetDecimal(0);
-                uOrigen.latitud = reader.GetDecimal(1);
-                uObjetivo.longitud = reader.GetDecimal(2);
-                uObjetivo.latitud = reader.GetDecimal(3);
+                uOrigen.latitud = reader.GetDecimal(0);
+                uOrigen.longitud = reader.GetDecimal(1);
+                uObjetivo.latitud = reader.GetDecimal(2);
+                uObjetivo.longitud = reader.GetDecimal(3);
 
             }
 
@@ -265,8 +265,8 @@ namespace Temple.Controllers
             return lista;
 
         }
-        
-        public ActionResult Inicio(int cboCategoria = -1, int cboSubcategoria = -1)
+        //vista: Cuadrícula=0, Mapa=1
+        public ActionResult Inicio(int cboCategoria = -1, int cboSubcategoria = -1, string vista="0")
         {
 
             if (cboCategoria == -1) {
@@ -286,6 +286,7 @@ namespace Temple.Controllers
             ViewBag.recomendados = ListadoInstructoresRecomendados();
             ViewBag.categorias = new SelectList(ListadoCategorias(), "id", "descripcion", cboCategoria);
             ViewBag.subcategorias = new SelectList((ListadoSubcategorias(cboCategoria)), "id", "descripcion", cboSubcategoria);
+            ViewBag.vista = vista;
             //ViewBag.busqueda = ListadoInstructores();
             ViewBag.busqueda = ListadoInstructoresBusqueda(cboCategoria, cboSubcategoria);
             
