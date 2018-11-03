@@ -175,12 +175,6 @@
 
 </div>
 
-
-
-
-
-
-
 <script>
     $(document).ready(function () {
 
@@ -190,7 +184,7 @@
 
         // Cargo mi mapa
         var map = L.map('mapid');
-        // placeholders for the L.marker and L.circle representing user's current position and accuracy    
+        // placeholders for the L.marker and L.circle representing user's current position and accuracy
         var current_position, current_accuracy;
 
         // Al hacer click
@@ -274,24 +268,26 @@
         }
 
         function cargarUbicaciones() {
-           
-                @using System.Web.Script.Serialization;
-                @using Temple.Models;
+            @using System.Web.Script.Serialization;
+
            @{
-               
+
                var json=@Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.busqueda));
             }
-            //var json = serializador.Deserialize<List<TarjetaInstructor>>(ViewBag.busqueda);
-                //Html.Raw(ViewBag.busqueda);
+           
+            var json = JSON.parse('@json');
 
-                //var usuarioJSON = serializador.Serialize();
-             
-                alert('@json');
+            for (var i in json) {
 
-                /*var myIcon = L.divIcon({ className: 'my-div-icon' });
-                // you can set .my-div-icon styles in CSS
-                L.marker([50.505, 30.57], { icon: myIcon }).addTo(map);
-                */
+                //alert(json[i].ubicacion.latitud);
+                var arr = [json[i].ubicacion.latitud, json[i].ubicacion.longitud];
+                alert(arr);
+                L.marker(arr).addTo(map)
+                    .bindPopup('<div style="border:1px solid;">Holi boli</div>')
+                    .openPopup();
+            }
+         
+            
         }
 
         function onLocationFound(e) {
