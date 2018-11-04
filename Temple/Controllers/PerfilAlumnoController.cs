@@ -10,33 +10,32 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Web.Script.Serialization;
 
+
 namespace Temple.Controllers
 {
-    public class InstructorController : Controller
+    public class PerfilAlumnoController : Controller
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
-		private List<Instructor> InformeInstructor()
+		SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
+		private List<Alumno> InformeAlumno()
 		{
-			List<Instructor> lista = new List<Instructor>();
+			List<Alumno> lista = new List<Alumno>();
 			con.Open();
-			SqlCommand cmd = new SqlCommand("sp_ListaInstructor", con);
+			SqlCommand cmd = new SqlCommand("sp_ListaAlumno", con);
 			cmd.CommandType = System.Data.CommandType.StoredProcedure;
 			SqlDataReader reader = cmd.ExecuteReader();
 
 			while (reader.Read())
 			{
-				Instructor instru = new Instructor();
-				instru.foto = reader.GetString(0);
-				instru.codigo = reader.GetInt32(1);
-				instru.nombre = reader.GetString(2);
-				instru.apellidos = reader.GetString(3);
-				instru.especialidad= reader.GetString(4);
-				instru.correo= reader.GetString(5);
-				instru.experiencia = reader.GetString(6);
-				instru.habilidades = reader.GetString(7);
-				instru.telefono = reader.GetString(8);
+				Alumno alu = new Alumno();
+				alu.foto = reader.GetString(0);
+				alu.codigo = reader.GetInt32(1);
+				alu.nombres = reader.GetString(2);
+				alu.apellidos = reader.GetString(3);
+				alu.grado = reader.GetString(4);
+				alu.correo = reader.GetString(5);
+				alu.telefono = reader.GetString(6);
 
-				lista.Add(instru);
+				lista.Add(alu);
 
 
 			}
@@ -51,9 +50,9 @@ namespace Temple.Controllers
 		{
 			List<Curso> lista = new List<Curso>();
 			con.Open();
-			SqlCommand cmd = new SqlCommand("sp_ListaCurso", con);
+			SqlCommand cmd = new SqlCommand("sp_ListaCursoxAlu", con);
 			cmd.CommandType = System.Data.CommandType.StoredProcedure;
-			String nombreCu = ((Instructor)Session["nombre"]).desCurso;
+			String nombreCu = ((Alumno)Session["nombre"]).desCurso;
 			cmd.Parameters.AddWithValue("@nomCu", nombreCu);
 			SqlDataReader reader = cmd.ExecuteReader();
 
@@ -63,7 +62,7 @@ namespace Temple.Controllers
 				cu.idCurso = reader.GetInt32(0);
 				cu.nombreCurso = reader.GetString(1);
 				cu.silabo = reader.GetString(2);
-				cu.ejercicios = reader.GetString(3);				
+				cu.ejercicios = reader.GetString(3);
 				lista.Add(cu);
 			}
 
@@ -74,32 +73,32 @@ namespace Temple.Controllers
 			return lista;
 		}
 
-		private List<Horario> ListaHorario()
+		private List<Alumno> InformeActividades()
 		{
-			List<Horario> lista = new List<Horario>();
+			List<Alumno> lista = new List<Alumno>();
 			con.Open();
-			SqlCommand cmd = new SqlCommand("sp_Horario", con);
+			SqlCommand cmd = new SqlCommand("sp_ListaAlumno", con);
 			cmd.CommandType = System.Data.CommandType.StoredProcedure;
 			SqlDataReader reader = cmd.ExecuteReader();
 
 			while (reader.Read())
 			{
-				Horario h = new Horario();
-				h.codigoHorario = reader.GetInt32(0);
-				h.codigoDia = reader.GetInt32(0);
-				h.codigoHora = reader.GetInt32(0);
-				h.descriHorarios = reader.GetString(3);
-				lista.Add(cu);
+				Alumno alu = new Alumno();
+				alu.fecha = reader.GetDateTime(0);
+				alu.desfecha = reader.GetString(1);
+				
+
+				lista.Add(alu);
+
+
 			}
 
 			con.Close();
 			reader.Close();
 
-
 			return lista;
 		}
-
-		// GET: Instructor
+		// GET: PerfilAlumno
 		public ActionResult Index()
         {
             return View();

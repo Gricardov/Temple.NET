@@ -146,17 +146,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\BundleConfig2.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\FilterConfig2.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\RouteConfig2.cs" />
     <Compile Include="Controllers\AlumnoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\BienvenidaController.cs" />
     <Compile Include="Controllers\InstructorController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\PerfilAlumnoController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Alumno.cs" />
     <Compile Include="Models\Categoria.cs" />
+    <Compile Include="Models\Curso.cs" />
+    <Compile Include="Models\Horario.cs" />
+    <Compile Include="Models\Instructor.cs" />
     <Compile Include="Models\InstructoresRecomendados.cs" />
     <Compile Include="Models\PreferenciaAprendizaje.cs" />
     <Compile Include="Models\Subcategoria.cs" />
@@ -178,6 +186,8 @@
     <Content Include="Content\bootstrap.js" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\estilo.css" />
+    <Content Include="Content\estiloD.css" />
+    <Content Include="Content\estiloE.css" />
     <Content Include="Content\jquery-3.3.1.js" />
     <Content Include="Content\jquery.cycle2.carousel.js" />
     <Content Include="Content\jquery.cycle2.js" />
@@ -268,6 +278,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Instructor\" />
+    <Folder Include="Views\PerfilAlumno\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
