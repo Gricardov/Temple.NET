@@ -76,8 +76,10 @@
                 <a href="#" id="prev@(contador)">&lt;&lt; Prev </a>
                 <a href="#" id="next@(contador)"> Next &gt;&gt; </a>
             </div>
-
-            @contador++;
+            @{
+                contador++;
+                
+            }
 
         </div>
 
@@ -89,7 +91,7 @@
 <h2>O busca nuevos expertos</h2>
 @using (Html.BeginForm())
 {
-
+    @Html.Hidden("vista", 0);
     <div class="row" style="margin: 20px 0 20px 0;">
         <div class="col-sm-4">
             <div class="row">
@@ -137,6 +139,15 @@
 
 <div class="resultados">
 
+    @if (ViewBag.busqueda.Count <= 0)
+    {
+
+    <div class="well well-sm">
+        La búsqueda no obtuvo resultados. Intente con otras opciones
+    </div>
+
+    }
+
     @foreach (var i in ViewBag.busqueda)
     {
         <div class="thumbnail carta">
@@ -173,12 +184,6 @@
 
 </div>
 
-
-
-
-
-
-
 <script>
     $(document).ready(function () {
 
@@ -188,11 +193,26 @@
 
         // Cargo mi mapa
         var map = L.map('mapid');
-        // placeholders for the L.marker and L.circle representing user's current position and accuracy    
+        // placeholders for the L.marker and L.circle representing user's current position and accuracy
         var current_position, current_accuracy;
 
+        // Establezco según la vista seleccionada. 0=Cuadrícula, 1=Mapa
+        var vista =@ViewBag.vista;
+        switch (vista) {
+            case 1:
+                $('#chkVista').prop('checked', true);
+
+                vistaMapa();
+                break;
+            default:
+                $('#chkVista').prop('checked', false);
+
+                vistaCuadricula();               
+
+        }
+
         // Al hacer click
-        map.on('click', onMapClick);
+        //map.on('click', onMapClick);
 
         function onMapClick(e) {
             alert("You clicked the map at " + e.latlng);
@@ -237,19 +257,28 @@
         $('#chkVista').change(
             function () {
                 if (this.checked) {
-                    $('#lblVista').text="Vista de mapa"
-                    $('.resultados').hide();
-                    $('#mapid').show();
-                    cargarMapa();
+                    vistaMapa();                    
                 } else {
-                    $('#lblVista').text = "Vista de cuadrícula"
-                    $('.resultados').show();
-                    $('#mapid').hide();
-
-
+                    vistaCuadricula();
                 }
             });
 
+        function vistaMapa() {
+            $("#vista").val(1);
+
+            $('#lblVista').text("Vista de mapa");
+            $('.resultados').hide();
+            $('#mapid').show();
+            cargarMapa();
+        }
+
+        function vistaCuadricula() {
+            $("#vista").val(0);
+
+            $('#lblVista').text("Vista de cuadrícula");
+            $('.resultados').show();
+            $('#mapid').hide();
+        }
 
         function cargarMapa() {
 
@@ -272,23 +301,44 @@
         }
 
         function cargarUbicaciones() {
-           
-                @using System.Web.Script.Serialization;
+            @using System.Web.Script.Serialization;
 
            @{
 
-                JavaScriptSerializer serializador=new JavaScriptSerializer();
-
+               var json=@Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.busqueda));
             }
+           
+            var json = JSON.parse('@json');
 
-                var usuarioJSON = @serializador.Serialize(ViewBag.busqueda);
-             
-                alert(usuarioJSON);
+            for (var i in json) {
 
-                /*var myIcon = L.divIcon({ className: 'my-div-icon' });
-                // you can set .my-div-icon styles in CSS
-                L.marker([50.505, 30.57], { icon: myIcon }).addTo(map);
-                */
+                // Obtengo el div de calificación con las estrellas
+                var calificacionDiv = '<div class="text-center" style="width:100%; display:inline-block;">';
+
+                for (var cal = 1; cal <= 5; cal++){
+
+                    if (cal <= json[i].calificacion) {
+
+                        calificacionDiv += '<span class="fa fa-star checked" style="margin-right:5px;"></span>';
+                    }
+                    else {
+
+                        calificacionDiv += '<span class="fa fa-star" style="margin-right:5px;"></span>';
+                    }
+
+                }
+                calificacionDiv += '</div>';      
+
+                //alert(json[i].ubicacion.latitud);
+                var arr = [json[i].ubicacion.latitud, json[i].ubicacion.longitud];
+                L.marker(arr).addTo(map)
+                    .bindPopup( '<div class="content"><div class="card"><div class="firstinfo"><img src="/imagenes/mila.jpg" />'+
+                    '<div class="profileinfo"><h1>' + json[i].nombres +' '+json[i].apPaterno+'</h1><h3>' + json[i].especialidad +'<h3><h3> (' + json[i].distancia + ')</h3><p class="bio">' +
+                    calificacionDiv+'</div></div></div></div>')
+                    .openPopup();
+            }
+         
+            
         }
 
         function onLocationFound(e) {
