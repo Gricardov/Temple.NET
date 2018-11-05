@@ -28,7 +28,7 @@ namespace Temple.Controllers
 				Instructor instru = new Instructor();
 				instru.foto = reader.GetString(0);
 				instru.codigo = reader.GetInt32(1);
-				instru.nombre = reader.GetString(2);
+				instru.nombres = reader.GetString(2);
 				instru.apellidos = reader.GetString(3);
 				instru.especialidad= reader.GetString(4);
 				instru.correo= reader.GetString(5);
@@ -89,7 +89,7 @@ namespace Temple.Controllers
 				h.codigoDia = reader.GetInt32(0);
 				h.codigoHora = reader.GetInt32(0);
 				h.descriHorarios = reader.GetString(3);
-				lista.Add(cu);
+				lista.Add(h);
 			}
 
 			con.Close();
