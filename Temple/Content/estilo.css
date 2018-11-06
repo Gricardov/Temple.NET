@@ -238,3 +238,48 @@ input:checked + .slider:before {
 
 */
 
+/*Para la página de bienvenida*/
+
+.bparte{
+    float:left;
+    width:49%;
+    padding:10%;
+}
+
+.bparte h1{
+    font-size:24px;
+}
+
+.bparte h2 {
+        font-size: 15px;
+    }
+
+#imagenMapa{
+    float: left;
+    width:98%;
+    height:200px;
+    background-color: antiquewhite;
+    border:2px solid black;
+}
+
+.bparte p {
+    font-size: 17px;
+    color:darkgrey;
+}
+
+#parteMarco{
+    width:100%;
+    padding:2%;
+    height:200px;
+    border:2px solid;
+    border-radius:10px;
+}
+
+    #parteMarco input {
+        float: left;
+        width: 96%;
+        margin-left: 2%;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        font-size:12px;
+    }
