@@ -15,7 +15,7 @@ namespace Temple.Controllers
 {
     public class PerfilAlumnoController : Controller
     {
-		SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
+        /*SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
 		private List<Alumno> InformeAlumno()
 		{
 			List<Alumno> lista = new List<Alumno>();
@@ -103,5 +103,6 @@ namespace Temple.Controllers
         {
             return View();
         }
+    }*/
     }
 }

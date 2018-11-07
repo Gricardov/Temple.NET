@@ -7,6 +7,11 @@ namespace Temple.Models
 {
     public class Curso
     {
+        public Curso() {
+
+            modalidades = new List<Modalidad>();
+
+        }
         public int id { get; set; }
         public string nombre { get; set; }
         public string descripcion { get; set; }

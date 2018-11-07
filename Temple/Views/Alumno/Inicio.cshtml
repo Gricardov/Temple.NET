@@ -39,7 +39,7 @@
 
             @foreach (var ci in r.instructores)
             {
-                <a href="@Url.Action("PerfilInstructor", "Instructor",new { idInstructor=ci.codigo})">
+                <a href="@Url.Action("PerfilInstructor", "Alumno",new { idInstructor=ci.codigo})">
                 <div class="thumbnail carta">
         <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
              alt="...">
@@ -152,7 +152,7 @@
 
     @foreach (var i in ViewBag.busqueda)
     {
-        <a href="@Url.Action("PerfilInstructor", "Instructor",new { idInstructor=i.codigo})">
+        <a href="@Url.Action("PerfilInstructor", "Alumno",new { idInstructor=i.codigo})">
 
             <div class="thumbnail carta">
                 <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
@@ -225,7 +225,7 @@
 
         $("#cboCategoria").change(function () {
 
-            var url ="@Url.Action("ObtenerSubcategorias", "Alumno")";
+            var url ="@Url.Action("obtenerSubcategorias", "Alumno")";
             var valor = $("#cboCategoria").val();
             var data = { categoria: valor };
 
