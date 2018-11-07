@@ -1,0 +1,107 @@
+﻿@model Temple.Models.PerfilInstructor
+
+@{
+    ViewBag.Title = "PerfilInstructor";
+    Layout = "~/Views/Shared/_LayoutTemple.cshtml";
+}
+
+<h2>PerfilInstructor</h2>
+
+<div>
+    <h4>PerfilInstructor</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.codigo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.codigo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.nombres)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombres)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.apPaterno)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.apPaterno)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.apMaterno)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.apMaterno)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.especialidad)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.especialidad)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.sobreMi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.sobreMi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.cv)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cv)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.distancia)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.distancia)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.calificacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.calificacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.verificado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.verificado)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.conectado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.conectado)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

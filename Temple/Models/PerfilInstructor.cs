@@ -7,7 +7,13 @@ namespace Temple.Models
 {
 	public class PerfilInstructor
 	{
+        public PerfilInstructor() {
 
+            reseñas = new List<Reseña>();
+            cursos = new List<Curso>();
+            horarios = new List<DateTime>();
+
+        }
         public int codigo { get; set; }
         public string nombres { get; set; }
         public string apPaterno { get; set; }

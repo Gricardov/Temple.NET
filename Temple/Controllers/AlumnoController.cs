@@ -44,56 +44,27 @@ namespace Temple.Controllers
             return lista;
         }
 
-        private string obtenerDistanciaString(TarjetaInstructor ti) {
-
-            int codUsuarioObjetivo = ti.codigo;
+        private Ubicacion obtenerUbicacion(int idUsuarioObjetivo) {
 
             //con.Open();
-            Ubicacion uOrigen = new Ubicacion();
             Ubicacion uObjetivo = new Ubicacion();
-            SqlCommand cmd = new SqlCommand("USP_OBTENER_UBICACIONES_USUARIOS", con);
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_UBICACION_USUARIO", con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
             int codUsu = ((Usuario)Session["usuario"]).codigo;
             cmd.Parameters.AddWithValue("@CODUSUORIG", codUsu);
-            cmd.Parameters.AddWithValue("@CODUSUOBJ", codUsuarioObjetivo);
+            cmd.Parameters.AddWithValue("@CODUSUOBJ", idUsuarioObjetivo);
             SqlDataReader reader = cmd.ExecuteReader();
 
-            while (reader.Read())
-            {
-                uOrigen.latitud = reader.GetDecimal(0);
-                uOrigen.longitud = reader.GetDecimal(1);
-                uObjetivo.latitud = reader.GetDecimal(2);
-                uObjetivo.longitud = reader.GetDecimal(3);
+            while (reader.Read()) {
+
+                uObjetivo.latitud = reader.GetDecimal(0);
+                uObjetivo.longitud = reader.GetDecimal(1);
 
             }
 
-            ti.ubicacion = uObjetivo;
+            return uObjetivo;
 
-            //reader.Close();
-            //con.Close();
-            double distanciaKM = obtenerDistanciaKM((double)uOrigen.latitud, (double)uOrigen.longitud, (double)uObjetivo.latitud, (double)uObjetivo.longitud);
-
-            // Para saber en qué formato lo voy a devolver, en kilómetros, metros o millas
-            string respuesta = "";
-            double convertido = 0;
-            if (distanciaKM >= 1.60934) {
-                convertido = Math.Round(distanciaKM * 1.60934);
-                respuesta = convertido + " millas";
-            }
-            else if (distanciaKM >= 1) {
-                respuesta = Math.Round(distanciaKM) + " kilómetros";
-
-            }
-            else {
-
-                convertido = Math.Round(distanciaKM * 1000);
-                respuesta = convertido + " metros";
-
-            }
-
-            return respuesta;
-
-        }
+        }        
 
         private List<InstructoresRecomendados> ListadoInstructoresRecomendados() {
 
@@ -124,11 +95,14 @@ namespace Temple.Controllers
                     i.apPaterno = reader.GetString(2);
                     i.apMaterno = reader.GetString(3);
                     i.especialidad = reader.GetString(4);
+                    i.ubicacion = obtenerUbicacion(i.codigo);
                     i.numResenas = reader.GetInt32(6);
                     i.calificacion = reader.GetInt32(7);
                     i.verificado = reader.GetBoolean(8);
-                    
-                    i.distancia="A "+obtenerDistanciaString(i)+" de distancia";
+
+                    int idUsuario = (int) Session["usuario"];
+
+                    i.distancia="A "+obtenerDistanciaString(obtenerUbicacion(idUsuario),i.ubicacion)+" de distancia";
                     g.instructores.Add(i);
                     
                 }
@@ -163,10 +137,14 @@ namespace Temple.Controllers
                     i.apPaterno = reader.GetString(2);
                     i.apMaterno = reader.GetString(3);
                     i.especialidad = reader.GetString(4);
+                    i.ubicacion = obtenerUbicacion(i.codigo);
                     i.numResenas = reader.GetInt32(6);
                     i.calificacion = reader.GetInt32(7);
                     i.verificado = reader.GetBoolean(8);
-                    i.distancia = "A " + obtenerDistanciaString(i) + " de distancia";
+
+                    int idUsuario = (int)Session["usuario"];
+                
+                    i.distancia = "A " + obtenerDistanciaString(obtenerUbicacion(idUsuario), i.ubicacion) + " de distancia";
 
                 lista.Add(i);
 
@@ -265,6 +243,53 @@ namespace Temple.Controllers
             return lista;
 
         }
+
+
+        private PerfilInstructor ObtenerPerfilInstructor()
+        {
+
+            PerfilInstructor p = new PerfilInstructor();
+            con.Open();
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_PERFIL_INSTRUCTOR", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            int codUsu = ((Usuario)Session["usuario"]).codigo;
+            cmd.Parameters.AddWithValue("@CODUSU", codUsu);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                p.codigo = reader.GetInt32(0);
+                p.nombres = reader.GetString(1);
+                p.apPaterno = reader.GetString(2);
+                p.apMaterno = reader.GetString(3);
+                p.especialidad = reader.GetString(4);
+                p.sobreMi = reader.GetString(5);
+                p.cv = reader.GetString(6);
+                //p.distancia
+                p.calificacion = reader.GetInt32(8);
+                p.verificado = reader.GetBoolean(9);
+                p.conectado = reader.GetBoolean(10);
+
+                Ubicacion u = new Ubicacion();
+                u.latitud = reader.GetDecimal(11);
+                u.longitud = reader.GetDecimal(12);
+                p.ubicacion = u;
+
+                int idUsuario = (int)Session["usuario"];
+
+                p.distancia = obtenerDistanciaString(obtenerUbicacion(idUsuario), u);
+
+            }
+
+            con.Close();
+            reader.Close();
+
+            return p;
+        }
+
+
+        // Action Results
+        
         //vista: Cuadrícula=0, Mapa=1
         public ActionResult Inicio(int cboCategoria = -1, int cboSubcategoria = -1, string vista="0")
         {
@@ -294,15 +319,62 @@ namespace Temple.Controllers
 
         }
 
+        public ActionResult PerfilInstructor(int codUsu) {
+
+            return View(ObtenerPerfilInstructor());
+
+        }
+
+
+        // JSON Result y funciones
+
         [HttpPost]
-        public JsonResult ObtenerSubcategorias(int categoria)
+        public JsonResult obtenerSubcategorias(int categoria)
         {
             string json = new JavaScriptSerializer().Serialize((ListadoSubcategorias(categoria)));
             return Json(json);
         }
 
-        private double obtenerDistanciaKM(double lat1, double long1, double lat2, double long2)
+        private string obtenerDistanciaString(Ubicacion origen, Ubicacion obj) {
+            
+            double distanciaKM = obtenerDistanciaKM(origen, obj);
+
+            // Para saber en qué formato lo voy a devolver, en kilómetros, metros o millas
+            string respuesta = "";
+            double convertido = 0;
+            if (distanciaKM >= 1.60934)
+            {
+                convertido = Math.Round(distanciaKM * 1.60934);
+                respuesta = convertido + " millas";
+            }
+            else if (distanciaKM >= 1)
+            {
+                respuesta = Math.Round(distanciaKM) + " kilómetros";
+
+            }
+            else
+            {
+
+                convertido = Math.Round(distanciaKM * 1000);
+                respuesta = convertido + " metros";
+
+            }
+
+            return respuesta;
+
+        }
+
+    
+
+        private double obtenerDistanciaKM (Ubicacion origen, Ubicacion obj)
         {
+
+        double lat1 =(double)origen.latitud;
+        double long1 =(double)origen.longitud;
+
+        double lat2 =(double)obj.latitud;
+        double long2 = (double)obj.longitud;
+
             int tierra = 6371;
 
             //Point 1 cords
