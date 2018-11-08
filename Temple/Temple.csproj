@@ -190,9 +190,11 @@
     <Content Include="Content\estilo.css" />
     <Content Include="Content\estiloD.css" />
     <Content Include="Content\estiloE.css" />
+    <Content Include="Content\estiloPerfil.css" />
     <Content Include="Content\jquery-3.3.1.js" />
     <Content Include="Content\jquery.cycle2.carousel.js" />
     <Content Include="Content\jquery.cycle2.js" />
+    <Content Include="Content\scriptPerfil.js" />
     <Content Include="favicon.ico" />
     <Content Include="font-awesome-4.7.0\css\font-awesome.css" />
     <Content Include="font-awesome-4.7.0\css\font-awesome.min.css" />
@@ -202,6 +204,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="imagenes\iconochat.png" />
+    <Content Include="imagenes\logo.png" />
     <Content Include="imagenes\mila.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

@@ -39,7 +39,7 @@
 
             @foreach (var ci in r.instructores)
             {
-                <a href="@Url.Action("PerfilInstructor", "Alumno",new { idInstructor=ci.codigo})">
+                <a href="@Url.Action("PerfilInstructor", "Alumno",new { codUsu=ci.codigo})">
                 <div class="thumbnail carta">
         <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
              alt="...">
@@ -152,7 +152,7 @@
 
     @foreach (var i in ViewBag.busqueda)
     {
-        <a href="@Url.Action("PerfilInstructor", "Alumno",new { idInstructor=i.codigo})">
+        <a href="@Url.Action("PerfilInstructor", "Alumno",new { codUsu=i.codigo})">
 
             <div class="thumbnail carta">
                 <img src="~/imagenes/mila.jpg" class="img-perfil-carta"

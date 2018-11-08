@@ -50,9 +50,7 @@ namespace Temple.Controllers
             Ubicacion uObjetivo = new Ubicacion();
             SqlCommand cmd = new SqlCommand("USP_OBTENER_UBICACION_USUARIO", con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            int codUsu = ((Usuario)Session["usuario"]).codigo;
-            cmd.Parameters.AddWithValue("@CODUSUORIG", codUsu);
-            cmd.Parameters.AddWithValue("@CODUSUOBJ", idUsuarioObjetivo);
+             cmd.Parameters.AddWithValue("@CODUSU", idUsuarioObjetivo);
             SqlDataReader reader = cmd.ExecuteReader();
 
             while (reader.Read()) {
@@ -100,9 +98,9 @@ namespace Temple.Controllers
                     i.calificacion = reader.GetInt32(7);
                     i.verificado = reader.GetBoolean(8);
 
-                    int idUsuario = (int) Session["usuario"];
+                    int idUsuario = ((Usuario) Session["usuario"]).codigo;
 
-                    i.distancia="A "+obtenerDistanciaString(obtenerUbicacion(idUsuario),i.ubicacion)+" de distancia";
+                    i.distancia=obtenerDistanciaString(obtenerUbicacion(idUsuario),i.ubicacion);
                     g.instructores.Add(i);
                     
                 }
@@ -142,9 +140,9 @@ namespace Temple.Controllers
                     i.calificacion = reader.GetInt32(7);
                     i.verificado = reader.GetBoolean(8);
 
-                    int idUsuario = (int)Session["usuario"];
-                
-                    i.distancia = "A " + obtenerDistanciaString(obtenerUbicacion(idUsuario), i.ubicacion) + " de distancia";
+                    int idUsuario = ((Usuario)Session["usuario"]).codigo;
+
+                i.distancia = obtenerDistanciaString(obtenerUbicacion(idUsuario), i.ubicacion);
 
                 lista.Add(i);
 
@@ -245,14 +243,13 @@ namespace Temple.Controllers
         }
 
 
-        private PerfilInstructor ObtenerPerfilInstructor()
+        private PerfilInstructor ObtenerPerfilInstructor(int codUsu)
         {
 
             PerfilInstructor p = new PerfilInstructor();
             con.Open();
             SqlCommand cmd = new SqlCommand("USP_OBTENER_PERFIL_INSTRUCTOR", con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            int codUsu = ((Usuario)Session["usuario"]).codigo;
             cmd.Parameters.AddWithValue("@CODUSU", codUsu);
             SqlDataReader reader = cmd.ExecuteReader();
 
@@ -265,17 +262,16 @@ namespace Temple.Controllers
                 p.especialidad = reader.GetString(4);
                 p.sobreMi = reader.GetString(5);
                 p.cv = reader.GetString(6);
-                //p.distancia
-                p.calificacion = reader.GetInt32(8);
-                p.verificado = reader.GetBoolean(9);
-                p.conectado = reader.GetBoolean(10);
+                p.calificacion = reader.GetInt32(7);
+                p.verificado = reader.GetBoolean(8);
+                p.conectado = reader.GetBoolean(9);
 
                 Ubicacion u = new Ubicacion();
-                u.latitud = reader.GetDecimal(11);
-                u.longitud = reader.GetDecimal(12);
+                u.latitud = reader.GetDecimal(10);
+                u.longitud = reader.GetDecimal(11);
                 p.ubicacion = u;
 
-                int idUsuario = (int)Session["usuario"];
+                int idUsuario = ((Usuario)Session["usuario"]).codigo;
 
                 p.distancia = obtenerDistanciaString(obtenerUbicacion(idUsuario), u);
 
@@ -320,8 +316,8 @@ namespace Temple.Controllers
         }
 
         public ActionResult PerfilInstructor(int codUsu) {
-
-            return View(ObtenerPerfilInstructor());
+            ViewBag.usuario = Session["usuario"];
+            return View(ObtenerPerfilInstructor(codUsu));
 
         }
 

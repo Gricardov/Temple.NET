@@ -5,10 +5,44 @@
     Layout = "~/Views/Shared/_LayoutTemple.cshtml";
 }
 
-<h2>PerfilInstructor</h2>
+<link rel="stylesheet" href="~/Content/estiloPerfil.css" />
+<script type="text/javascript" src="~/Content/scriptPerfil.js"></script>
 
+<header style="margin-top:0px;">
+    <figure class="profile-banner">
+        <img id="fotoPortada" src="https://unsplash.it/975/300" alt="Profile banner" />
+    </figure>
+    <figure class="profile-picture"
+            style="background-image: url('http://unsplash.it/150/150')">
+    </figure>
+    <div class="profile-stats">
+        <ul>
+            <li>@Html.DisplayFor(model => model.reseñas.Count)<span>Reseñas</span></li>
+            <li>@Html.DisplayFor(model => model.cursos.Count)<span>Cursos</span></li>
+            <li>324   <span>Clases dictadas</span></li>
+            <li>@Html.DisplayFor(model => model.calificacion)/5<span>Calificación</span></li>
+        </ul>
+        <a href="javascript:void(0);" class="follow">
+            Consultar
+        </a>
+        <a href="javascript:void(0);" class="follow">
+            Contratar
+        </a>
+    </div>
+    <h1>
+        @Html.DisplayFor(model => model.nombres) @Html.DisplayFor(model => model.apPaterno) @Html.DisplayFor(model => model.apMaterno)
+        <small>(@Html.DisplayFor(model => model.distancia))</small>
+        <i class="fa fa-check-circle check"></i>
+
+    </h1>
+</header>
+<hr />
+<div class="datosPerfil">
+    
+    <small>Sobre mí:</small>
+    <textarea class="sobreMi" placeholder="@Html.DisplayFor(model => model.sobreMi)"></textarea>
+</div>
 <div>
-    <h4>PerfilInstructor</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
