@@ -44,33 +44,13 @@ namespace Temple.Controllers
             return lista;
         }
 
-        private Ubicacion obtenerUbicacion(int idUsuarioObjetivo) {
-
-            //con.Open();
-            Ubicacion uObjetivo = new Ubicacion();
-            SqlCommand cmd = new SqlCommand("USP_OBTENER_UBICACION_USUARIO", con);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-             cmd.Parameters.AddWithValue("@CODUSU", idUsuarioObjetivo);
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            while (reader.Read()) {
-
-                uObjetivo.latitud = reader.GetDecimal(0);
-                uObjetivo.longitud = reader.GetDecimal(1);
-
-            }
-
-            return uObjetivo;
-
-        }        
-
         private List<InstructoresRecomendados> ListadoInstructoresRecomendados() {
 
             // Primero obtengo las preferencias de aprendizaje del alumno
             List<PreferenciaAprendizaje> preferencias = ListadoPreferenciaAprendizaje();
 
             // Declaro mi listado para las tarjetas de preferencias de instructores
-            List<InstructoresRecomendados> listado = new List<InstructoresRecomendados>();
+            List<InstructoresRecomendados> recomendados = new List<InstructoresRecomendados>();
 
             con.Open();
 
@@ -81,7 +61,6 @@ namespace Temple.Controllers
                 int idSub = p.idSub;
                 cmd.Parameters.AddWithValue("@IDSUB", idSub);
                 SqlDataReader reader = cmd.ExecuteReader();
-
                 InstructoresRecomendados g= new InstructoresRecomendados();
                 g.prefApr = p;
 
@@ -104,13 +83,13 @@ namespace Temple.Controllers
                     g.instructores.Add(i);
                     
                 }
-                listado.Add(g);
+                recomendados.Add(g);
                 reader.Close();
 
             }
             con.Close();
 
-            return listado;
+            return recomendados;
 
         }
 
@@ -360,7 +339,27 @@ namespace Temple.Controllers
 
         }
 
-    
+        private Ubicacion obtenerUbicacion(int idUsuarioObjetivo)
+        {
+
+            //con.Open();
+            Ubicacion uObjetivo = new Ubicacion();
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_UBICACION_USUARIO", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", idUsuarioObjetivo);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+
+                uObjetivo.latitud = reader.GetDecimal(0);
+                uObjetivo.longitud = reader.GetDecimal(1);
+
+            }
+
+            return uObjetivo;
+
+        }
 
         private double obtenerDistanciaKM (Ubicacion origen, Ubicacion obj)
         {
