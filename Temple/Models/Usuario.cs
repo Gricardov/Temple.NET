@@ -11,7 +11,9 @@ namespace Temple.Models
         public string nombres { get; set; }
         public string apPaterno { get; set; }
         public string apMaterno { get; set; }
-        public string login { get; set; }
+		public string correo { get; set; }
+		public string telefonos { get; set; }
+		public string login { get; set; }
         public string clave { get; set; }
         public int idRol { get; set; }
         public string desRol { get; set; }

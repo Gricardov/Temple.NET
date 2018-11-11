@@ -16,7 +16,7 @@ namespace Temple.Controllers
     public class PerfilAlumnoController : Controller
     {
 		SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
-		private List<Alumno> InformeAlumno()
+		private List<Usuario> InformeAlumno()
 		{
 			List<Alumno> lista = new List<Alumno>();
 			con.Open();
@@ -26,16 +26,20 @@ namespace Temple.Controllers
 
 			while (reader.Read())
 			{
-				Alumno alu = new Alumno();
-				alu.foto = reader.GetString(0);
-				alu.codigo = reader.GetInt32(1);
-				alu.nombres = reader.GetString(2);
-				alu.apellidos = reader.GetString(3);
-				alu.grado = reader.GetString(4);
-				alu.correo = reader.GetString(5);
-				alu.telefono = reader.GetString(6);
+				Usuario us = new Usuario();
+				us.codigo = reader.GetInt32(0);
+				us.nombres = reader.GetString(1);
+				us.apPaterno = reader.GetString(2);
+				us.apMaterno = reader.GetString(3);
+				us.correo = reader.GetString(4);
+				us.telefonos = reader.GetString(5);
+				us.login = reader.GetString(6);
+				us.clave = reader.GetString(7);
+				us.idRol = reader.GetInt32(8);
+				us.desRol = reader.GetString(9);
 
-				lista.Add(alu);
+
+				lista.Add(us);
 
 
 			}
@@ -103,5 +107,11 @@ namespace Temple.Controllers
         {
             return View();
         }
-    }
+		public ActionResult NuevoAlumno()
+		{
+			return View(new Usuario());
+		}
+
+
+	}
 }

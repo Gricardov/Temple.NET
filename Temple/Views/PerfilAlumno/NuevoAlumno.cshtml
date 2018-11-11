@@ -1,0 +1,113 @@
+﻿@{
+	ViewBag.Title = "NuevoAlumno";
+}
+
+<h2>Nuevo</h2>
+
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+	<h4>Asesor</h4>
+	<hr />
+	@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+	<div class="form-group">
+		@Html.LabelFor(model => model.codigo, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.codigo, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.codigo, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.nombres, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.nombres, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.direccion, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.apPaterno, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.apPaterno, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.mail, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.apMaterno, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.apMaterno, "", new { @class = "text-danger" })
+		</div>
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(model => model.mail, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.correo, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.correo, "", new { @class = "text-danger" })
+		</div>
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(model => model.mail, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.telefonos, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.telefonos, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.mail, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.login, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.login, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.mail, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.clave, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.clave, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.mail, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.idRol, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.idRol, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.mail, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.desRol, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.desRol, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			­@Html.ActionLink("Nuevo", "Nuevo", null, new { @class = "bt btn-default" })
+			<input type="submit" value="Create" class="btn btn-default" />
+			@Html.ActionLink("retornar", "Bienvenida", null, new { @class = "bt btn-default" })
+		</div>
+	</div>
+</div>
+}
+
+<script>
+    if ('@ViewBag.mensaje' != '')
+        alert('@ViewBag.mensaje');
+</script>
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+

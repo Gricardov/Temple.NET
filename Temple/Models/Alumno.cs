@@ -9,7 +9,7 @@ namespace Temple.Models
 	{
 		public int codigo { get; set; }
 		public string nombres { get; set; }
-		public string apellidos { get; set; }
+		public string apMaterno { get; set; }
 		public string grado { get; set; }
 		public int idCurso { get; set; }
 		public string desCurso { get; set; }
