@@ -15,28 +15,31 @@ namespace Temple.Controllers
     public class InstructorController : Controller
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
-		private List<Instructor> InformeInstructor()
+		private List<Usuario> InformeInstructor()
 		{
-			List<Instructor> lista = new List<Instructor>();
+			List<Usuario> lista = new List<Usuario>();
 			con.Open();
-			SqlCommand cmd = new SqlCommand("sp_ListaInstructor", con);
+			SqlCommand cmd = new SqlCommand("sp_ListaAlumno", con);
 			cmd.CommandType = System.Data.CommandType.StoredProcedure;
 			SqlDataReader reader = cmd.ExecuteReader();
 
+
 			while (reader.Read())
 			{
-				Instructor instru = new Instructor();
-				instru.foto = reader.GetString(0);
-				instru.codigo = reader.GetInt32(1);
-				instru.nombre = reader.GetString(2);
-				instru.apellidos = reader.GetString(3);
-				instru.especialidad= reader.GetString(4);
-				instru.correo= reader.GetString(5);
-				instru.experiencia = reader.GetString(6);
-				instru.habilidades = reader.GetString(7);
-				instru.telefono = reader.GetString(8);
+				Usuario us = new Usuario();
+				us.codigo = reader.GetInt32(0);
+				us.nombres = reader.GetString(1);
+				us.apPaterno = reader.GetString(2);
+				us.apMaterno = reader.GetString(3);
+				us.correo = reader.GetString(4);
+				us.telefonos = reader.GetString(5);
+				us.login = reader.GetString(6);
+				us.clave = reader.GetString(7);
+				us.idRol = reader.GetInt32(8);
+				us.desRol = reader.GetString(9);
 
-				lista.Add(instru);
+
+				lista.Add(us);
 
 
 			}
@@ -47,48 +50,23 @@ namespace Temple.Controllers
 			return lista;
 		}
 
-		private List<Curso> ListaCurso()
+		private List<Categoria> categorias()
 		{
-			List<Curso> lista = new List<Curso>();
+			List<Categoria> lista = new List<Categoria>();
 			con.Open();
-			SqlCommand cmd = new SqlCommand("sp_ListaCurso", con);
-			cmd.CommandType = System.Data.CommandType.StoredProcedure;
-			String nombreCu = ((Instructor)Session["nombre"]).desCurso;
-			cmd.Parameters.AddWithValue("@nomCu", nombreCu);
-			SqlDataReader reader = cmd.ExecuteReader();
-
-			while (reader.Read())
-			{
-				Curso cu = new Curso();
-				cu.idCurso = reader.GetInt32(0);
-				cu.nombreCurso = reader.GetString(1);
-				cu.silabo = reader.GetString(2);
-				cu.ejercicios = reader.GetString(3);				
-				lista.Add(cu);
-			}
-
-			con.Close();
-			reader.Close();
-
-
-			return lista;
-		}
-
-		private List<Horario> ListaHorario()
-		{
-			List<Horario> lista = new List<Horario>();
-			con.Open();
-			SqlCommand cmd = new SqlCommand("sp_Horario", con);
+			SqlCommand cmd = new SqlCommand("sp_Curso", con);
 			cmd.CommandType = System.Data.CommandType.StoredProcedure;
 			SqlDataReader reader = cmd.ExecuteReader();
-
 			while (reader.Read())
 			{
-				Horario h = new Horario();
-				h.codigoHorario = reader.GetInt32(0);
-				h.codigoDia = reader.GetInt32(0);
-				h.codigoHora = reader.GetInt32(0);
-				h.descriHorarios = reader.GetString(3);
+				Categoria cu = new Categoria();
+				cu.id = reader.GetInt32(0);
+				cu.descripcion = reader.GetString(1);
+				cu.pr = reader.GetString(2);
+				cu.pr2 = reader.GetString(3);
+				cu.pr3 = reader.GetString(4);
+				cu.pr4 = reader.GetString(5);
+				cu.pr5 = reader.GetString(6);
 				lista.Add(cu);
 			}
 
@@ -104,5 +82,42 @@ namespace Temple.Controllers
         {
             return View();
         }
-    }
+
+		public ActionResult NuevoInstructor()
+		{
+			ViewBag.categorias = new SelectList(categorias(), "id", "descripcion");
+			return View(new Usuario());
+		}
+
+		[HttpPost]
+		public ActionResult NuevoAlumno(Usuario usu)
+		{
+			ViewBag.mensaje = "";
+			con.Open();
+			try
+			{
+				SqlCommand cmd = new SqlCommand("insert into tb_usuarios values (@id,@nom,@app,@apm,@co,@u,@cla,@rol)", con);
+				cmd.Parameters.AddWithValue("@id", usu.codigo);
+				cmd.Parameters.AddWithValue("@nom", usu.nombres);
+				cmd.Parameters.AddWithValue("@app", usu.apPaterno);
+				cmd.Parameters.AddWithValue("@apm", usu.apMaterno);
+				cmd.Parameters.AddWithValue("@co", usu.correo);
+				cmd.Parameters.AddWithValue("@u", usu.login);
+				cmd.Parameters.AddWithValue("@cla", usu.clave);
+				cmd.Parameters.AddWithValue("@rol", usu.idRol);
+				cmd.ExecuteNonQuery();
+				ViewBag.mensaje = "se registra";
+			}
+			catch (SqlException ex)
+			{
+				ViewBag.mensaje = ex.Message;
+			}
+			finally
+			{
+				ViewBag.categorias = new SelectList(categorias(), "id", "descripcion");
+				con.Close();
+			}
+			return View(usu);
+		}
+	}
 }

@@ -272,10 +272,10 @@
     <Content Include="Views\Login\IniciarSesion.cshtml" />
     <Content Include="Views\Alumno\Inicio.cshtml" />
     <Content Include="Views\PerfilAlumno\NuevoAlumno.cshtml" />
+    <Content Include="Views\Instructor\NuevoInstructor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Instructor\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
