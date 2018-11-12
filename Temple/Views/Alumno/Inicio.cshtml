@@ -39,36 +39,38 @@
 
             @foreach (var ci in r.instructores)
             {
+                <a href="@Url.Action("PerfilInstructor", "Alumno",new { codUsu=ci.codigo})">
                 <div class="thumbnail carta">
-                    <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
-                         alt="...">
-                    <div class="caption">
-                        <h4 class="text-center">@ci.nombres  @ci.apPaterno</h4>
-                        <h5 class="text-center text-muted">@ci.especialidad</h5>
-                        <h6 class="text-center text-muted">@ci.distancia</h6>
+        <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
+             alt="...">
+        <div class="caption">
+            <h4 class="text-center">@ci.nombres  @ci.apPaterno</h4>
+            <h5 class="text-center text-muted">@ci.especialidad</h5>
+            <h6 class="text-center text-muted">@ci.distancia</h6>
 
-                        <!-- Itera para mostrar la calificación -->
-                        <div class="text-center">
-                            @for (int cal = 1; cal <= 5; cal++)
-                            {
+            <!-- Itera para mostrar la calificación -->
+            <div class="text-center">
+                @for (int cal = 1; cal <= 5; cal++)
+                {
 
-                                if (cal <= ci.calificacion)
-                                {
+                    if (cal <= ci.calificacion)
+                    {
 
-                                    <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
 
-                                }
-                                else
-                                {
-                                    <span class="fa fa-star"></span>
+                    }
+                    else
+                    {
+                        <span class="fa fa-star"></span>
 
-                                }
+                    }
 
 
-                            }
-                        </div>
-                    </div>
-                </div>
+                }
+            </div>
+        </div>
+    </div>
+</a>
             }
 
 
@@ -142,47 +144,50 @@
     @if (ViewBag.busqueda.Count <= 0)
     {
 
-    <div class="well well-sm">
-        La búsqueda no obtuvo resultados. Intente con otras opciones
-    </div>
+        <div class="well well-sm">
+            La búsqueda no obtuvo resultados. Intente con otras opciones
+        </div>
 
     }
 
     @foreach (var i in ViewBag.busqueda)
     {
-        <div class="thumbnail carta">
-            <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
-                 alt="...">
-            <div class="caption">
-                <h4 class="text-center">@i.nombres  @i.apPaterno</h4>
-                <h5 class="text-center text-muted">@i.especialidad</h5>
-                <h6 class="text-center text-muted">@i.distancia</h6>
+        <a href="@Url.Action("PerfilInstructor", "Alumno",new { codUsu=i.codigo})">
 
-                <!-- Itera para mostrar la calificación -->
-                <div class="text-center">
-                    @for (int cal = 1; cal <= 5; cal++)
-                    {
+            <div class="thumbnail carta">
+                <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
+                     alt="...">
+                <div class="caption">
+                    <h4 class="text-center">@i.nombres  @i.apPaterno</h4>
+                    <h5 class="text-center text-muted">@i.especialidad</h5>
+                    <h6 class="text-center text-muted">@i.distancia</h6>
 
-                        if (cal <= i.calificacion)
+                    <!-- Itera para mostrar la calificación -->
+                    <div class="text-center">
+                        @for (int cal = 1; cal <= 5; cal++)
                         {
 
-                            <span class="fa fa-star checked"></span>
+                            if (cal <= i.calificacion)
+                            {
+
+                                <span class="fa fa-star checked"></span>
+
+                            }
+                            else
+                            {
+                                <span class="fa fa-star"></span>
+
+                            }
+
 
                         }
-                        else
-                        {
-                            <span class="fa fa-star"></span>
-
-                        }
-
-
-                    }
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+            </a>
+            }
 
-</div>
+    </div>
 
 <script>
     $(document).ready(function () {
@@ -220,7 +225,7 @@
 
         $("#cboCategoria").change(function () {
 
-            var url ="@Url.Action("ObtenerSubcategorias", "Alumno")";
+            var url ="@Url.Action("obtenerSubcategorias", "Alumno")";
             var valor = $("#cboCategoria").val();
             var data = { categoria: valor };
 
