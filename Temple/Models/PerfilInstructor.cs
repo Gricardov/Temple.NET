@@ -5,9 +5,10 @@ using System.Web;
 
 namespace Temple.Models
 {
-	public class PerfilInstructor
-	{
-        public PerfilInstructor() {
+    public class PerfilInstructor
+    {
+        public PerfilInstructor()
+        {
 
             reseñas = new List<Reseña>();
             cursos = new List<Curso>();
