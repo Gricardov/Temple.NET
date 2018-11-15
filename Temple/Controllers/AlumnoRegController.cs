@@ -13,7 +13,7 @@ using System.Web.Script.Serialization;
 
 namespace Temple.Controllers
 {
-    public class PerfilAlumnoController : Controller
+    public class AlumnoRegController : Controller
     {
 		SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
 		private List<Usuario> InformeAlumno()
@@ -55,7 +55,7 @@ namespace Temple.Controllers
 			List<Categoria> lista = new List<Categoria>();
 			con.Open();
 			SqlCommand cmd = new SqlCommand("sp_Curso", con);
-			cmd.CommandType = System.Data.CommandType.StoredProcedure;			
+			cmd.CommandType = System.Data.CommandType.StoredProcedure;
 			SqlDataReader reader = cmd.ExecuteReader();
 			while (reader.Read())
 			{
@@ -113,9 +113,9 @@ namespace Temple.Controllers
 
 		// GET: PerfilAlumno
 		public ActionResult Index()
-        {
-            return View();
-        }
+		{
+			return View();
+		}
 		public ActionResult NuevoAlumno()
 		{
 			ViewBag.categorias = new SelectList(categorias(), "id", "descripcion");
@@ -124,40 +124,6 @@ namespace Temple.Controllers
 
 		[HttpPost]
 		public ActionResult NuevoAlumno(Usuario usu)
-		{
-			ViewBag.mensaje = "";
-			con.Open();
-			try {
-				SqlCommand cmd = new SqlCommand("insert into tb_usuarios values (@id,@nom,@app,@apm,@co,@u,@cla,@rol)", con);
-				cmd.Parameters.AddWithValue("@id", usu.codigo);
-				cmd.Parameters.AddWithValue("@nom", usu.nombres);
-				cmd.Parameters.AddWithValue("@app", usu.apPaterno);
-				cmd.Parameters.AddWithValue("@apm", usu.apMaterno);
-				cmd.Parameters.AddWithValue("@co", usu.correo);
-				cmd.Parameters.AddWithValue("@u", usu.login);
-				cmd.Parameters.AddWithValue("@cla", usu.clave);
-				cmd.Parameters.AddWithValue("@rol", usu.idRol);
-				cmd.ExecuteNonQuery();
-				ViewBag.mensaje = "se registra";
-			}
-			catch(SqlException ex) {
-				ViewBag.mensaje = ex.Message;
-			}
-			finally {
-				ViewBag.categorias = new SelectList(categorias(), "id", "descripcion");
-				con.Close();
-			}
-			return View(usu);
-		}
-
-		public ActionResult NuevoInstructor()
-		{
-			ViewBag.categorias = new SelectList(categorias(), "id", "descripcion");
-			return View(new Usuario());
-		}
-
-		[HttpPost]
-		public ActionResult NuevoInstructor(Usuario usu)
 		{
 			ViewBag.mensaje = "";
 			con.Open();
@@ -186,9 +152,7 @@ namespace Temple.Controllers
 			}
 			return View(usu);
 		}
-
-
-
-
-	}
+		// GET: AlumnoReg
+		
+    }
 }

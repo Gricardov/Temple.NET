@@ -153,18 +153,17 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\RouteConfig2.cs" />
     <Compile Include="Controllers\AlumnoController.cs" />
+    <Compile Include="Controllers\AlumnoRegController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\BienvenidaController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PerfilAlumnoController.cs" />
+    <Compile Include="Controllers\PerfilInstructorController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Alumno.cs" />
     <Compile Include="Models\Categoria.cs" />
-    <Compile Include="Models\Curso.cs" />
-    <Compile Include="Models\Horario.cs" />
-    <Compile Include="Models\Instructor.cs" />
     <Compile Include="Models\InstructoresRecomendados.cs" />
     <Compile Include="Models\PreferenciaAprendizaje.cs" />
     <Compile Include="Models\Reseña.cs" />
@@ -278,6 +277,9 @@
     <Content Include="Views\Bienvenida\Descargar.cshtml" />
     <Content Include="Views\Login\IniciarSesion.cshtml" />
     <Content Include="Views\Alumno\Inicio.cshtml" />
+    <Content Include="Views\PerfilInstructor\Index.cshtml" />
+    <Content Include="Views\PerfilInstructor\NuevoInstructor.cshtml" />
+    <Content Include="Views\AlumnoReg\NuevoAlumno.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
