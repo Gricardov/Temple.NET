@@ -186,9 +186,12 @@
     <Content Include="Content\bootstrap.js" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\estilo.css" />
+    <Content Include="Content\estiloComentarios.css" />
     <Content Include="Content\estiloD.css" />
     <Content Include="Content\estiloE.css" />
+    <Content Include="Content\estiloNavegacionPestanas.css" />
     <Content Include="Content\estiloPerfil.css" />
+    <Content Include="Content\estiloPestanasCursos.css" />
     <Content Include="Content\jquery-3.3.1.js" />
     <Content Include="Content\jquery.cycle2.carousel.js" />
     <Content Include="Content\jquery.cycle2.js" />

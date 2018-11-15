@@ -248,6 +248,7 @@ namespace Temple.Controllers
                 Ubicacion u = new Ubicacion();
                 u.latitud = reader.GetDecimal(10);
                 u.longitud = reader.GetDecimal(11);
+                p.idPerfil = reader.GetInt32(12);
                 p.ubicacion = u;
 
                 int idUsuario = ((Usuario)Session["usuario"]).codigo;
@@ -262,6 +263,31 @@ namespace Temple.Controllers
             return p;
         }
 
+        public List<Reseña> obtenerResenas(int idPer) {
+            List<Reseña> lista = new List<Reseña>();
+            con.Open();
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_RESENAS", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IDPERFIL", idPer);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read()) {
+                Reseña r = new Reseña();
+                r.id = reader.GetInt32(0);
+                r.idPerfilRemitente = reader.GetInt32(1);
+                r.idPerfilDestinatario = reader.GetInt32(2);
+                r.contenido = reader.GetString(3);
+                r.fechaHora = reader.GetDateTime(4);
+                r.calificacion = reader.GetInt32(5);
+                lista.Add(r);
+
+            }
+            con.Close();
+            reader.Close();
+
+            return lista;
+
+        }
 
         // Action Results
         
@@ -294,12 +320,15 @@ namespace Temple.Controllers
 
         }
 
-        public ActionResult PerfilInstructor(int codUsu) {
-            ViewBag.usuario = Session["usuario"];
-            return View(ObtenerPerfilInstructor(codUsu));
+
+        public ActionResult PerfilInstructor(int codUsu)
+        {
+            PerfilInstructor perfil = ObtenerPerfilInstructor(codUsu);
+            List<Reseña> resenas = obtenerResenas(perfil.idPerfil);
+            ViewBag.resenas = resenas;
+            return View(perfil);
 
         }
-
 
         // JSON Result y funciones
 
