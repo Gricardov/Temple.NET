@@ -66,9 +66,9 @@
     <section class="contenidoControl" id="content2">
         <div class="cursos row">
             <div class="tab">
-                <button class="tablinks" onclick="openCity(event, 'London')" id="defaultOpen">London</button>
-                <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
-                <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
+                <button class="tablinks" onclick="mostrarPestanaCurso(event, 'London')" id="defaultOpen">London</button>
+                <button class="tablinks" onclick="mostrarPestanaCurso(event, 'Paris')">Paris</button>
+                <button class="tablinks" onclick="mostrarPestanaCurso(event, 'Tokyo')">Tokyo</button>
             </div>
 
             <div id="London" class="tabcontent">
@@ -107,21 +107,39 @@
             }
            
         var json = JSON.parse('@json');
-        alert(json.size)
+        
         for (var i in json) {
+            alert(json[i].fechaHora)
 
-            S('comentarios').append(   '<div class="row"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">'+
+            var calificacionDiv = '<div class="text-left stats" style="width:100%; display:inline-block;"><b>Calificación: </b> ';
+
+            for (var cal = 1; cal <= 5; cal++) {
+
+                if (cal <= json[i].calificacion) {
+
+                    calificacionDiv += '<span class="fa fa-star checked" style="margin-right:5px;"></span>';
+                }
+                else {
+
+                    calificacionDiv += '<span class="fa fa-star" style="margin-right:5px;"></span>';
+                }
+
+            }
+            calificacionDiv += '</div>';
+
+            $('#comentarios').append(   '<div class="row"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">'+
                                         '<div class="pull-left image"><img src="http://bootdey.com/img/Content/user_1.jpg" class="img-circle avatar" alt="user profile image">'+
-                                        '</div><div class="pull-left meta"><div class="title h5"><a href="#"><b>Ryan Haywood</b></a></div>'+
-                                        '<h6 class="text-muted time">13/11/2018</h6></div></div><div class="post-description"><p>Linda miss, sabe bastante y es guapísima!!</p>'+
-                                        '<div class="stats"><a href="#" class="btn btn-default stat-item"><i class="fa fa-thumbs-up icon"></i>2</a>'+
-                                        '<a href="#" class="btn btn-default stat-item"><i class="fa fa-thumbs-down icon"></i>12</a></div></div></div></div></div>');
+                                        '</div><div class="pull-left meta"><div class="title h5"><a href="#"><b>' + json[i].nombreRemitente + ' ' + json[i].apPaternoRemitente + ' ' +json[i].apMaternoRemitente+'</b></a></div>'+
+                                        '<h6 class="text-muted time"' + json[i].fechaHora + '</h6></div></div><div class="post-description"><p>' + json[i].contenido + '</p>' +
+                                        calificacionDiv+'</div></div></div></div>');
+
+             
 
         }
 
         // Las funciones
 
-        function openCity(evt, cityName) {
+        function mostrarPestanaCurso(evt, cityName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {

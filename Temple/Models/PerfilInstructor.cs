@@ -11,7 +11,7 @@ namespace Temple.Models
         {
 
             reseñas = new List<Reseña>();
-            cursos = new List<Curso>();
+            cursos = new List<PreferenciaEnsenanza>();
             horarios = new List<DateTime>();
 
         }
@@ -29,9 +29,9 @@ namespace Temple.Models
         public int idPerfil { get; set; }
         public Ubicacion ubicacion { get; set; }
         public List<Reseña> reseñas { get; set; }
-        public List<Curso> cursos { get; set; }
+        public List<PreferenciaEnsenanza> cursos { get; set; }
         public List<DateTime> horarios { get; set; }
-
+        
 
     }
 }

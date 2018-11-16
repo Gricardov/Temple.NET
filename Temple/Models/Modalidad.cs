@@ -12,3 +12,9 @@ namespace Temple.Models
         public decimal precioHora { get; set; }
     }
 }
+/*MODALIDADES?
+    DEPENDIENDO DE LA MODALIDAD, VARÍA EL PRECIO POR HORA
+
+    PERSONALIZADO, GRUPAL, FULL EJERCICIOS, FULL TEORÍA, PREPARACIÓN EXAMEN     
+
+ */

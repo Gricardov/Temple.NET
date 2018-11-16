@@ -9,6 +9,9 @@ namespace Temple.Models
     {
         public int id { get; set; }
         public int idPerfilRemitente { get; set; }
+        public string nombreRemitente { get; set; }
+        public string apPaternoRemitente { get; set; }
+        public string apMaternoRemitente { get; set; }
         public int idPerfilDestinatario { get; set; }
         public string contenido { get; set; }
         public DateTime fechaHora { get; set; }

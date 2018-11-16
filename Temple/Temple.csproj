@@ -164,8 +164,10 @@
     <Compile Include="Models\Categoria.cs" />
     <Compile Include="Models\Curso.cs" />
     <Compile Include="Models\InstructoresRecomendados.cs" />
+    <Compile Include="Models\Modalidad.cs" />
     <Compile Include="Models\PerfilInstructor.cs" />
     <Compile Include="Models\PreferenciaAprendizaje.cs" />
+    <Compile Include="Models\PreferenciaEnsenanza.cs" />
     <Compile Include="Models\Reseña.cs" />
     <Compile Include="Models\Subcategoria.cs" />
     <Compile Include="Models\TarjetaInstructor.cs" />
