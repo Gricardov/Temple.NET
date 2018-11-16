@@ -100,7 +100,7 @@ namespace Temple.Controllers
                 
                 SqlCommand cmd = new SqlCommand("USP_OBTENER_INSTRUCTORES_BUSQUEDA", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                
+                Debug.WriteLine("idCat " + idCat + " idSub " + idSub);
                 cmd.Parameters.AddWithValue("@IDCAT", idCat);
                 cmd.Parameters.AddWithValue("@IDSUB", idSub);
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -355,6 +355,7 @@ namespace Temple.Controllers
             ViewBag.usuario = Session["usuario"];
             PerfilInstructor perfil = ObtenerPerfilInstructor(codUsu);
             ViewBag.resenas = perfil.reseñas;
+            ViewBag.cursos = perfil.cursos;
             return View(perfil);
 
         }

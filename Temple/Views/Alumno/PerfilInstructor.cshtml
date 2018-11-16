@@ -64,27 +64,11 @@
     </section>
 
     <section class="contenidoControl" id="content2">
-        <div class="cursos row">
-            <div class="tab">
-                <button class="tablinks" onclick="mostrarPestanaCurso(event, 'London')" id="defaultOpen">London</button>
-                <button class="tablinks" onclick="mostrarPestanaCurso(event, 'Paris')">Paris</button>
-                <button class="tablinks" onclick="mostrarPestanaCurso(event, 'Tokyo')">Tokyo</button>
+        <div id="contenidosCursos" class="row">
+            <div class="tab" id="pestanasCursos">
+                
             </div>
-
-            <div id="London" class="tabcontent">
-                <h3>London</h3>
-                <p>London is the capital city of England.</p>
-            </div>
-
-            <div id="Paris" class="tabcontent">
-                <h3>Paris</h3>
-                <p>Paris is the capital of France.</p>
-            </div>
-
-            <div id="Tokyo" class="tabcontent">
-                <h3>Tokyo</h3>
-                <p>Tokyo is the capital of Japan.</p>
-            </div>
+                        
         </div>
     </section>
 
@@ -103,13 +87,20 @@
 
            @{
 
-               var json=@Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.resenas));
+               var jsonResenas=@Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.resenas));
+               var jsonCursos = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.cursos));
             }
            
-        var json = JSON.parse('@json');
-        
+        var json = JSON.parse('@jsonResenas');
+
+        // Muestra las reseñas
+
+        if (json.length == 0) {
+            $('#comentarios').append('<div class="well well-sm">Este instructor no tiene reseñas aún</div>');
+        }
+
         for (var i in json) {
-            alert(json[i].fechaHora)
+            //alert(json[i].fechaHora)
 
             var calificacionDiv = '<div class="text-left stats" style="width:100%; display:inline-block;"><b>Calificación: </b> ';
 
@@ -137,27 +128,64 @@
 
         }
 
+        var json = JSON.parse('@jsonCursos');
+
+        if (json.length == 0) {
+            $('#contenidosCursos').append('<div class="well well-sm">Este instructor no ha definido cursos aún</div>');
+        }
+
+        //Muestra los cursos que enseña
+        for (var i in json) {
+
+            $('#pestanasCursos').append('<button class="tablinks" id="' + json[i].idSub+'">' + json[i].desSub + '</button>');
+            $('.contenidoControl').on('click', 'button#' + json[i].idSub, function (event) {
+
+                mostrarPestanaCurso(event, $(this).attr('id'))
+
+                //onclick="mostrarPestanaCurso(event, "' + json[i].idSub + '")"
+            });
+
+            $('#contenidosCursos').append('<div id="content' + json[i].idSub + '" class="tabcontent" style="display:none;"><i>Perteneciente a la categoria '
+                + json[i].desCat + '</i><h3>Descripción: </h3><br><p>' + json[i].descripcion + '</p><h3>Sílabo: </h3><br><p>' + json[i].silabo + '</p><h3>Modalidades: </h3></div>');
+
+
+
+        }
+
         // Las funciones
 
-        function mostrarPestanaCurso(evt, cityName) {
+        function mostrarPestanaCurso(evt, tabId) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
+
+                if (tabcontent[i].id == "content"+tabId) {
+
+                    tabcontent[i].style.display = "block";
+
+
+                } else {
+
+                    tabcontent[i].style.display = "none";
+
+
+                }
+
             }
             tablinks = document.getElementsByClassName("tablinks");
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }
-            document.getElementById(cityName).style.display = "block";
             evt.currentTarget.className += " active";
+            //document.getElementById("content" + tabId).style.display = "block";
+
         }
 
         // Get the element with id="defaultOpen" and click on it
-        document.getElementById("defaultOpen").click();
-
-
-
+        if ($('#pestanasCursos').children().length > 0) {
+            document.getElementsByClassName("tablinks")[0].click();
+        }
+        
     </script>
 
     <hr />
