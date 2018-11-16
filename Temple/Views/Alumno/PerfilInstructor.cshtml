@@ -6,7 +6,9 @@
 }
 
 <link rel="stylesheet" href="~/Content/estiloPerfil.css" />
-<script type="text/javascript" src="~/Content/scriptPerfil.js"></script>
+<link rel="stylesheet" href="~/Content/estiloComentarios.css" />
+<link rel="stylesheet" href="~/Content/estiloNavegacionPestanas.css" />
+<link rel="stylesheet" href="~/Content/estiloPestanasCursos.css" />
 
 <header style="margin-top:0px;">
     <figure class="profile-banner">
@@ -46,64 +48,146 @@
 </div>
 <div class="controlesPerfil">
 
-        <input class="pestana" id="tab1" type="radio" name="tabs" checked>
-        <label class="lblPestana" for="tab1">Reseñas</label>
+    <input class="pestana" id="tab1" type="radio" name="tabs" checked>
+    <label class="lblPestana" for="tab1">Reseñas</label>
 
-        <input class="pestana" id="tab2" type="radio" name="tabs">
-        <label class="lblPestana" for="tab2">Cursos</label>
+    <input class="pestana" id="tab2" type="radio" name="tabs">
+    <label class="lblPestana" for="tab2">Cursos</label>
 
-        <input class="pestana" id="tab3" type="radio" name="tabs">
-        <label class="lblPestana" for="tab3">Horarios</label>
+    <input class="pestana" id="tab3" type="radio" name="tabs">
+    <label class="lblPestana" for="tab3">Horarios</label>
 
-        <section class="contenidoControl" id="content1">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-11">
-                        <div class="panel panel-white post panel-shadow">
-                            <div class="post-heading">
-                                <div class="pull-left image">
-                                    <img src="http://bootdey.com/img/Content/user_1.jpg" class="img-circle avatar" alt="user profile image">
-                                </div>
-                                <div class="pull-left meta">
-                                    <div class="title h5">
-                                        <a href="#"><b>Ryan Haywood</b></a>
-                                        
-                                    </div>
-                                    <h6 class="text-muted time">13/11/2018</h6>
-                                </div>
-                            </div>
-                            <div class="post-description">
-                                <p>Linda miss, sabe bastante y es guapísima!!</p>
-                                <div class="stats">
-                                    <a href="#" class="btn btn-default stat-item">
-                                        <i class="fa fa-thumbs-up icon"></i>2
-                                    </a>
-                                    <a href="#" class="btn btn-default stat-item">
-                                        <i class="fa fa-thumbs-down icon"></i>12
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
+    <section class="contenidoControl" id="content1">
+        <div id="comentarios">
+            
+        </div>
+    </section>
+
+    <section class="contenidoControl" id="content2">
+        <div id="contenidosCursos" class="row">
+            <div class="tab" id="pestanasCursos">
+                
             </div>
-        </section>
+                        
+        </div>
+    </section>
 
-        <section class="contenidoControl" id="content2">
-            <p>
-                Hermosa
-            </p>
-        </section>
+    <section class="contenidoControl" id="content3">
+        <p>
+            Chusis
+        </p>
+    </section>
 
-        <section class="contenidoControl" id="content3">
-            <p>
-                Chusis
-            </p>
-        </section>
-
-    </div>
+</div>
 <div>
+    <script>
+
+        // Al cargar la página
+         @using System.Web.Script.Serialization;
+
+           @{
+
+               var jsonResenas=@Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.resenas));
+               var jsonCursos = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.cursos));
+            }
+           
+        var json = JSON.parse('@jsonResenas');
+
+        // Muestra las reseñas
+
+        if (json.length == 0) {
+            $('#comentarios').append('<div class="well well-sm">Este instructor no tiene reseñas aún</div>');
+        }
+
+        for (var i in json) {
+            //alert(json[i].fechaHora)
+
+            var calificacionDiv = '<div class="text-left stats" style="width:100%; display:inline-block;"><b>Calificación: </b> ';
+
+            for (var cal = 1; cal <= 5; cal++) {
+
+                if (cal <= json[i].calificacion) {
+
+                    calificacionDiv += '<span class="fa fa-star checked" style="margin-right:5px;"></span>';
+                }
+                else {
+
+                    calificacionDiv += '<span class="fa fa-star" style="margin-right:5px;"></span>';
+                }
+
+            }
+            calificacionDiv += '</div>';
+
+            $('#comentarios').append(   '<div class="row"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">'+
+                                        '<div class="pull-left image"><img src="http://bootdey.com/img/Content/user_1.jpg" class="img-circle avatar" alt="user profile image">'+
+                                        '</div><div class="pull-left meta"><div class="title h5"><a href="#"><b>' + json[i].nombreRemitente + ' ' + json[i].apPaternoRemitente + ' ' +json[i].apMaternoRemitente+'</b></a></div>'+
+                                        '<h6 class="text-muted time"' + json[i].fechaHora + '</h6></div></div><div class="post-description"><p>' + json[i].contenido + '</p>' +
+                                        calificacionDiv+'</div></div></div></div>');
+
+             
+
+        }
+
+        var json = JSON.parse('@jsonCursos');
+
+        if (json.length == 0) {
+            $('#contenidosCursos').append('<div class="well well-sm">Este instructor no ha definido cursos aún</div>');
+        }
+
+        //Muestra los cursos que enseña
+        for (var i in json) {
+
+            $('#pestanasCursos').append('<button class="tablinks" id="' + json[i].idSub+'">' + json[i].desSub + '</button>');
+            $('.contenidoControl').on('click', 'button#' + json[i].idSub, function (event) {
+
+                mostrarPestanaCurso(event, $(this).attr('id'))
+
+                //onclick="mostrarPestanaCurso(event, "' + json[i].idSub + '")"
+            });
+
+            $('#contenidosCursos').append('<div id="content' + json[i].idSub + '" class="tabcontent" style="display:none;"><i>Perteneciente a la categoria '
+                + json[i].desCat + '</i><h3>Descripción: </h3><br><p>' + json[i].descripcion + '</p><h3>Sílabo: </h3><br><p>' + json[i].silabo + '</p><h3>Modalidades: </h3></div>');
+
+
+
+        }
+
+        // Las funciones
+
+        function mostrarPestanaCurso(evt, tabId) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+
+                if (tabcontent[i].id == "content"+tabId) {
+
+                    tabcontent[i].style.display = "block";
+
+
+                } else {
+
+                    tabcontent[i].style.display = "none";
+
+
+                }
+
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            evt.currentTarget.className += " active";
+            //document.getElementById("content" + tabId).style.display = "block";
+
+        }
+
+        // Get the element with id="defaultOpen" and click on it
+        if ($('#pestanasCursos').children().length > 0) {
+            document.getElementsByClassName("tablinks")[0].click();
+        }
+        
+    </script>
+
     <hr />
     <dl class="dl-horizontal">
         <dt>

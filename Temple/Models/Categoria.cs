@@ -1,5 +1,4 @@
 ﻿
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,10 +9,6 @@ namespace Temple.Models
     {
         public int id { get; set; }
         public string descripcion { get; set; }
-        public string pr { get; set; }
-        public string pr2 { get; set; }
-        public string pr3 { get; set; }
-        public string pr4 { get; set; }
-        public string pr5 { get; set; }
+        
     }
 }

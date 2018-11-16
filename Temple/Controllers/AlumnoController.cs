@@ -72,14 +72,14 @@ namespace Temple.Controllers
                     i.apPaterno = reader.GetString(2);
                     i.apMaterno = reader.GetString(3);
                     i.especialidad = reader.GetString(4);
-                    i.ubicacion = obtenerUbicacion(i.codigo);
+                    i.ubicacion = obtenerUbicacion(con, i.codigo);
                     i.numResenas = reader.GetInt32(6);
                     i.calificacion = reader.GetInt32(7);
                     i.verificado = reader.GetBoolean(8);
 
                     int idUsuario = ((Usuario) Session["usuario"]).codigo;
 
-                    i.distancia=obtenerDistanciaString(obtenerUbicacion(idUsuario),i.ubicacion);
+                    i.distancia=obtenerDistanciaString(obtenerUbicacion(con, idUsuario),i.ubicacion);
                     g.instructores.Add(i);
                     
                 }
@@ -100,7 +100,7 @@ namespace Temple.Controllers
                 
                 SqlCommand cmd = new SqlCommand("USP_OBTENER_INSTRUCTORES_BUSQUEDA", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                
+                Debug.WriteLine("idCat " + idCat + " idSub " + idSub);
                 cmd.Parameters.AddWithValue("@IDCAT", idCat);
                 cmd.Parameters.AddWithValue("@IDSUB", idSub);
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -114,14 +114,14 @@ namespace Temple.Controllers
                     i.apPaterno = reader.GetString(2);
                     i.apMaterno = reader.GetString(3);
                     i.especialidad = reader.GetString(4);
-                    i.ubicacion = obtenerUbicacion(i.codigo);
+                    i.ubicacion = obtenerUbicacion(con,i.codigo);
                     i.numResenas = reader.GetInt32(6);
                     i.calificacion = reader.GetInt32(7);
                     i.verificado = reader.GetBoolean(8);
 
                     int idUsuario = ((Usuario)Session["usuario"]).codigo;
 
-                i.distancia = obtenerDistanciaString(obtenerUbicacion(idUsuario), i.ubicacion);
+                i.distancia = obtenerDistanciaString(obtenerUbicacion(con,idUsuario), i.ubicacion);
 
                 lista.Add(i);
 
@@ -248,11 +248,14 @@ namespace Temple.Controllers
                 Ubicacion u = new Ubicacion();
                 u.latitud = reader.GetDecimal(10);
                 u.longitud = reader.GetDecimal(11);
+                p.idPerfil = reader.GetInt32(12);
                 p.ubicacion = u;
 
+                p.reseñas = ListadoResenas(con,p.idPerfil);
+                p.cursos = ListadoPreferenciaEnsenanza(con, p.codigo);
                 int idUsuario = ((Usuario)Session["usuario"]).codigo;
 
-                p.distancia = obtenerDistanciaString(obtenerUbicacion(idUsuario), u);
+                p.distancia = obtenerDistanciaString(obtenerUbicacion(con,idUsuario), u);
 
             }
 
@@ -262,9 +265,61 @@ namespace Temple.Controllers
             return p;
         }
 
+        public List<Reseña> ListadoResenas(SqlConnection con,int idPer) {
+            List<Reseña> lista = new List<Reseña>();
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_RESENAS", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IDPERFIL", idPer);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read()) {
+                Reseña r = new Reseña();
+                r.id = reader.GetInt32(0);
+                r.idPerfilRemitente = reader.GetInt32(1);
+                r.nombreRemitente = reader.GetString(2);
+                r.apPaternoRemitente = reader.GetString(3);
+                r.apMaternoRemitente = reader.GetString(4);
+                r.idPerfilDestinatario = reader.GetInt32(5);
+                r.contenido = reader.GetString(6);
+                r.fechaHora = reader.GetDateTime(7);
+                r.calificacion = reader.GetInt32(8);
+                lista.Add(r);
+
+            }
+            reader.Close();
+
+            return lista;
+
+        }
+
+        public List<PreferenciaEnsenanza> ListadoPreferenciaEnsenanza(SqlConnection con, int codUsu)
+        {            
+            List<PreferenciaEnsenanza> lista = new List<PreferenciaEnsenanza>();
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_PREFERENCIAS_ENSENANZA", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", codUsu);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                PreferenciaEnsenanza p = new PreferenciaEnsenanza();
+                p.idCat = reader.GetInt32(0);
+                p.desCat = reader.GetString(1);
+                p.idSub = reader.GetInt32(2);
+                p.desSub = reader.GetString(3);
+                p.descripcion = reader.GetString(4);
+                p.silabo = reader.GetString(5);
+                lista.Add(p);
+
+            }
+            reader.Close();
+
+            return lista;
+
+        }
 
         // Action Results
-        
+
         //vista: Cuadrícula=0, Mapa=1
         public ActionResult Inicio(int cboCategoria = -1, int cboSubcategoria = -1, string vista="0")
         {
@@ -294,12 +349,16 @@ namespace Temple.Controllers
 
         }
 
-        public ActionResult PerfilInstructor(int codUsu) {
+
+        public ActionResult PerfilInstructor(int codUsu)
+        {
             ViewBag.usuario = Session["usuario"];
-            return View(ObtenerPerfilInstructor(codUsu));
+            PerfilInstructor perfil = ObtenerPerfilInstructor(codUsu);
+            ViewBag.resenas = perfil.reseñas;
+            ViewBag.cursos = perfil.cursos;
+            return View(perfil);
 
         }
-
 
         // JSON Result y funciones
 
@@ -339,10 +398,8 @@ namespace Temple.Controllers
 
         }
 
-        private Ubicacion obtenerUbicacion(int idUsuarioObjetivo)
+        private Ubicacion obtenerUbicacion(SqlConnection con,int idUsuarioObjetivo)
         {
-
-            //con.Open();
             Ubicacion uObjetivo = new Ubicacion();
             SqlCommand cmd = new SqlCommand("USP_OBTENER_UBICACION_USUARIO", con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;

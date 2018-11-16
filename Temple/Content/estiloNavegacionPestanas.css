@@ -1,0 +1,86 @@
+﻿/*Para la parte de los controles del perfil*/
+.controlesPerfil {
+    width: 100%;
+    padding: 40px;
+    border: 1px solid rgba(0,0,0,.2);
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
+.contenidoControl {
+    display: none;
+    padding: 20px 0 0;
+    border-top: 1px solid #abc;
+}
+
+.pestana {
+    display: none;
+}
+
+.lblPestana {
+    display: inline-block;
+    margin: 0 0 -1px;
+    padding: 15px 25px;
+    font-weight: 600;
+    text-align: center;
+    color: #abc;
+    border: 1px solid transparent;
+    width: 30%;
+}
+
+    .lblPestana:before {
+        font-family: fontawesome;
+        font-weight: normal;
+        margin-right: 10px;
+    }
+
+    .lblPestana[for*='1']:before {
+        content: '\f1cb';
+    }
+
+    .lblPestana[for*='2']:before {
+        content: '\f17d';
+    }
+
+    .lblPestana[for*='3']:before {
+        content: '\f16c';
+    }
+
+    .lblPestana[for*='4']:before {
+        content: '\f171';
+    }
+
+    .lblPestana:hover {
+        color: #789;
+        cursor: pointer;
+    }
+
+.pestana:checked + label {
+    color: #0af;
+    border: 1px solid #abc;
+    border-top: 2px solid #0af;
+    border-bottom: 1px solid #fff;
+}
+
+#tab1:checked ~ #content1,
+#tab2:checked ~ #content2,
+#tab3:checked ~ #content3 {
+    display: block;
+}
+
+@media screen and (max-width: 800px) {
+    .lblPestana {
+        font-size: 0;
+    }
+
+        .lblPestana:before {
+            margin: 0;
+            font-size: 18px;
+        }
+}
+
+@media screen and (max-width: 500px) {
+    .lblPestana {
+        padding: 15px;
+    }
+}
