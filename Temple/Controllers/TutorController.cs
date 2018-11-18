@@ -40,14 +40,12 @@ namespace Temple.Controllers
 
 		}
 
-		public List<Subcategoria> ListadoSubcategorias(int idCat)
+		public List<Subcategoria> ListadoSubcategorias()
 		{
 
 			List<Subcategoria> lista = new List<Subcategoria>();
 			con.Open();
-			SqlCommand cmd = new SqlCommand("USP_OBTENER_SUBCATEGORIAS", con);
-			cmd.CommandType = System.Data.CommandType.StoredProcedure;
-			cmd.Parameters.AddWithValue("@IDCAT", idCat);
+			SqlCommand cmd = new SqlCommand("select id,descripcion from SUBCATEGORIAS", con);
 			SqlDataReader reader = cmd.ExecuteReader();
 			while (reader.Read())
 			{
@@ -71,33 +69,35 @@ namespace Temple.Controllers
         {
             return View();
         }
-		public ActionResult NuevoTutor()
+		public ActionResult NuevoTutor02()
 		{
 			ViewBag.categorias = new SelectList(ListadoCategorias(), "id", "descripcion");
+			ViewBag.subcategorias = new SelectList(ListadoSubcategorias(), "id", "descripcion");
+
 
 			return View( new Tutor());
 		}
 
-		[HttpPost]public ActionResult NuevoTutor(Tutor reg)
+		[HttpPost]public ActionResult NuevoTutor02(Tutor reg)
 		{
 			ViewBag.mensaje = "";
 			con.Open();
 			try
 			{
-				SqlCommand cmd = new SqlCommand("insert into tb_tutor values (@id,@nom,@app,@apm,@co,@fono,@di,@idca,@idsub,@log,@cla,@rol,@drol)", con);
-				cmd.Parameters.AddWithValue("@id", reg.codigo);
-				cmd.Parameters.AddWithValue("@nom", reg.nombres);
-				cmd.Parameters.AddWithValue("@app", reg.apPaterno);
-				cmd.Parameters.AddWithValue("@apm", reg.apMaterno);
-				cmd.Parameters.AddWithValue("@co", reg.correo);
-				cmd.Parameters.AddWithValue("@fono", reg.telefonos);
-				cmd.Parameters.AddWithValue("@di", reg.direccion);
-				cmd.Parameters.AddWithValue("@idca", reg.idcate);
-				cmd.Parameters.AddWithValue("@idsub", reg.idsubcate);
-				cmd.Parameters.AddWithValue("@log", reg.login);
-				cmd.Parameters.AddWithValue("@cla", reg.clave);
-				cmd.Parameters.AddWithValue("@rol", reg.idRol);
-				cmd.Parameters.AddWithValue("@drol", reg.desRol);
+				SqlCommand cmd = new SqlCommand("USP_REGISTRAR_TUTOR (@ID,@NOM,@APP,@APM,@CO,@FONO,@DIRE,@IDCA,@IDSUB,@LOG,@CLA,@ROL)", con);
+				cmd.CommandType = System.Data.CommandType.StoredProcedure;
+				cmd.Parameters.AddWithValue("@ID", reg.codigo);
+				cmd.Parameters.AddWithValue("@NOM", reg.nombres);
+				cmd.Parameters.AddWithValue("@APP", reg.apPaterno);
+				cmd.Parameters.AddWithValue("@APM", reg.apMaterno);
+				cmd.Parameters.AddWithValue("@CO", reg.correo);
+				cmd.Parameters.AddWithValue("@FONO", reg.telefonos);
+				cmd.Parameters.AddWithValue("@DIRE", reg.direccion);
+				cmd.Parameters.AddWithValue("@IDCA", reg.idcate);
+				cmd.Parameters.AddWithValue("@IDSUB", reg.idsubcate);
+				cmd.Parameters.AddWithValue("@LOG", reg.login);
+				cmd.Parameters.AddWithValue("@CLA", reg.clave);
+				cmd.Parameters.AddWithValue("@ROL", reg.idRol);
 
 				cmd.ExecuteNonQuery();
 				ViewBag.mensaje = "se registra";
@@ -109,6 +109,8 @@ namespace Temple.Controllers
 			finally
 			{
 				ViewBag.categorias = new SelectList(ListadoCategorias(), "id", "descripcion");
+
+				ViewBag.subcategorias = new SelectList(ListadoSubcategorias(), "id", "descripcion");
 				con.Close();
 			}
 			return View(reg);

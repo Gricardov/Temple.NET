@@ -302,6 +302,8 @@
     <Content Include="Views\Instructor\NuevoInstructor.cshtml" />
     <Content Include="Views\PerfilAlumno\NuevoAlumno.cshtml" />
     <Content Include="Views\Tutor\NuevoTutor.cshtml" />
+    <Content Include="Views\Tutor\NuevoTutor02.cshtml" />
+    <Content Include="Views\PerfilAlumno\NuevoEstudiante.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

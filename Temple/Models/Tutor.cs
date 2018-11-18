@@ -15,7 +15,9 @@ namespace Temple.Models
 		public string telefonos { get; set; }
 		public string direccion { get; set; }
 		public int idcate { get; set; }
+		public string nombrescate { get; set; }
 		public int idsubcate { get; set; }
+		public string nombresubcate { get; set; }
 		public string login { get; set; }
 		public string clave { get; set; }
 		public int idRol { get; set; }
