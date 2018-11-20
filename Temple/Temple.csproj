@@ -164,12 +164,15 @@
     <Compile Include="Models\Alumno.cs" />
     <Compile Include="Models\Categoria.cs" />
     <Compile Include="Models\Curso.cs" />
+    <Compile Include="Models\Dia.cs" />
+    <Compile Include="Models\Hora.cs" />
     <Compile Include="Models\InstructoresRecomendados.cs" />
     <Compile Include="Models\Modalidad.cs" />
     <Compile Include="Models\PerfilInstructor.cs" />
     <Compile Include="Models\PreferenciaAprendizaje.cs" />
     <Compile Include="Models\PreferenciaEnsenanza.cs" />
     <Compile Include="Models\Reseña.cs" />
+    <Compile Include="Models\Rol.cs" />
     <Compile Include="Models\Subcategoria.cs" />
     <Compile Include="Models\TarjetaInstructor.cs" />
     <Compile Include="Models\Tutor.cs" />
@@ -304,6 +307,7 @@
     <Content Include="Views\Tutor\NuevoTutor.cshtml" />
     <Content Include="Views\Tutor\NuevoTutor02.cshtml" />
     <Content Include="Views\PerfilAlumno\NuevoEstudiante.cshtml" />
+    <Content Include="Views\Tutor\NuevoInstructor03.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
