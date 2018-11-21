@@ -157,7 +157,6 @@
     <Compile Include="Controllers\BienvenidaController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PerfilAlumnoController.cs" />
-    <Compile Include="Controllers\TutorController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -218,7 +217,6 @@
     <Content Include="imagenes\iconochat.png" />
     <Content Include="imagenes\logo.png" />
     <Content Include="imagenes\mila.jpg" />
-    <Content Include="Scripts\additional-methods.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -304,10 +302,6 @@
     <Content Include="Views\Alumno\PerfilInstructor.cshtml" />
     <Content Include="Views\Instructor\NuevoInstructor.cshtml" />
     <Content Include="Views\PerfilAlumno\NuevoAlumno.cshtml" />
-    <Content Include="Views\Tutor\NuevoTutor.cshtml" />
-    <Content Include="Views\Tutor\NuevoTutor02.cshtml" />
-    <Content Include="Views\PerfilAlumno\NuevoEstudiante.cshtml" />
-    <Content Include="Views\Tutor\NuevoInstructor03.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
