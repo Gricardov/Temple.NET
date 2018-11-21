@@ -7,6 +7,13 @@ namespace Temple.Models
 {
     public class Usuario
     {
+		public Usuario()
+		{
+			categoria = new Categoria();
+			subcategoria = new Subcategoria();
+		}
+
+
         public int codigo { get; set; }
         public string nombres { get; set; }
         public string apPaterno { get; set; }
@@ -17,5 +24,7 @@ namespace Temple.Models
         public string clave { get; set; }
         public int idRol { get; set; }
         public string desRol { get; set; }
-    }
+		public Categoria categoria { get; set; }
+		public Subcategoria subcategoria { get; set; }
+	}
 }

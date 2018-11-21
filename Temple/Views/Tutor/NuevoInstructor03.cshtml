@@ -1,7 +1,7 @@
-﻿@model Temple.Models.Usuario
+﻿@model Temple.Models.Tutor
 
 @{
-	ViewBag.Title = "NuevoInstructor";
+	ViewBag.Title = "NuevoInstructor03";
 }
 
 bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
@@ -14,27 +14,36 @@ bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
 "~/Scripts/wNumb.js",
 "~/Scripts/js/main.js"
 ))
+
 <link rel="stylesheet" href="~/Content/material-design-iconic-font.min.css">
 <link rel="stylesheet" href="~/Content/nouislider.min.css">
 <link rel="stylesheet" href="~/Content/style02.css">
 
-
-
-<h2>NuevoInstructor</h2>
+<h2>NuevoInstructor03</h2>
 
 
 @using (Html.BeginForm())
 {
 	@Html.AntiForgeryToken()
-	
 
 <div class="form-horizontal">
-	@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+	<h4>Tutor</h4>
 	<hr />
+	@Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
 	<fieldset>
 		<div class="fieldset-content">
-			<h3>Personal info</h3>
+			<h3>INFORMACION PERSONAL</h3>
+
+			<div class="form-group">
+				@Html.Label("Rol", htmlAttributes: new { @class = "control-label col-md-2" })
+				<div class="col-md-10">
+					@Html.DropDownList("idRol", (SelectList)ViewBag.rol)
+				</div>
+			</div>
+
+			
+
 			<div class="form-group">
 				@Html.LabelFor(model => model.codigo, htmlAttributes: new { @class = "control-label col-md-2" })
 				<div class="col-md-10">
@@ -72,27 +81,22 @@ bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
 				<div class="col-md-10">
 					@Html.EditorFor(model => model.correo, new { htmlAttributes = new { @class = "form-control" } })
 					@Html.ValidationMessageFor(model => model.correo, "", new { @class = "text-danger" })
-					<span class="text-input">Example  :<span>  Jeff@gmail.com</span></span>
 				</div>
 			</div>
-			<div class="form-group">
-				<label for="ssn" class="form-label">SSN</label>
-				<input type="text" name="ssn" id="ssn" />
-			</div>
 
-
-		</div>
-			
-
-	</fieldset>
-
-	<fieldset>
-		<div class="fieldset-content">
 			<div class="form-group">
 				@Html.LabelFor(model => model.telefonos, htmlAttributes: new { @class = "control-label col-md-2" })
 				<div class="col-md-10">
 					@Html.EditorFor(model => model.telefonos, new { htmlAttributes = new { @class = "form-control" } })
 					@Html.ValidationMessageFor(model => model.telefonos, "", new { @class = "text-danger" })
+				</div>
+			</div>
+
+			<div class="form-group">
+				@Html.LabelFor(model => model.direccion, htmlAttributes: new { @class = "control-label col-md-2" })
+				<div class="col-md-10">
+					@Html.EditorFor(model => model.direccion, new { htmlAttributes = new { @class = "form-control" } })
+					@Html.ValidationMessageFor(model => model.direccion, "", new { @class = "text-danger" })
 				</div>
 			</div>
 
@@ -111,47 +115,67 @@ bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
 					@Html.ValidationMessageFor(model => model.clave, "", new { @class = "text-danger" })
 				</div>
 			</div>
+
+			<h3>CURSOS DICTADO</h3>
 			<div class="form-group">
-				<label for="ssn" class="form-label">SSN</label>
-				<input type="text" name="ssn" id="ssn" />
+				@Html.Label("Categoria", htmlAttributes: new { @class = "control-label col-md-2" })
+				<div class="col-md-10">
+					
+					@Html.DropDownList("idcate", (SelectList)ViewBag.categorias)
+				</div>
 			</div>
+
+			
+
+			<div class="form-group">
+				@Html.Label("SubCategoria", htmlAttributes: new { @class = "control-label col-md-2" })
+				<div class="col-md-10">
+					
+					@Html.DropDownList("idsubcate", (SelectList)ViewBag.subcategorias)
+				</div>
+			</div>
+
+			
+			<h3>HORARIO DE DICTADO</h3>
+
+			<div class="form-group">
+				@Html.Label("Dia", htmlAttributes: new { @class = "control-label col-md-2" })
+				<div class="col-md-10">
+					
+					@Html.DropDownList("idDia", (SelectList)ViewBag.dias)
+				</div>
+			</div>
+
+			
+
+			<div class="form-group">
+				@Html.Label("Hora", htmlAttributes: new { @class = "control-label col-md-2" })
+				<div class="col-md-10">
+					
+					@Html.DropDownList("idHora",(SelectList)ViewBag.horas)
+				</div>
+			</div>
+
+			
 
 		</div>
-
-
 	</fieldset>
-
 	<fieldset>
 		<div class="fieldset-content">
-			<div class="form-group">
-				@Html.LabelFor(model => model.idRol, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.EditorFor(model => model.idRol, new { htmlAttributes = new { @class = "form-control" } })
-					@Html.ValidationMessageFor(model => model.idRol, "", new { @class = "text-danger" })
-				</div>
-			</div>
-
-			<div class="form-group">
-				@Html.LabelFor(model => model.desRol, htmlAttributes: new { @class = "control-label col-md-2" })
-				<div class="col-md-10">
-					@Html.EditorFor(model => model.desRol, new { htmlAttributes = new { @class = "form-control" } })
-					@Html.ValidationMessageFor(model => model.desRol, "", new { @class = "text-danger" })
-				</div>
-			</div>
-
+			<h3>EVALUACION</h3>
+		</div>
+	</fieldset>
+	<fieldset>
+		<div class="fieldset-content">
+			<h3>CONTRATO</h3>
 			<div class="form-group">
 				<div class="col-md-offset-2 col-md-10">
 					<input type="submit" value="Create" class="btn btn-default" />
 				</div>
 			</div>
-
-
 		</div>
 	</fieldset>
-
-
 	
-
 	
 </div>
 }

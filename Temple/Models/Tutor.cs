@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Temple.Models
 {
-	public class Alumno
+	public class Tutor
 	{
 		public int codigo { get; set; }
 		public string nombres { get; set; }
@@ -22,5 +22,12 @@ namespace Temple.Models
 		public string clave { get; set; }
 		public int idRol { get; set; }
 		public string desRol { get; set; }
+		public int idDia { get; set; }
+		public string nombreDia { get; set; }
+		public int idHora { get; set; }
+		public string nombreHora { get; set; }
+
+
+
 	}
 }
