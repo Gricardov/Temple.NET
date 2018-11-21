@@ -32,6 +32,6 @@ namespace Temple.Models
         public List<PreferenciaEnsenanza> cursos { get; set; }
         public List<DateTime> horarios { get; set; }
         
-
+        
     }
 }

@@ -292,6 +292,32 @@ namespace Temple.Controllers
 
         }
 
+        public List<Modalidad> ListadoModalidadesEnsenanza(SqlConnection con, int idCat, int idSub, int codUsu) {
+            List<Modalidad> lista = new List<Modalidad>();
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_MODALIDADES_ENSENANZA", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", codUsu);
+            cmd.Parameters.AddWithValue("@IDCAT", idCat);
+            cmd.Parameters.AddWithValue("@IDSUB", idSub);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read()) {
+
+                Modalidad m = new Modalidad();
+                m.id = reader.GetInt32(0);
+                m.descripcion = reader.GetString(1);
+                m.precioHora = reader.GetDecimal(2);
+
+                lista.Add(m);
+
+            }
+
+            reader.Close();
+
+            return lista;
+
+        }
+
         public List<PreferenciaEnsenanza> ListadoPreferenciaEnsenanza(SqlConnection con, int codUsu)
         {            
             List<PreferenciaEnsenanza> lista = new List<PreferenciaEnsenanza>();
@@ -309,6 +335,7 @@ namespace Temple.Controllers
                 p.desSub = reader.GetString(3);
                 p.descripcion = reader.GetString(4);
                 p.silabo = reader.GetString(5);
+                p.modalidades = ListadoModalidadesEnsenanza(con, p.idCat, p.idSub, codUsu);
                 lista.Add(p);
 
             }
@@ -352,11 +379,19 @@ namespace Temple.Controllers
 
         public ActionResult PerfilInstructor(int codUsu)
         {
-            ViewBag.usuario = Session["usuario"];
+           
             PerfilInstructor perfil = ObtenerPerfilInstructor(codUsu);
+            ViewBag.usuario = Session["usuario"];
+            ViewBag.titulo = perfil.nombres +" "+ perfil.apPaterno +" "+perfil.apMaterno;
             ViewBag.resenas = perfil.reseñas;
             ViewBag.cursos = perfil.cursos;
             return View(perfil);
+
+        }
+
+        public ActionResult CerrarSesion() {
+            Session["usuario"] = null;
+            return RedirectToAction("Bienvenida","Bienvenida");
 
         }
 
@@ -448,6 +483,6 @@ namespace Temple.Controllers
             double d = Math.Round(tierra *c);
             return d;
         }
-
+        
     }
 }

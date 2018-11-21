@@ -1,7 +1,7 @@
 ﻿@model Temple.Models.PerfilInstructor
 
 @{
-    ViewBag.Title = "PerfilInstructor";
+    ViewBag.Title = ViewBag.titulo;
     Layout = "~/Views/Shared/_LayoutTemple.cshtml";
 }
 
@@ -12,10 +12,10 @@
 
 <header style="margin-top:0px;">
     <figure class="profile-banner">
-        <img id="fotoPortada" src="https://unsplash.it/975/300" alt="Profile banner" />
+        <img id="fotoPortada" src="~/imagenes/portada.jpg" alt="Profile banner" />
     </figure>
     <figure class="profile-picture"
-            style="background-image: url('http://unsplash.it/150/150')">
+            style="background-image: url('/imagenes/mila.jpg')">
     </figure>
     <div class="profile-stats">
         <ul>
@@ -65,7 +65,7 @@
 
     <section class="contenidoControl" id="content2">
         <div id="contenidosCursos" class="row">
-            <div class="tab" id="pestanasCursos">
+            <div class="tab" id="pestanasCursos" style="min-height:500px; max-height: 600px; overflow:auto;">
                 
             </div>
                         
@@ -119,7 +119,7 @@
             calificacionDiv += '</div>';
 
             $('#comentarios').append(   '<div class="row"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">'+
-                                        '<div class="pull-left image"><img src="http://bootdey.com/img/Content/user_1.jpg" class="img-circle avatar" alt="user profile image">'+
+                                        '<div class="pull-left image"><img src="/imagenes/mila.jpg" class="img-circle avatar" alt="user profile image">'+
                                         '</div><div class="pull-left meta"><div class="title h5"><a href="#"><b>' + json[i].nombreRemitente + ' ' + json[i].apPaternoRemitente + ' ' +json[i].apMaternoRemitente+'</b></a></div>'+
                                         '<h6 class="text-muted time"' + json[i].fechaHora + '</h6></div></div><div class="post-description"><p>' + json[i].contenido + '</p>' +
                                         calificacionDiv+'</div></div></div></div>');
@@ -137,24 +137,55 @@
         //Muestra los cursos que enseña
         for (var i in json) {
 
-            $('#pestanasCursos').append('<button class="tablinks" id="' + json[i].idSub+'">' + json[i].desSub + '</button>');
-            $('.contenidoControl').on('click', 'button#' + json[i].idSub, function (event) {
+            $('#pestanasCursos').append('<button class="tablinks" id="tabCurso' + json[i].idSub+'">' + json[i].desSub + '</button>');
+            $('.contenidoControl').on('click', 'button#tabCurso' + json[i].idSub, function (event) {
 
                 mostrarPestanaCurso(event, $(this).attr('id'))
 
                 //onclick="mostrarPestanaCurso(event, "' + json[i].idSub + '")"
             });
 
-            $('#contenidosCursos').append('<div id="content' + json[i].idSub + '" class="tabcontent" style="display:none;"><i>Perteneciente a la categoria '
-                + json[i].desCat + '</i><h3>Descripción: </h3><br><p>' + json[i].descripcion + '</p><h3>Sílabo: </h3><br><p>' + json[i].silabo + '</p><h3>Modalidades: </h3></div>');
+            var cboModalidades = '<select id="cboModalidad' + json[i].idSub + '" class="form-control">';
 
+            var divsCosto = "";
 
+            for (var m in json[i].modalidades) {
 
+                cboModalidades += '<option value="' + json[i].modalidades[m].id + '">' + json[i].modalidades[m].descripcion+'</option>';
+                divsCosto += '<div style="display:none;" class="idSub' + json[i].idSub + 'Costo" id="idSub' + json[i].idSub + 'idMod' + json[i].modalidades[m].id + '"><b>El costo de esta modalidad es S/. ' + json[i].modalidades[m].precioHora + ' por hora</b></div>';
+            }
+
+            $('.contenidoControl').on('click', 'select#cboModalidad' + json[i].idSub, function (event) {
+
+                var idSub = $(this).attr('id').replace("cboModalidad", "");
+
+                // Primero hago invisibles los demás divCostos
+                var divsCosto = $('.idSub' + idSub + 'Costo');
+
+                for (var i = 0; i < divsCosto.length; i++) {
+
+                    divsCosto[i].style.display = "none";
+
+                }
+
+                // Luego, hago visible el que me interesa
+
+                $('#idSub' + idSub + 'idMod' + $(this).val()).css("display","block");
+                
+
+            });
+            cboModalidades += '</select>';
+
+            $('#contenidosCursos').append('<div id="content' + json[i].idSub + '" class="tabcontent" style="display:none; height:auto; padding:15px; min-height: 500px; max-height: 600px; overflow: auto;"><i>Perteneciente a la categoria <b>'
+                + json[i].desCat +'</b></i><h3>Descripción: </h3><p>' + json[i].descripcion + '</p><h3>Sílabo: </h3><p>' + json[i].silabo + '</p><h3>Modalidades de enseñanza: </h3>' + cboModalidades + '<br>'+divsCosto+'<br><p><i>*Para algún requerimiento especial, consulte al instructor antes con el botón Consultar</i><p></div>');
+        
         }
 
         // Las funciones
 
         function mostrarPestanaCurso(evt, tabId) {
+
+            tabId = tabId.replace("tabCurso", "");
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {

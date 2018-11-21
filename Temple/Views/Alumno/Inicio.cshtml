@@ -196,8 +196,10 @@
         $('.thumbnail').css('float', 'left');
         $('.thumbnail').css('height', '350px');
 
-        // Cargo mi mapa
-        var map = L.map('mapid');
+        try {
+            // Cargo mi mapa
+            var map = L.map('mapid');
+        } catch (e) { }
         // placeholders for the L.marker and L.circle representing user's current position and accuracy
         var current_position, current_accuracy;
 
