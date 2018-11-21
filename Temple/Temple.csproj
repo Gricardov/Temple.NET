@@ -198,6 +198,7 @@
     <Content Include="Content\estiloComentarios.css" />
     <Content Include="Content\estiloD.css" />
     <Content Include="Content\estiloE.css" />
+    <Content Include="Content\estiloEnfasis.css" />
     <Content Include="Content\estiloNavegacionPestanas.css" />
     <Content Include="Content\estiloPerfil.css" />
     <Content Include="Content\estiloPestanasCursos.css" />

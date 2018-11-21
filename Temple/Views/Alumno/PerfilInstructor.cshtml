@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="~/Content/estiloComentarios.css" />
 <link rel="stylesheet" href="~/Content/estiloNavegacionPestanas.css" />
 <link rel="stylesheet" href="~/Content/estiloPestanasCursos.css" />
+<link rel="stylesheet" href="~/Content/estiloEnfasis.css" />
 
 <!--El calendario-->
 <link rel="stylesheet" href="~/Content/fullcalendar.css" />
@@ -29,10 +30,10 @@
             <li>324   <span>Clases dictadas</span></li>
             <li>@Html.DisplayFor(model => model.calificacion)/5<span>Calificación</span></li>
         </ul>
-        <a href="javascript:void(0);" class="follow">
+        <a href="javascript:void(0);" class="btn btn-primary" id="btnConsultar">
             Consultar
         </a>
-        <a href="javascript:void(0);" class="follow">
+        <a href="javascript:void(0);" class="btn btn-primary" id="btnContratar">
             Contratar
         </a>
     </div>
@@ -223,16 +224,20 @@
         if ($('#pestanasCursos').children().length > 0) {
             document.getElementsByClassName("tablinks")[0].click();
         }
-        
+               
         // Para el calendario
+
+        var jsonHorarios = JSON.parse('@jsonHorarios');
+
         $('#calendar').fullCalendar({
-            selectable: true,
-            selectHelper: true,
+            
             defaultView: 'agendaWeek',
-            slotEventOverlap: false,
+            slotEventOverlap: true,
             allDaySlot: false,
             allDayText: false,
             nowIndicator: true,
+            selectable: true,
+            selectHelper: true,
             header: {
                 left: 'title',
                 center: '',
@@ -246,7 +251,7 @@
                 day: 'Ver día',
                 list: 'Lista'
             },
-
+            eventBackgroundColor: 'blue',
             themeSystem: 'bootstrap4',
             contentHeight: '600',
             columnHeaderFormat: 'ddd M/D',
@@ -283,29 +288,107 @@
                 else {
                     return mom.format('LLL');
                 }
+            }, rendering: true,
+            eventClick: function (calEvent, jsEvent, view) {
+                
+                var inicio = moment(calEvent.start).format("HH:mm:ss");
+                var fin = moment(calEvent.end).format("HH:mm:ss");
+
+                alert("Disponibilidad de este horario: \n\nInicio: "+inicio+"\nFin: "+fin);
+
+            },
+            select: function (start, end, jsEvent, view, resource) {
+
+                var contadorHorarios = 0;
+                for (var i in jsonHorarios) {
+
+                    var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
+                    var finMs = parseInt(jsonHorarios[i].fin.replace("/Date(", "").replace(")/", ""));
+
+                    var inicioSeleccionado = parseInt(moment(start).format("x"));
+                    var finSeleccionado = parseInt(moment(end).format("x"));
+
+                    if (inicioSeleccionado >= inicioMs) {
+
+                        if (finSeleccionado <= finMs) {
+
+                            var inicio = moment(start).format("HH:mm:ss");
+                            var fin = moment(end).format("HH:mm:ss");
+
+                            alert("Has seleccionado: \n\nInicio: " + inicio + "\nFin: " + fin);
+
+                            return;
+
+                        }
+
+                    }
+
+                    contadorHorarios++;
+                    
+
+                }
+
+                if (contadorHorarios == jsonHorarios.length) {
+                    alert("Asegúrate de seleccionar un horario dentro de los disponibles");
+                    $('#calendar').fullCalendar('unselect');
+
+
+                }
+
+                
+
+
+            },
+            overlap: false,
+            editable: true,
+            startEditable: true,
+            snapDuration: "00:10:00"
+
+                       
+        });
+        //alert(moment(moment().toDate()).format("HH:mm:ss"));
+         //var eventos = [];
+
+        for (var i in jsonHorarios) {
+
+            var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
+            var finMs = parseInt(jsonHorarios[i].fin.replace("/Date(", "").replace(")/", ""));
+                var evento = {
+
+                    title: 'Disponible',
+                    end: finMs,
+                    start: inicioMs,
+                    editable: false,
+                    startEditable: false,
+                    backgroundColor:'green',
+                    //rendering: 'background',
+                    selectHelper: true
+                    
+
+                }
+
+                /*eventos.push({
+
+                    title: 'Ocupado',
+                    start: inicioMs,
+                    end: finMS
+
+                });*/
+
+            $('#calendar').fullCalendar('renderEvent', evento,true);
+            
             }
 
+        // Todo bugueado me vino el fullcalendar jajaja, debo recurrir a este truco
+        $('.fc-next-button').click();
 
-        });
-        var json = JSON.parse('@jsonHorarios');
-        for (var i in json) {
+        $('#btnContratar').on('click', function (e) {
 
-            var inicioMs = parseInt(json[i].inicio.replace("/Date(", "").replace(")/", ""));
-            var finMS = parseInt(json[i].inicio.replace("/Date(", "").replace(")/", ""));
-
-            $('#calendar').fullCalendar({
-                events: [
-                    {
-                        title: 'Ocupado',
-                        start: inicioMs,
-                        end: finMS
-                    }
-                ]
-            });
+            e.preventDefault();
+            $("div").addClass("overlay");
 
 
-        }
-
+        });        
         
 
     </script>

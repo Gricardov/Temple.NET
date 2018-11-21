@@ -3,6 +3,8 @@
  * Docs & License: https://fullcalendar.io/
  * (c) 2018 Adam Shaw
  */
+
+
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("moment"), require("jquery"));
@@ -155,7 +157,8 @@ function disableCursor() {
 }
 exports.disableCursor = disableCursor;
 // Returns the mouse cursor to its original look
-function enableCursor() {
+    function enableCursor() {
+        
     $('body').removeClass('fc-not-allowed');
 }
 exports.enableCursor = enableCursor;
@@ -2648,6 +2651,7 @@ function locale(localeCode, newFcOptions) {
     // so no way to tell if this is an initialization or a default-setting.
     momOptions = getMomentLocaleData(localeCode); // will fall back to en
     $.each(momComputableOptions, function (name, func) {
+
         if (fcOptions[name] == null) {
             fcOptions[name] = (func)(momOptions, fcOptions);
         }
@@ -9428,6 +9432,8 @@ var Calendar = /** @class */ (function () {
             this.currentDate = this.getNow(); // getNow already returns unzoned
         }
     };
+
+
     Calendar.prototype.prev = function () {
         var view = this.view;
         var prevInfo = view.dateProfileGenerator.buildPrev(view.get('dateProfile'));
@@ -9443,7 +9449,11 @@ var Calendar = /** @class */ (function () {
             this.currentDate = nextInfo.date;
             this.renderView();
         }
+        
     };
+
+   
+
     Calendar.prototype.prevYear = function () {
         this.currentDate.add(-1, 'years');
         this.renderView();
@@ -9451,6 +9461,7 @@ var Calendar = /** @class */ (function () {
     Calendar.prototype.nextYear = function () {
         this.currentDate.add(1, 'years');
         this.renderView();
+
     };
     Calendar.prototype.today = function () {
         this.currentDate = this.getNow(); // should deny like prev/next?
@@ -9467,6 +9478,7 @@ var Calendar = /** @class */ (function () {
     // for external API
     Calendar.prototype.getDate = function () {
         return this.applyTimezone(this.currentDate); // infuse the calendar's timezone
+
     };
     // Loading Triggering
     // -----------------------------------------------------------------------------------------------------------------
@@ -9475,6 +9487,7 @@ var Calendar = /** @class */ (function () {
         if (!(this.loadingLevel++)) {
             this.publiclyTrigger('loading', [true, this.view]);
         }
+
     };
     // Should be called when any type of async data fetching completes
     Calendar.prototype.popLoading = function () {
@@ -9485,6 +9498,7 @@ var Calendar = /** @class */ (function () {
     // High-level Rendering
     // -----------------------------------------------------------------------------------
     Calendar.prototype.render = function () {
+               
         if (!this.contentEl) {
             this.initialRender();
         }
@@ -9492,11 +9506,18 @@ var Calendar = /** @class */ (function () {
             // mainly for the public API
             this.calcSize();
             this.updateViewSize();
+
         }
+      //LEMON TREE
+
+        //this.renderView();
+
     };
     Calendar.prototype.initialRender = function () {
+
         var _this = this;
         var el = this.el;
+
         el.addClass('fc');
         // event delegation for nav links
         el.on('click.fc', 'a[data-goto]', function (ev) {
@@ -9555,6 +9576,7 @@ var Calendar = /** @class */ (function () {
             $(window).resize(this.windowResizeProxy = util_1.debounce(// prevents rapid calls
             this.windowResize.bind(this), this.opt('windowResizeDelay')));
         }
+
     };
     Calendar.prototype.destroy = function () {
         if (this.view) {
@@ -11751,10 +11773,12 @@ var TimeGrid = /** @class */ (function (_super) {
     /* Date Rendering
     ------------------------------------------------------------------------------------------------------------------*/
     TimeGrid.prototype.renderDates = function (dateProfile) {
+
         this.dateProfile = dateProfile;
         this.updateDayTable();
         this.renderSlats();
         this.renderColumns();
+
     };
     TimeGrid.prototype.unrenderDates = function () {
         // this.unrenderSlats(); // don't need this because repeated .html() calls clear
@@ -11916,6 +11940,7 @@ var TimeGrid = /** @class */ (function (_super) {
         return 'minute'; // will refresh on the minute
     };
     TimeGrid.prototype.renderNowIndicator = function (date) {
+
         // HACK: if date columns not ready for some reason (scheduler)
         if (!this.colContainerEls) {
             return;
@@ -12267,6 +12292,7 @@ var ListView = /** @class */ (function (_super) {
         this.dayDates = dayDates;
         this.dayRanges = dayRanges;
         // all real rendering happens in EventRenderer
+
     };
     // slices by day
     ListView.prototype.componentFootprintToSegs = function (footprint) {
@@ -12300,6 +12326,7 @@ var ListView = /** @class */ (function (_super) {
         return segs;
     };
     ListView.prototype.renderEmptyMessage = function () {
+
         this.contentEl.html('<div class="fc-list-empty-wrap2">' + // TODO: try less wraps
             '<div class="fc-list-empty-wrap1">' +
             '<div class="fc-list-empty">' +
@@ -12453,6 +12480,7 @@ var Component = /** @class */ (function (_super) {
         this.bindGlobalHandlers();
         this.renderSkeleton();
         this.set('isInDom', true);
+
     };
     Component.prototype.removeElement = function () {
         this.unset('isInDom');
@@ -12533,6 +12561,7 @@ var Toolbar = /** @class */ (function () {
     };
     // can be called repeatedly and will rerender
     Toolbar.prototype.render = function () {
+
         var sections = this.toolbarOptions.layout;
         var el = this.el;
         if (sections) {
