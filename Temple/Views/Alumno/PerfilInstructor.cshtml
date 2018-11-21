@@ -10,6 +10,11 @@
 <link rel="stylesheet" href="~/Content/estiloNavegacionPestanas.css" />
 <link rel="stylesheet" href="~/Content/estiloPestanasCursos.css" />
 
+<!--El calendario-->
+<link rel="stylesheet" href="~/Content/fullcalendar.css" />
+<script src="~/Content/moment.js" type="text/javascript"></script>
+<script src="~/Content/fullcalendar.js" type="text/javascript"></script>
+
 <header style="margin-top:0px;">
     <figure class="profile-banner">
         <img id="fotoPortada" src="~/imagenes/portada.jpg" alt="Profile banner" />
@@ -59,23 +64,23 @@
 
     <section class="contenidoControl" id="content1">
         <div id="comentarios">
-            
+
         </div>
     </section>
 
     <section class="contenidoControl" id="content2">
         <div id="contenidosCursos" class="row">
             <div class="tab" id="pestanasCursos" style="min-height:500px; max-height: 600px; overflow:auto;">
-                
+
             </div>
-                        
+
         </div>
     </section>
 
     <section class="contenidoControl" id="content3">
-        <p>
-            Chusis
-        </p>
+        <div id="calendario" class="row">
+            <div id='calendar'></div>
+        </div>
     </section>
 
 </div>
@@ -90,7 +95,7 @@
                var jsonResenas=@Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.resenas));
                var jsonCursos = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.cursos));
             }
-           
+
         var json = JSON.parse('@jsonResenas');
 
         // Muestra las reseñas
@@ -124,7 +129,7 @@
                                         '<h6 class="text-muted time"' + json[i].fechaHora + '</h6></div></div><div class="post-description"><p>' + json[i].contenido + '</p>' +
                                         calificacionDiv+'</div></div></div></div>');
 
-             
+
 
         }
 
@@ -171,14 +176,14 @@
                 // Luego, hago visible el que me interesa
 
                 $('#idSub' + idSub + 'idMod' + $(this).val()).css("display","block");
-                
+
 
             });
             cboModalidades += '</select>';
 
             $('#contenidosCursos').append('<div id="content' + json[i].idSub + '" class="tabcontent" style="display:none; height:auto; padding:15px; min-height: 500px; max-height: 600px; overflow: auto;"><i>Perteneciente a la categoria <b>'
                 + json[i].desCat +'</b></i><h3>Descripción: </h3><p>' + json[i].descripcion + '</p><h3>Sílabo: </h3><p>' + json[i].silabo + '</p><h3>Modalidades de enseñanza: </h3>' + cboModalidades + '<br>'+divsCosto+'<br><p><i>*Para algún requerimiento especial, consulte al instructor antes con el botón Consultar</i><p></div>');
-        
+
         }
 
         // Las funciones
@@ -216,7 +221,33 @@
         if ($('#pestanasCursos').children().length > 0) {
             document.getElementsByClassName("tablinks")[0].click();
         }
-        
+
+        $('#calendar').fullCalendar({
+            defaultView: 'agendaWeek',
+            slotEventOverlap: false,
+            allDaySlot: false,
+            allDayText: false,
+            nowIndicator: true,
+            header: {
+                left: 'title',
+                center: '',
+                right: 'today prev,next'
+
+            },
+            titleFormat: 'D/MM/YYYY',
+            buttonText:{
+                today: 'Ir a hoy',
+                month: 'Ver mes',
+                week: 'Ver semana',
+                day: 'Ver día',
+                list: 'Lista'
+            },
+            themeSystem:'bootstrap4'
+            
+
+            
+        });
+
     </script>
 
     <hr />

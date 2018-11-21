@@ -62,11 +62,7 @@ namespace Temple.Controllers
 				Categoria cu = new Categoria();
 				cu.id = reader.GetInt32(0);
 				cu.descripcion = reader.GetString(1);
-				cu.pr = reader.GetString(2);
-				cu.pr2 = reader.GetString(3);
-				cu.pr3 = reader.GetString(4);
-				cu.pr4 = reader.GetString(5);
-				cu.pr5 = reader.GetString(6);
+			
 				lista.Add(cu);
 			}
 

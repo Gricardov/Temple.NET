@@ -147,16 +147,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="App_Start\BundleConfig2.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\FilterConfig2.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\RouteConfig2.cs" />
     <Compile Include="Controllers\AlumnoController.cs" />
+    <Compile Include="Controllers\AlumnoRegController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\BienvenidaController.cs" />
+    <Compile Include="Controllers\InstructorController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PerfilAlumnoController.cs" />
+    <Compile Include="Controllers\PerfilInstructorController.cs" />
+    <Compile Include="Controllers\RegistroController.cs" />
+    <Compile Include="Controllers\TutorController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -198,10 +200,13 @@
     <Content Include="Content\estiloNavegacionPestanas.css" />
     <Content Include="Content\estiloPerfil.css" />
     <Content Include="Content\estiloPestanasCursos.css" />
+    <Content Include="Content\fullcalendar.css" />
+    <Content Include="Content\fullcalendar.js" />
     <Content Include="Content\jquery-3.3.1.js" />
     <Content Include="Content\jquery.cycle2.carousel.js" />
     <Content Include="Content\jquery.cycle2.js" />
     <Content Include="Content\material-design-iconic-font.css" />
+    <Content Include="Content\moment.js" />
     <Content Include="Content\nouislider.min.css" />
     <Content Include="Content\scriptPerfil.js" />
     <Content Include="Content\style.css" />
@@ -301,7 +306,17 @@
     <Content Include="Views\Alumno\Inicio.cshtml" />
     <Content Include="Views\Alumno\PerfilInstructor.cshtml" />
     <Content Include="Views\Instructor\NuevoInstructor.cshtml" />
+    <Content Include="Views\Registro\RegistroAlumno.cshtml" />
+    <Content Include="Views\Tutor\NuevoInstructor03.cshtml" />
+    <Content Include="Views\Tutor\NuevoTutor.cshtml" />
+    <Content Include="Views\Tutor\NuevoTutor02.cshtml" />
+    <Content Include="Views\AlumnoReg\NuevoAlumno.cshtml" />
+    <Content Include="Views\PerfilInstructor\Index.cshtml" />
+    <Content Include="Views\PerfilInstructor\NuevoInstructor.cshtml" />
     <Content Include="Views\PerfilAlumno\NuevoAlumno.cshtml" />
+    <Content Include="Views\PerfilAlumno\NuevoEstudiante.cshtml" />
+    <Content Include="Views\PerfilAlumno\PerfilAlumno\NuevoAlumno.cshtml" />
+    <Content Include="Views\PerfilAlumno\PerfilAlumno\NuevoEstudiante.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
