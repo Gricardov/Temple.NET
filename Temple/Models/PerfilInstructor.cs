@@ -12,7 +12,7 @@ namespace Temple.Models
 
             reseñas = new List<Reseña>();
             cursos = new List<PreferenciaEnsenanza>();
-            horarios = new List<DateTime>();
+            horarios = new List<Evento>();
 
         }
         public int codigo { get; set; }
@@ -30,7 +30,7 @@ namespace Temple.Models
         public Ubicacion ubicacion { get; set; }
         public List<Reseña> reseñas { get; set; }
         public List<PreferenciaEnsenanza> cursos { get; set; }
-        public List<DateTime> horarios { get; set; }
+        public List<Evento> horarios { get; set; }
         
         
     }

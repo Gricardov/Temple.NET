@@ -94,6 +94,8 @@
 
                var jsonResenas=@Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.resenas));
                var jsonCursos = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.cursos));
+               var jsonHorarios = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.horarios));
+
             }
 
         var json = JSON.parse('@jsonResenas');
@@ -221,8 +223,11 @@
         if ($('#pestanasCursos').children().length > 0) {
             document.getElementsByClassName("tablinks")[0].click();
         }
-
+        
+        // Para el calendario
         $('#calendar').fullCalendar({
+            selectable: true,
+            selectHelper: true,
             defaultView: 'agendaWeek',
             slotEventOverlap: false,
             allDaySlot: false,
@@ -232,21 +237,76 @@
                 left: 'title',
                 center: '',
                 right: 'today prev,next'
-
             },
             titleFormat: 'D/MM/YYYY',
-            buttonText:{
+            buttonText: {
                 today: 'Ir a hoy',
                 month: 'Ver mes',
                 week: 'Ver semana',
                 day: 'Ver día',
                 list: 'Lista'
             },
-            themeSystem:'bootstrap4'
-            
 
-            
+            themeSystem: 'bootstrap4',
+            contentHeight: '600',
+            columnHeaderFormat: 'ddd M/D',
+            validRange: function (nowDate) {
+                return {
+                    start: nowDate.clone().subtract(1, 'day'),
+                    end: nowDate.clone().add(1, 'months')
+                };
+            },
+            columnHeaderText: function (mom) {
+
+                if (mom.weekday() === 1) {
+                    return 'Lunes';
+                }
+
+                else if (mom.weekday() === 2) {
+                    return 'Martes';
+                }
+                else if (mom.weekday() === 3) {
+                    return 'Miércoles';
+                }
+                else if (mom.weekday() === 4) {
+                    return 'Jueves';
+                }
+                else if (mom.weekday() === 5) {
+                    return 'Viernes';
+                }
+                else if (mom.weekday() === 6) {
+                    return 'Sábado';
+                }
+                else if (mom.weekday() === 0) {
+                    return 'Domingo';
+                }
+                else {
+                    return mom.format('LLL');
+                }
+            }
+
+
         });
+        var json = JSON.parse('@jsonHorarios');
+        for (var i in json) {
+
+            var inicioMs = parseInt(json[i].inicio.replace("/Date(", "").replace(")/", ""));
+            var finMS = parseInt(json[i].inicio.replace("/Date(", "").replace(")/", ""));
+
+            $('#calendar').fullCalendar({
+                events: [
+                    {
+                        title: 'Ocupado',
+                        start: inicioMs,
+                        end: finMS
+                    }
+                ]
+            });
+
+
+        }
+
+        
 
     </script>
 

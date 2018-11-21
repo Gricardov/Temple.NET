@@ -253,6 +253,8 @@ namespace Temple.Controllers
 
                 p.reseñas = ListadoResenas(con,p.idPerfil);
                 p.cursos = ListadoPreferenciaEnsenanza(con, p.codigo);
+                p.horarios = ListadoHorarios(con, p.codigo);
+
                 int idUsuario = ((Usuario)Session["usuario"]).codigo;
 
                 p.distancia = obtenerDistanciaString(obtenerUbicacion(con,idUsuario), u);
@@ -285,6 +287,28 @@ namespace Temple.Controllers
                 r.calificacion = reader.GetInt32(8);
                 lista.Add(r);
 
+            }
+            reader.Close();
+
+            return lista;
+
+        }
+
+        public List<Evento> ListadoHorarios(SqlConnection con, int codUsu)
+        {
+            List<Evento> lista = new List<Evento>();
+            SqlCommand cmd = new SqlCommand("SELECT*FROM TB_HORARIO_INSTRUCTOR WHERE COD_USU=@CODUSU", con);
+            //cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", codUsu);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Evento e = new Evento();
+                e.id = reader.GetInt32(0);
+                e.inicio = reader.GetDateTime(2);
+                e.fin = reader.GetDateTime(3);
+                lista.Add(e);
             }
             reader.Close();
 
@@ -385,6 +409,7 @@ namespace Temple.Controllers
             ViewBag.titulo = perfil.nombres +" "+ perfil.apPaterno +" "+perfil.apMaterno;
             ViewBag.resenas = perfil.reseñas;
             ViewBag.cursos = perfil.cursos;
+            ViewBag.horarios = perfil.horarios;
             return View(perfil);
 
         }
