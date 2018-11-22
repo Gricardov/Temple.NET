@@ -1,29 +1,24 @@
-﻿.highlight:before {
-    opacity: 0;
-    content: '';
-    position: fixed;
-    padding: 1em 2em;
-    transition: all .5s;
-    -webkit-transform: translate(-33%, -0.6em) scale(1);
-    transform: translate(-33%, -0.6em) scale(1);
-    border-radius: 0.5em;
-    border: 0.2em solid rgba(255, 217, 68, 0.8);
-    box-shadow: 0 0 0 1000em rgba(0, 0, 0, 0.7);
+﻿.enfasis {
+    background: #fff;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    float: left;
+    /*margin: 5px;
+    padding: 20px;
+    width: 100px;
+    height: 100px;*/
+    position: relative;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.overlay .highlight:before {
-    opacity: 1;
-    -webkit-animation: wiggle 2s ease-in;
-    animation: wiggle 2s ease-in;
-    transition: all .2s;
-}
-
-.overlay .highlight:after {
-    content: '';
-    left: 0;
-    right: 0;
+#overlay {
+    background: rgba(0,0,0,0.3);
+    display: none;
+    width: 100%;
+    height: 200%;
+    position: absolute;
     top: 0;
-    bottom: 0;
-    position: fixed;
-    z-index: 1000;
+    left: 0;
+    z-index: 99990;
 }
+
