@@ -204,6 +204,7 @@
     <Content Include="Content\estiloNavegacionPestanas.css" />
     <Content Include="Content\estiloPerfil.css" />
     <Content Include="Content\estiloPestanasCursos.css" />
+    <Content Include="Content\estiloTransaccion.css" />
     <Content Include="Content\fullcalendar.css" />
     <Content Include="Content\fullcalendar.js" />
     <Content Include="Content\jquery-3.3.1.js" />
@@ -322,6 +323,7 @@
     <Content Include="Views\PerfilAlumno\PerfilAlumno\NuevoAlumno.cshtml" />
     <Content Include="Views\PerfilAlumno\PerfilAlumno\NuevoEstudiante.cshtml" />
     <Content Include="Views\Transaccion\Resumen.cshtml" />
+    <Content Include="Views\Transaccion\RegistrarTransaccion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

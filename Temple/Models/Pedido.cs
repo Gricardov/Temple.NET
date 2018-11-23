@@ -15,11 +15,11 @@ namespace Temple.Models
         public int idMod { get; set; }
         public string nombreModalidad { get; set; }
 
-        public decimal precioHora { get; set; }
+        public double precioHora { get; set; }
 
-        public int cantHoras { get; set; }
+        public double cantHoras { get; set; }
 
         public Evento horario { get; set; }
-
+        public double precioTotal { get; set; }
     }
 }

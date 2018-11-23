@@ -4,16 +4,17 @@
     ViewBag.Title = "Resumen";
     Layout = "~/Views/Shared/_LayoutTemple.cshtml";
 }
+<link rel="stylesheet" href="~/Content/estiloTransaccion.css" />
+<link rel="stylesheet" href="~/Content/estiloPestanasCursos.css" />
 
-<h2>Resumen</h2>
+<h2>Resumen del pedido</h2>
 
-<div>
-    <h4>Pedido</h4>
-    <hr />
-    <dl class="dl-horizontal">
+<div class="tarjeton">
+
+    <div id="resumenPedido" class="dl-horizontal">
 
         <dt>
-            @Html.DisplayNameFor(model => model.nombresInstructor)
+            Nombre del instructor
         </dt>
 
         <dd>
@@ -21,7 +22,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.nombreCurso)
+            Nombre del curso
         </dt>
 
         <dd>
@@ -29,7 +30,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.nombreModalidad)
+            Nombre de la modalidad
         </dt>
 
         <dd>
@@ -37,7 +38,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.precioHora)
+            Precio por hora (S/.)
         </dt>
 
         <dd>
@@ -45,7 +46,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.cantHoras)
+            Cantidad de horas
         </dt>
 
         <dd>
@@ -53,7 +54,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.horario.inicio)
+            Inicio
         </dt>
 
         <dd>
@@ -61,13 +62,86 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.horario.fin)
+            Fin
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.horario.fin)
         </dd>
 
-    </dl>
+        <dt>
+            Total (S/.)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.precioTotal)
+
+        </dd>
+    </div>
+    <div id="metodoPago" style="display:none">
+        <h4>Elije tu método de pago</h4>
+        <div id="pestanasMetodoPago" class="tab" style="height:auto; overflow:auto; width:100%; margin-bottom: 10px;">
+            <button class="tablinks">Tarjeta de crédito</button>
+            <button class="tablinks">Paypal</button>
+            <button class="tablinks">Cupón</button>
+            <button class="tablinks">Efectivo</button>
+        </div>
+
+    </div>
+    <div id="confirmacion" style="display:none">
+        <p id="txtResultado"></p>
+    </div>
+    <button id="btnContinuar" class="btn btn-primary btn-sm btn-block" style="margin-top: 10px;">Continuar</button>
+    @using (Html.BeginForm("RegistrarTransaccion", "Transaccion", FormMethod.Post, new { id = "formTransaccion" }))
+    {
+        
+    }
 </div>
+
+<script>
+
+    if ('@ViewBag.confirmacion') {
+
+        $("#resumenPedido").hide();
+        $("#metodoPago").hide();
+        $("#btnContinuar").hide();
+        $("#confirmacion").show();
+        $("#txtResultado").text('@ViewBag.mensaje');
+
+    }
+
+    $('.tablinks').on('click', function (evt) {
+
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        evt.currentTarget.className += " active";
+        
+    });
+    if ($('#pestanasMetodoPago').children().length > 0) {
+        document.getElementsByClassName("tablinks")[0].click();
+    }
+
+    var pasoActual = 0;
+
+    $("#btnContinuar").on("click", function () {
+        pasoActual++;
+        switch (pasoActual) {
+
+            case 1:
+                $("#resumenPedido").hide();
+                $("#metodoPago").show();
+
+                break;
+            case 2:
+                $("#formTransaccion").submit();
+                break;
+            
+        }
+
+
+
+    });
+
+</script>
 
