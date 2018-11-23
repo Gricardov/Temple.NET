@@ -30,12 +30,9 @@
             <li>324   <span>Clases dictadas</span></li>
             <li>@Html.DisplayFor(model => model.calificacion)/5<span>Calificación</span></li>
         </ul>
-        <a href="javascript:void(0);" class="btn btn-primary" id="btnConsultar">
-            Consultar
-        </a>
-        <a href="javascript:void(0);" class="btn btn-primary" id="btnContratar">
-            Contratar
-        </a>
+        <button class="btn btn-primary" id="btnConsultar">Consultar</button>
+        <button class="btn btn-primary" id="btnContratar">Contratar</button>
+      
     </div>
     <h1>
         @Html.DisplayFor(model => model.nombres) @Html.DisplayFor(model => model.apPaterno) @Html.DisplayFor(model => model.apMaterno)
@@ -87,7 +84,15 @@
 </div>
 <div id='overlay'>
 
-    
+    @using (Html.BeginForm("Resumen", "Transaccion", FormMethod.Post, new { id = "formTransaccion" }))
+    {
+        @Html.Hidden("idSub", -1);
+        @Html.Hidden("idCat", -1);
+        @Html.Hidden("idMod", -1);
+        @Html.Hidden("inicioHorario", -1);
+        @Html.Hidden("finHorario", -1);
+        @Html.Hidden("codInstr", Html.DisplayFor(model => model.codigo));
+    }
 
     <p id="txtOverlay" style="color: #ffffff; font-family: 'Raleway',sans-serif; font-size: 30px; font-weight: 800; margin: 0 0 24px; text-align: center; position: absolute; top: 31%; left: 1%;"></p>
     <button id="btnConfirmarOverlay" class="btn btn-primary btn-block" style="position: absolute; top: 35%; left: 1%; width: 48%; z-index: 99999;">Siguiente</button>
@@ -107,7 +112,8 @@
             }
 
         // Para guardar los datos seleccionados: El curso, la modalidad y el horario
-        var idSubSeleccionado=-1;
+        var idSubSeleccionado = -1;
+        var idCatSeleccionado = -1;
         var idModalidadSeleccionada=-1;
         var inicioHorarioSeleccionado=-1;
         var finHorarioSeleccionado=-1;
@@ -160,12 +166,13 @@
         //Muestra los cursos que enseña
         for (var i in json) {
 
-            $('#pestanasCursos').append('<button class="tablinks" id="tabCurso' + json[i].idSub+'">' + json[i].desSub + '</button>');
+            $('#pestanasCursos').append('<button class="tablinks" data-idCat="'+json[i].idCat+'" id="tabCurso' + json[i].idSub+'">' + json[i].desSub + '</button>');
             $('.contenidoControl').on('click', 'button#tabCurso' + json[i].idSub, function (event) {
-                var id = $(this).attr('id');
-                mostrarPestanaCurso(event, id);
-                idSubSeleccionado = parseInt(id.replace("tabCurso", ""));
-                //onclick="mostrarPestanaCurso(event, "' + json[i].idSub + '")"
+                var idSub = $(this).attr('id');
+                mostrarPestanaCurso(event, idSub);
+                idSubSeleccionado = parseInt(idSub.replace("tabCurso", ""));
+                idCatSeleccionado = parseInt($(this).attr('data-idCat'));
+                $("#cboModalidad" + idSub.replace("tabCurso", "")).click();
             });
 
             var cboModalidades = '<select id="cboModalidad' + json[i].idSub + '" class="form-control cboModalidad">';
@@ -181,7 +188,6 @@
             $('.contenidoControl').on('click', 'select#cboModalidad' + json[i].idSub, function (event) {
 
                 var idSub = $(this).attr('id').replace("cboModalidad", "");
-
                 // Primero hago invisibles los demás divCostos
                 var divsCosto = $('.idSub' + idSub + 'Costo');
 
@@ -478,7 +484,12 @@
                 // Aquí, verificaré que los datos sean correctos y luego, haré el submit al formulario
                 if (inicioHorarioSeleccionado != -1 && finHorarioSeleccionado != -1) {
 
-                    alert("submit");
+                    $("#idSub").val(idSubSeleccionado);
+                    $("#idCat").val(idCatSeleccionado);
+                    $("#idMod").val(idModalidadSeleccionada);
+                    $("#inicioHorario").val(inicioHorarioSeleccionado);
+                    $("#finHorario").val(finHorarioSeleccionado);
+                    $("#formTransaccion").submit();
 
                 } else {
 
@@ -493,6 +504,13 @@
 
     $('#btnCancelarOverlay').on('click', function (e) {
         pasoActual = -1;
+
+        // Vuelvo todo a la normalidad
+        $('#pestanasCursos').removeClass('enfasis');
+        $('.cboModalidad').removeClass('enfasis');
+        $('#calendario').removeClass('enfasis');
+
+
         $('#btnConfirmarOverlay').text("Siguiente");
 
         // Selecciono la pestaña de cursos

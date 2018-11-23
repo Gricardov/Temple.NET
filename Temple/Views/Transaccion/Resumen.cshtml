@@ -1,0 +1,73 @@
+﻿@model Temple.Models.Pedido
+
+@{
+    ViewBag.Title = "Resumen";
+    Layout = "~/Views/Shared/_LayoutTemple.cshtml";
+}
+
+<h2>Resumen</h2>
+
+<div>
+    <h4>Pedido</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.nombresInstructor)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombresInstructor)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.nombreCurso)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombreCurso)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.nombreModalidad)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombreModalidad)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.precioHora)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.precioHora)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.cantHoras)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cantHoras)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.horario.inicio)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.horario.inicio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.horario.fin)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.horario.fin)
+        </dd>
+
+    </dl>
+</div>
+

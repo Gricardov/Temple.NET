@@ -158,6 +158,7 @@
     <Compile Include="Controllers\PerfilAlumnoController.cs" />
     <Compile Include="Controllers\PerfilInstructorController.cs" />
     <Compile Include="Controllers\RegistroController.cs" />
+    <Compile Include="Controllers\TransaccionController.cs" />
     <Compile Include="Controllers\TutorController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -170,6 +171,7 @@
     <Compile Include="Models\Hora.cs" />
     <Compile Include="Models\InstructoresRecomendados.cs" />
     <Compile Include="Models\Modalidad.cs" />
+    <Compile Include="Models\Pedido.cs" />
     <Compile Include="Models\PerfilInstructor.cs" />
     <Compile Include="Models\PreferenciaAprendizaje.cs" />
     <Compile Include="Models\PreferenciaEnsenanza.cs" />
@@ -319,6 +321,7 @@
     <Content Include="Views\PerfilAlumno\NuevoEstudiante.cshtml" />
     <Content Include="Views\PerfilAlumno\PerfilAlumno\NuevoAlumno.cshtml" />
     <Content Include="Views\PerfilAlumno\PerfilAlumno\NuevoEstudiante.cshtml" />
+    <Content Include="Views\Transaccion\Resumen.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
