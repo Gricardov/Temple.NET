@@ -11,7 +11,17 @@ namespace Temple.Controllers
         // GET: Registro
         public ActionResult RegistroAlumno()
         {
+            ViewBag.usuario = Session["usuario"];
+
             return View();
         }
+
+        [HttpPost]
+        public ActionResult RegistroAlumno(int idPref) {
+
+            return View();
+
+        }
+
     }
 }

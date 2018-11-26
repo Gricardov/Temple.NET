@@ -78,6 +78,19 @@ INSERT INTO TB_HORARIO VALUES (1,'8PM A 9PM')
 INSERT INTO TB_HORARIO VALUES (1,'9PM A 10PM')
 INSERT INTO TB_HORARIO VALUES (1,'10PM A 11PM')
 
+IF OBJECT_ID('TB_GENERO') IS NOT NULL
+BEGIN
+DROP TABLE TB_GENERO;
+END
+
+CREATE TABLE TB_GENERO(
+ID_GEN INT,
+DES_GEN VARCHAR(20)
+)
+
+ALTER TABLE TB_GENERO
+ADD PRIMARY KEY (ID_GEN)
+
 IF OBJECT_ID('TB_USUARIO') IS NOT NULL
 BEGIN
 DROP TABLE TB_USUARIO;
@@ -89,6 +102,9 @@ NOM_USU VARCHAR(60) NOT NULL,
 APA_USU VARCHAR(30) NOT NULL,
 AMA_USU VARCHAR(30) NOT NULL,
 CORREO_USU VARCHAR(50) UNIQUE NOT NULL,
+EDAD_USU INT NOT NULL,
+ID_GEN INT NOT NULL,
+TEL_USU VARCHAR(20),
 LOG_USU VARCHAR(50) NOT NULL,
 CLA_USU VARCHAR(50) NOT NULL,
 ID_ROL INT NOT NULL,
@@ -97,6 +113,7 @@ ID_ROL INT NOT NULL,
 ALTER TABLE TB_USUARIO
 ADD PRIMARY KEY (COD_USU),
 FOREIGN KEY (ID_ROL) REFERENCES TB_ROL(ID_ROL),
+FOREIGN KEY (ID_GEN) REFERENCES TB_GENERO(ID_GEN),
 UNIQUE (LOG_USU)
 
 
@@ -707,17 +724,17 @@ INSERT INTO TB_ROL VALUES	(1,'Instructor'),
 							(3,'Admin')
 GO
 
-INSERT INTO TB_USUARIO VALUES	('Arena Liset','Rojas','Rojas','arenita@gmail.com','arenita','bella',2),
-								('Mila Luna','Rojas','Rojas','mila@gmail.com','mila','luna',2),
-								('Dámaso Dámaso','López','López','damaso@gmail.com','damaso','damaso',1),
-								('José Antúcar','Antúcar','Antúcar','antucar@gmail.com','antucar','antucar',1),
-								('Gricardov','Corazón','De León','gricardov@gmail.com','gricardov','gricardov',3),
-								('Juanito','Perez','Perez','jperez@gmail.com','jperez','jperez',2),
-								('Bruno','Mars','Mars','bmars@gmail.com','bmars','bmars',2),
-								('Chico','Aledan','Aledan','caledan@gmail.com','caledan','caledan',2),
-								('Lidia','Sánchez','Sánchez','plsanche@gmail.com','plsanche','plsanche',1),
-								('Ysa','Bella','Bella','ysabella@gmail.com','ysabella','ysabella',2),
-								('Raúl','Jiménez','Drago','drago@gmail.com','drago','drago',1)
+INSERT INTO TB_USUARIO VALUES	('Arena Liset','Rojas','Rojas','arenita@gmail.com',22,1,'98765432','arenita','bella',2),
+								('Mila Luna','Rojas','Rojas','mila@gmail.com',21,1,'98765432','mila','luna',2),
+								('Dámaso Dámaso','López','López','damaso@gmail.com',45,2,'98765432','damaso','damaso',1),
+								('José Antúcar','Antúcar','Antúcar','antucar@gmail.com',43,2,'98765432','antucar','antucar',1),
+								('Gricardov','Corazón','De León','gricardov@gmail.com',23,2,'98765432','gricardov','gricardov',3),
+								('Juanito','Perez','Perez','jperez@gmail.com',22,2,'98765432','jperez','jperez',2),
+								('Bruno','Mars','Mars','bmars@gmail.com',29,2,'98765432','bmars','bmars',2),
+								('Chico','Aledan','Aledan','caledan@gmail.com',23,1,'98765432','caledan','caledan',2),
+								('Lidia','Sánchez','Sánchez','plsanche@gmail.com',44,1,'98765432','plsanche','plsanche',1),
+								('Ysa','Bella','Bella','ysabella@gmail.com',23,1,'98765432','ysabella','ysabella',2),
+								('Raúl','Jiménez','Drago','drago@gmail.com',38,2,'98765432','drago','drago',1)
 GO
 
 INSERT INTO TB_UBICACION_USUARIO	VALUES	(1001,-12.162446,-76.997595),
