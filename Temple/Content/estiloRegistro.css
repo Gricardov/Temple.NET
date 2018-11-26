@@ -1,0 +1,20 @@
+﻿.form-control {
+max-width: 100%;
+width: 100%;
+
+}
+
+fieldset.bordered {
+    border: 1px groove #ddd !important;
+    padding: 0 1em 1em 1em !important;
+    margin: 0 0 1em 0 !important;
+}
+
+legend.bordered {
+    border-style: none;
+    border-width: 0;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 0;
+    border-bottom: none;
+}

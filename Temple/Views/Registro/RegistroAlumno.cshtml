@@ -1,15 +1,17 @@
 ﻿
 @{
     ViewBag.Title = "RegistroAlumno";
-    Layout = "~/Views/Shared/_LayoutTemple.cshtml";
+    Layout = "~/Views/Shared/_LayoutBienvenida.cshtml";
 }
 
 <h2>Registro de alumno</h2>
 
 <div class="container-fluid px-3">
-    <br />
 
-    @Html.BeginForm(){
+    @using (Html.BeginForm())
+    {
+
+
 
         <!-- SmartWizard html -->
         <div id="smartwizard">
@@ -25,8 +27,7 @@
                 <li>
                     <a href="#step-2">
                         Paso 2<br /> <small>
-                            Información
-                            de contacto
+                            Preferencias
                         </small>
                     </a>
                 </li>
@@ -38,30 +39,22 @@
                         </small>
                     </a>
                 </li>
-                <li>
-                    <a href="#step-4">
-                        Paso 4<br /> <small>
-                            Completando
-                            perfil
-                        </small>
-                    </a>
-                </li>
             </ul>
 
-            <div>
+            <div style="padding: 15px;">
                 <div id="step-1" class="m-4">
                     <div id="form-step-0" role="form">
 
                         <div class="form-group">
                             <label for="nombres">Nombres</label> <input type="text"
-                                                                        class="form-control mb-3" id="nombres" name="nombres"
+                                                                        class="form-control mb-4" id="txtNombres" name="nombres"
                                                                         placeholder="Introduce tus nombres" maxlength=50 required>
                             <div class="help-block with-errors"></div>
                         </div>
 
                         <div class="form-group">
                             <label for="ap">Apellido paterno</label> <input type="text"
-                                                                            class="form-control mb-3" id="ap" name="ap"
+                                                                            class="form-control mb-4" id="txtApPat" name="apPat"
                                                                             placeholder="Introduce tu apellido paterno" maxlength=30
                                                                             required>
                             <div class="help-block with-errors"></div>
@@ -70,7 +63,7 @@
 
                         <div class="form-group">
                             <label for="am">Apellido materno</label> <input type="text"
-                                                                            class="form-control mb-3" id="am" name="am"
+                                                                            class="form-control mb-4" id="txtApMat" name="apMat"
                                                                             placeholder="Introduce tu apellido materno" maxlength=30
                                                                             required>
                             <div class="help-block with-errors"></div>
@@ -79,94 +72,61 @@
 
                         <div class="form-group">
                             <label for="edad">Edad</label> <input type="number"
-                                                                  class="form-control mb-3" id="edad" name="edad"
+                                                                  class="form-control mb-4" id="txtEdad" name="edad"
                                                                   placeholder="Introduce tu edad en años" maxlength=2 required>
                             <div class="help-block with-errors"></div>
 
                         </div>
 
-                        <div class="form-group">
-                            <label for="dni">DNI</label> <input type="number"
-                                                                class="form-control mb-3" id="dni" name="dni"
-                                                                placeholder="Introduce tu número de DNI" maxlength=8 required>
-                            <div class="help-block with-errors"></div>
-
+                        <label for="genero">Género</label>
+                        <div id="genero mb-4" class="form-group row">
+                            <div class="col-sm-6"><input type="radio" value="1" name="genero" />Femenino</div>
+                            <div class="col-sm-6"><input type="radio" value="2" name="genero" />Masculino</div>
                         </div>
 
-                        <label for="genero">Género</label>
-                        <div id="genero" class="form-group row"></div>
 
+                        <div class="form-group">
+                            <label for="correo">Correo</label> <input type="email"
+                                                                      class="form-control mb-4" id="txtCorreo" name="correo"
+                                                                      placeholder="Introduce tu correo" maxlength=50 required>
+                            <div class="help-block with-errors"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="correo">Teléfono</label> <input type="tel"
+                                                                        class="form-control mb-4" id="txtTelefono" name="telefono"
+                                                                        placeholder="Introduce tu teléfono" maxlength=50 required>
+                            <div class="help-block with-errors"></div>
+                        </div>
                     </div>
 
                 </div>
 
                 <div id="step-2" class="m-4">
                     <div id="form-step-1" role="form">
-                        <div class="form-group">
-                            <label for="direccion">Dirección</label> <input type="text"
-                                                                            class="form-control mb-3" id="direccion" name="direccion"
-                                                                            placeholder="Introduce tu dirección" maxlength=50 required>
-                            <div class="help-block with-errors"></div>
-                        </div>
 
-                        <div class="form-row">
-                            <div class="col-sm-4">
-                                <label for="selectregion">Región</label> <select class="custom-select form-control mb-3" id="selectregion"
-                                                                                 required>
-                                    <option value="0" selected>Seleccione una región</option>
+                        <fieldset class="bordered fieldPreferencia">
 
-                                </select>
-                                <div class="valid-feedback">Listo</div>
+                            <legend>¿Qué te gustaría aprender?</legend>
+
+                            <div class="form-group">
+                                <label for="cboCategoria">
+                                    Elija una categoría
+                                </label> @Html.DropDownList("cboCategoria", (SelectList)ViewBag.categorias, null, new { @class = "custom-select form-control mb-4 selectPreferenciaCategoria" })
                             </div>
-                            <div class="col-sm-4">
-                                <label for="selectdepartamento">Departamento</label> <select class="custom-select form-control mb-3"
-                                                                                             id="selectdepartamento" required disabled>
-                                    <option value="0" selected>
-                                        Seleccione un
-                                        departamento
-                                    </option>
 
-                                </select>
-                                <div class="valid-feedback">Listo</div>
+                            <div class="form-group">
+                                <label for="cboSubcategoria">
+                                    Elija una subcategoria
+                                </label> @Html.DropDownList("cboSubcategoria", (SelectList)ViewBag.subcategorias, null, new { @class = "custom-select form-control mb-4 selectPreferenciaSubcategoria" })
                             </div>
-                            <div class="col-sm-4">
-                                <label for="selectdistrito">Distrito</label> <select class="custom-select form-control mb-3" id="selectdistrito"
-                                                                                     required disabled>
-                                    <option value="0" selected>Seleccione un distrito</option>
 
-                                </select>
-                                <div class="valid-feedback">Listo</div>
-                            </div>
-                        </div>
+                        </fieldset>
 
-                        <div class="form-group">
-                            <label for="correo">Correo</label> <input type="email"
-                                                                      class="form-control mb-3" id="correo"
-                                                                      placeholder="Introduce tu correo" maxlength=50 required>
-                            <div class="help-block with-errors"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="telefono">Teléfono</label> <input type="tel"
-                                                                          class="form-control mb-3" id="telefono"
-                                                                          placeholder="Introduce tu teléfono" maxlength=9 required>
-                            <div class="help-block with-errors"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="usuario">Nombre de usuario</label> <input type="text" class="form-control mb-3" id="usuario"
-                                                                                  placeholder="Introduce un nombre de usuario" maxlength=20
-                                                                                  required>
-                            <div class="help-block with-errors"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="clave">Contraseña</label> <input type="password"
-                                                                         class="form-control mb-3" id="clave"
-                                                                         placeholder="Introduce una constraseña" maxlength=50 required>
-                            <div class="help-block with-errors"></div>
-                        </div>
-
+                        <button id="btnPreferencia" type="button"
+                                class="btn btn-primary btn-block mb-4">
+                            &#43 Agregar otra preferencia
+                        </button>
 
                     </div>
 
@@ -175,148 +135,31 @@
                 <div id="step-3" class="m-4">
 
                     <div id="form-step-2" role="form">
-
-                        <fieldset class="bordered fieldformacion">
-
-
-                            <legend>Formación</legend>
-
-                            <div class="form-group">
-                                <label for="selectespecialidad">
-                                    ¿En qué se
-                                    especializa?
-                                </label> <select class="custom-select form-control mb-3 selectespecialidad"
-                                                 id="selectespecialidad" required>
-                                    <option selected>Seleccione una especialidad</option>
-
-                                </select>
-                                <div class="valid-feedback">Listo</div>
-                            </div>
-
-
-                            <div class="form-row mb-3">
-                                <div class="col-sm-4 text-center">
-                                    <input type="checkbox"
-                                           class="form-check-input chkespecialidad"
-                                           id="chkespecialidad"> <label class="form-check-label" for="chkespecialidad">Otro</label>
-                                </div>
-
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control mb-3 txtespecialidad"
-                                           id="txtespecialidad" placeholder="Especifique" disabled>
-                                </div>
-
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="selectestudios">¿En dónde ha estudiado?</label> <select class="custom-select form-control mb-3 selectestudios"
-                                                                                                    id="selectestudios" required>
-                                    <option selected>Seleccione su centro de formación</option>
-
-                                </select>
-                                <div class="valid-feedback">Listo</div>
-
-                            </div>
-
-
-                            <div class="form-row mb-3">
-                                <div class="col-sm-4 text-center">
-                                    <input type="checkbox" class="form-check-input chkestudios"
-                                           id="chkestudios"> <label class="form-check-label"
-                                                                    for="chkestudios">Otro</label>
-                                </div>
-
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control txtestudios"
-                                           id="txtestudios" placeholder="Especifique" disabled>
-                                </div>
-
-                            </div>
-
-                        </fieldset>
-
-                        <button id="btnformacion" type="button"
-                                class="btn btn-primary btn-block mb-4">
-                            &#43 Agregar
-                            otra formación
-                        </button>
-
-                        <fieldset class="bordered fieldexperiencia">
-
-                            <legend>Experiencia</legend>
-                            <div class="form-group">
-                                <label for="selectexperiencia">
-                                    ¿En donde ha
-                                    trabajado?
-                                </label> <select class="custom-select form-control mb-3 selectexperiencia"
-                                                 id="selectexperiencia" required>
-                                    <option selected>
-                                        Seleccione su(s) centro(s) de
-                                        trabajo
-                                    </option>
-
-                                </select>
-
-                                <div class="form-row">
-                                    <div class="col-sm-4 text-center">
-                                        <input type="checkbox"
-                                               class="form-check-input chkexperiencia"
-                                               id="chkexperiencia"> <label class="form-check-label" for="chkexperiencia">Otro</label>
-                                    </div>
-
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control mb-3 txtexperiencia"
-                                               id="txtexperiencia" placeholder="Especifique" disabled>
-                                    </div>
-
-                                </div>
-
-                                <div class="form-row">
-                                    <div class="col-sm-5">
-                                        <label for="aniosexperiencia">Años</label> <input type="number" class="form-control mb-3 aniosexperiencia"
-                                                                                          id="aniosexperiencia" placeholder="Número de años"
-                                                                                          required>
-                                    </div>
-
-                                    <div class="col-sm-7">
-                                        <label for="cargo">Cargo</label> <input type="text"
-                                                                                class="form-control mb-3 cargo" id="cargo"
-                                                                                placeholder="Cargo" required>
-                                    </div>
-
-                                </div>
-
-                                <div class="valid-feedback">Listo</div>
-
-
-                            </div>
-                        </fieldset>
-
-                        <button id="btnexperiencia" type="button"
-                                class="btn btn-primary btn-block mb-4">
-                            &#43 Agregar
-                            otra experiencia
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div id="step-4" class="m-4">
-                    <div id="form-step-3" role="form">
-
                         <legend>Ya casi hemos terminado</legend>
+
+                        <div class="form-group">
+                            <label for="usuario">Nombre de usuario</label> <input type="text" class="form-control mb-4" id="usuario"
+                                                                                  placeholder="Introduce un nombre de usuario" maxlength=20
+                                                                                  required>
+                            <div class="help-block with-errors"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="clave">Contraseña</label> <input type="password"
+                                                                         class="form-control mb-4" id="clave"
+                                                                         placeholder="Introduce una constraseña" maxlength=50 required>
+                            <div class="help-block with-errors"></div>
+                        </div>
 
                         <div class="form-group">
                             <label for="descripcion">
                                 ¿Cómo te describes a ti
                                 mismo(a)?
                             </label>
-                            <textarea rows="4" cols="5" class="form-control"
+                            <textarea rows="4" cols="5" class="form-control mb-4"
                                       id="descripcion" maxlength=5000 required>
 
-</textarea>
+                            </textarea>
                             <div class="help-block with-errors"></div>
                         </div>
 
@@ -330,20 +173,66 @@
 
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input id="acepta"
+                                <input id="chkAcepta"
                                        type="checkbox" class="form-check-input" required> He
-                                leído los <a href="#">términos y condiciones</a>
+                                leído las <a href="#"><small>letras pequeñas</small></a>
                             </label>
                         </div>
 
                     </div>
+
                 </div>
+
+
             </div>
 
-
+            
 
         </div>
+    }
 
-}
 
-</div>
+    </div>
+<script type="text/javascript"
+        src="~/Content/scriptRegistro.js"></script>
+
+<script>
+    $(".selectPreferenciaCategoria").change(function () {
+
+        var elemento = $(this);
+
+        var url = "@Url.Action("obtenerSubcategorias", "Alumno")";
+        var valor = $(elemento).val();
+        var data = { categoria: valor };
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            dataType: "json",
+            success: function (response) {
+                var cboSubcategoria = $(elemento).parent().parent().find(".selectPreferenciaSubcategoria");
+                $(cboSubcategoria).empty();
+
+                var lista = JSON.parse(response);
+
+                for (var i in lista) {
+
+                    var descripcion = lista[i].descripcion;
+                    var id = lista[i].id;
+
+                    $(cboSubcategoria).append("<option value'" + id + "'>" + descripcion + "</option>");
+
+                }
+
+
+
+            }
+
+
+
+        });
+    });
+</script>
+
+<link rel="stylesheet" href="~/Content/estiloRegistro.css" type="text/css" />

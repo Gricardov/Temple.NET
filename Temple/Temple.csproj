@@ -202,6 +202,7 @@
     <Content Include="Content\estiloNavegacionPestanas.css" />
     <Content Include="Content\estiloPerfil.css" />
     <Content Include="Content\estiloPestanasCursos.css" />
+    <Content Include="Content\estiloRegistro.css" />
     <Content Include="Content\estiloTransaccion.css" />
     <Content Include="Content\fullcalendar.css" />
     <Content Include="Content\fullcalendar.js" />
@@ -212,6 +213,7 @@
     <Content Include="Content\moment.js" />
     <Content Include="Content\nouislider.min.css" />
     <Content Include="Content\scriptPerfil.js" />
+    <Content Include="Content\scriptRegistro.js" />
     <Content Include="Content\smartwizard\css\smart_wizard.css" />
     <Content Include="Content\smartwizard\css\smart_wizard_theme_arrows.css" />
     <Content Include="Content\smartwizard\js\jquery.smartWizard.min.js" />
