@@ -37,27 +37,102 @@ namespace Temple.Controllers
             // Deserializamos el json
             List<PreferenciaAprendizaje> lista= JArray.Parse(preferencias).ToObject<List<PreferenciaAprendizaje>>();
 
-            
+            Usuario u = new Usuario();
+            u.nombres = nombres;
+            u.apPaterno = apPat;
+            u.apMaterno = apMat;
+            u.edad = edad;
+            u.idGen = genero;
+            u.correo = correo;
+            u.telefono = telefono;
+            u.login = usuario;
+            u.clave = clave;
+            u.idRol = 2;
+            u.sobreMi = sobreMi;
+            u.buscando = buscando;
 
-            //Debug.WriteLine(Path.GetExtension(imagen.FileName) + " voz");
-            var originalFilename = Path.GetFileName(imagen.FileName);
-            string fileId = Guid.NewGuid().ToString().Replace("-", "");
-            string userId = "1019"; // Function to get user id based on your schema
-            
-            var path = Path.Combine(Server.MapPath("~/imagenes/perfiles/"), userId/*, fileId*/);
-            imagen.SaveAs(path+ Path.GetExtension(imagen.FileName));
+            Usuario res = RegistrarUsuario(u, lista);
 
+            if (res != null)
+            {
+
+                //Debug.WriteLine(Path.GetExtension(imagen.FileName) + " voz");
+                var originalFilename = Path.GetFileName(imagen.FileName);
+                string fileId = Guid.NewGuid().ToString().Replace("-", "");
+                string userId = "1019"; // Function to get user id based on your schema
+
+                var path = Path.Combine(Server.MapPath("~/imagenes/perfiles/"), userId/*, fileId*/);
+                imagen.SaveAs(path + Path.GetExtension(imagen.FileName));
+                ViewBag.mensaje = "Registro exitoso";
+            }
+            else {
+
+                ViewBag.mensaje = "Ha ocurrido un error";
+
+
+            }
             return View();
 
         }
 
-        public Usuario RegistrarUsuario(Usuario u) {
+        public Usuario RegistrarUsuario(Usuario u, List<PreferenciaAprendizaje> preferencias) {
+            Usuario res = new Usuario();
             con.Open();
-            SqlTransaction transaccion = con.BeginTransaction();
+            SqlTransaction t1 = con.BeginTransaction();
 
+            SqlCommand cmd = new SqlCommand("USP_REGISTRAR_USUARIO", con, t1);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@NOMUSU", u.nombres);
+            cmd.Parameters.AddWithValue("@APAUSU", u.apPaterno);
+            cmd.Parameters.AddWithValue("@AMAUSU", u.apMaterno);
+            cmd.Parameters.AddWithValue("@CORREO", u.correo);
+            cmd.Parameters.AddWithValue("@EDAD", u.edad);
+            cmd.Parameters.AddWithValue("@IDGEN", u.idGen);
+            cmd.Parameters.AddWithValue("@TEL", u.telefono);
+            cmd.Parameters.AddWithValue("@LOGUSU", u.login);
+            cmd.Parameters.AddWithValue("@CLAUSU", u.clave);
+            cmd.Parameters.AddWithValue("@IDROL", u.idRol);
+            cmd.Parameters.AddWithValue("@SOBREMI", u.sobreMi);
+            cmd.Parameters.AddWithValue("@BUSCANDO", u.buscando);
+            SqlDataReader reader=cmd.ExecuteReader();
 
+            if (reader.Read())
+            {
+                res.codigo = reader.GetInt32(0);
 
-            return null;
+                reader.Close();
+
+                Debug.WriteLine("codusu " + res.codigo);
+                int rs = -1;
+                // Ahora, itero la lista
+                for (int i = 0; i < preferencias.Count(); i++) {
+
+                    cmd = new SqlCommand("USP_REGISTRAR_PREFERENCIA_APRENDIZAJE", con, t1);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@CODUSU", res.codigo);
+                    cmd.Parameters.AddWithValue("@IDCAT", preferencias.ElementAt(i).idCat);
+                    cmd.Parameters.AddWithValue("@IDSUB", preferencias.ElementAt(i).idSub);
+                    rs=cmd.ExecuteNonQuery();
+                    
+                }
+
+                if (rs != -1)
+                {
+                    t1.Commit();
+                }
+                else {
+                    t1.Rollback();
+                    res = null;
+
+                }
+            }
+            else {
+
+                t1.Rollback();
+                res = null;
+            }
+
+            return res;
 
         }
 

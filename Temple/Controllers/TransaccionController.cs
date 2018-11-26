@@ -87,8 +87,15 @@ namespace Temple.Controllers
 
             rs = cmd.ExecuteNonQuery();
 
-            transaccion.Commit();
+            if (rs != -1)
+            {
 
+                transaccion.Commit();
+            }
+            else {
+
+                transaccion.Rollback();
+            }
             con.Close();
 
             return rs;

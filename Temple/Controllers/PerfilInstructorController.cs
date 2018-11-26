@@ -78,7 +78,7 @@ namespace Temple.Controllers
 				us.apPaterno = reader.GetString(2);
 				us.apMaterno = reader.GetString(3);
 				us.correo = reader.GetString(4);
-				us.telefonos = reader.GetString(5);
+				us.telefono = reader.GetString(5);
 				us.login = reader.GetString(6);
 				us.clave = reader.GetString(7);
 				us.idRol = reader.GetInt32(8);
