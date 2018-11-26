@@ -84,8 +84,8 @@ DROP TABLE TB_GENERO;
 END
 
 CREATE TABLE TB_GENERO(
-ID_GEN INT,
-DES_GEN VARCHAR(20)
+ID_GEN INT NOT NULL,
+DES_GEN VARCHAR(20) NOT NULL
 )
 
 ALTER TABLE TB_GENERO
@@ -723,6 +723,9 @@ INSERT INTO TB_ROL VALUES	(1,'Instructor'),
 							(2,'Alumno'),
 							(3,'Admin')
 GO
+
+INSERT INTO TB_GENERO VALUES	(1,'FEMENINO'),
+								(2,'MASCULINO')
 
 INSERT INTO TB_USUARIO VALUES	('Arena Liset','Rojas','Rojas','arenita@gmail.com',22,1,'98765432','arenita','bella',2),
 								('Mila Luna','Rojas','Rojas','mila@gmail.com',21,1,'98765432','mila','luna',2),
