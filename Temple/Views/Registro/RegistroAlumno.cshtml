@@ -10,8 +10,7 @@
 
     @using (Html.BeginForm())
     {
-
-
+        @Html.Hidden("preferencias", "");
 
         <!-- SmartWizard html -->
         <div id="smartwizard">
@@ -80,7 +79,7 @@
 
                         <label for="genero">Género</label>
                         <div id="genero mb-4" class="form-group row">
-                            <div class="col-sm-6"><input type="radio" value="1" name="genero" />Femenino</div>
+                            <div class="col-sm-6"><input type="radio" value="1" name="genero" selected/>Femenino</div>
                             <div class="col-sm-6"><input type="radio" value="2" name="genero" />Masculino</div>
                         </div>
 
@@ -175,10 +174,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="imagen">Selecciona una imagen de perfil</label> <input type="file" class="form-control-file mb-4" id="flImagen"
+                            <label for="imagen">Selecciona una imagen de perfil</label> <input type="file" class="form-control-file mb-4" id="flImagen" name="imagen"
                                 aria-describedby="fileHelp" accept="image/*"> <small id="fileHelp" class="form-text text-muted">
-                                Extensión
-                                jpg, buena resolución
+                                Extensión jpg, buena resolución
                             </small>
                         </div>
 
@@ -232,7 +230,7 @@
                     var descripcion = lista[i].descripcion;
                     var id = lista[i].id;
 
-                    $(cboSubcategoria).append("<option value'" + id + "'>" + descripcion + "</option>");
+                    $(cboSubcategoria).append("<option value='" + id + "'>" + descripcion + "</option>");
 
                 }
 

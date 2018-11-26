@@ -121,7 +121,49 @@ $('#smartwizard').smartWizard({
 
                     } else {
 
+                        // Verifico que no hayan campos vacíos
+                        if ($("#txtNombres").val() != '' &&
+                            $("#txtApPat").val() != '' &&
+                            $("#txtApMat").val() != '' &&
+                            $("#txtEdad").val() != '' &&
+                            $("#txtCorreo").val() != '' &&
+                            $("#txtTelefono").val() != '' &&
+                            $("#txtUsuario").val() != '' &&
+                            $("#txtClave").val() != '' &&
+                            $("#txtSobreMi").val() != '' &&
+                            $("#txtBuscando").val() != '') {
 
+                            //Numero de preferencias registradas, se van a recorrer
+                            var preferencias = $(".fieldPreferencia");
+
+                            //Guarda los registros de experiencias
+                            var arreglo = [];
+
+                            for (var i = 0; i < preferencias.length; i++) {
+
+                                var e = new Object();
+
+                                e.idCat = $($(".selectPreferenciaCategoria").get(i)).val();
+                                e.idSub = $($(".selectPreferenciaSubcategoria").get(i)).val();
+                                //alert(e.idCat + " " + e.idSub);
+
+                                arreglo[i] = e;
+
+                            }
+
+                            $("#preferencias").val(JSON.stringify(arreglo));
+                            
+                            document.forms[0].submit;
+
+
+                        } else {
+
+                            alert("Hay campos sin llenar");
+
+
+                        }
+
+                        
 
                     }
 
@@ -131,6 +173,8 @@ $('#smartwizard').smartWizard({
 
 
                 }),
+
+
             $('<button></button>').text('Cancelar').addClass('btn btn-danger')
                 .on('click', function () {
 

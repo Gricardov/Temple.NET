@@ -367,6 +367,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="imagenes\perfiles\" />
+    <Folder Include="imagenes\portadas\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

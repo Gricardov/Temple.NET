@@ -7,6 +7,8 @@ using System.Configuration;
 using Temple.Models;
 using System.Data.Sql;
 using System.Data.SqlClient;
+using System.Diagnostics;
+using System.IO;
 
 namespace Temple.Controllers
 {
@@ -25,7 +27,19 @@ namespace Temple.Controllers
         }
 
         [HttpPost]
-        public ActionResult RegistroAlumno(int idPref) {
+        public ActionResult RegistroAlumno(string nombres, string apPat, string apMat, int edad, int genero, string correo, string telefono, string preferencias, string usuario, string clave, string sobreMi, string buscando, HttpPostedFileBase imagen) {
+            //Debug.WriteLine("nombre recibido " + nombres +" "+apPat+" "+apMat+" "+edad+" genero: "+genero+" "+correo+" "+telefono+" preferencias: "+preferencias+" usuario: "+usuario+" clave: "+clave+" "+sobreMi+" "+buscando);
+            ViewBag.categorias = new SelectList(ListadoCategorias(), "id", "descripcion", 0);
+            ViewBag.subcategorias = new SelectList((ListadoSubcategorias(ListadoCategorias().ElementAt(0).id)), "id", "descripcion", 0);
+
+
+
+            var originalFilename = Path.GetFileName(imagen.FileName);
+            string fileId = Guid.NewGuid().ToString().Replace("-", "");
+            string userId = GetUserId(); // Function to get user id based on your schema
+
+            var path = Path.Combine(Server.MapPath("~/imagenes/perfiles/"), userId/*, fileId*/);
+            imagen.SaveAs(path);
 
             return View();
 
