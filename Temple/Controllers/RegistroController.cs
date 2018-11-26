@@ -9,6 +9,8 @@ using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Temple.Controllers
 {
@@ -32,16 +34,30 @@ namespace Temple.Controllers
             ViewBag.categorias = new SelectList(ListadoCategorias(), "id", "descripcion", 0);
             ViewBag.subcategorias = new SelectList((ListadoSubcategorias(ListadoCategorias().ElementAt(0).id)), "id", "descripcion", 0);
 
+            // Deserializamos el json
+            List<PreferenciaAprendizaje> lista= JArray.Parse(preferencias).ToObject<List<PreferenciaAprendizaje>>();
 
+            
 
+            //Debug.WriteLine(Path.GetExtension(imagen.FileName) + " voz");
             var originalFilename = Path.GetFileName(imagen.FileName);
             string fileId = Guid.NewGuid().ToString().Replace("-", "");
-            string userId = GetUserId(); // Function to get user id based on your schema
-
+            string userId = "1019"; // Function to get user id based on your schema
+            
             var path = Path.Combine(Server.MapPath("~/imagenes/perfiles/"), userId/*, fileId*/);
-            imagen.SaveAs(path);
+            imagen.SaveAs(path+ Path.GetExtension(imagen.FileName));
 
             return View();
+
+        }
+
+        public Usuario RegistrarUsuario(Usuario u) {
+            con.Open();
+            SqlTransaction transaccion = con.BeginTransaction();
+
+
+
+            return null;
 
         }
 

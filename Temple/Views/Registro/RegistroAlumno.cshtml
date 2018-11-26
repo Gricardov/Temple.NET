@@ -8,7 +8,7 @@
 
 <div class="container-fluid px-3">
 
-    @using (Html.BeginForm())
+    @using (Html.BeginForm("RegistroAlumno", "Registro", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.Hidden("preferencias", "");
 
@@ -174,7 +174,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="imagen">Selecciona una imagen de perfil</label> <input type="file" class="form-control-file mb-4" id="flImagen" name="imagen"
+                            <label for="imagen">Selecciona una imagen de perfil</label>
+                            <input type="file" class="form-control-file mb-4" id="flImagen" name="imagen"
                                 aria-describedby="fileHelp" accept="image/*"> <small id="fileHelp" class="form-text text-muted">
                                 Extensión jpg, buena resolución
                             </small>
