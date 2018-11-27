@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewBag.Title = "Mis anuncios";
+    Layout = "~/Views/Shared/_LayoutTemple.cshtml";
+}
+<link rel="stylesheet" href="~/Content/estiloComentarios.css" />
+<h2>Mis anuncios</h2>
+<div class="contenidoControl">
+
+    <div class="form-group">
+        <label for="txtPublicacion">Publica algo: </label>
+        <textarea style="max-width: 100%; margin-bottom: 5px;" class="form-control" rows="5" id="txtPublicacion" placeholder="¿Qué quieres anunciar?"></textarea>
+        <button id="btnPublicar" class="btn btn-primary btn-block btn-md disabled">Publicar</button>
+    </div>
+
+    <div id="anuncios">
+
+    </div>
+
+</div>
+
+
+<script>
+
+    $('#txtPublicacion').on('click', function () {
+
+        $('#btnPublicar').removeClass('disabled');
+                    
+    });
+
+    $('#btnPublicar').on('click', function () {
+
+        if ($('#txtPublicacion').val().length <= 0) {
+            alert("Debes escribir algo");
+
+        } else {
+
+            var url ="@Url.Action("insertarAnuncio", "Instructor")";
+            var valor = $("#txtPublicacion").val();
+            var data = { contenido: valor };
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                dataType: "json",
+                success: function (response) {
+
+                    $("#anuncios").empty();
+
+                    
+                    var lista = JSON.parse(response);
+                    if (lista.length == 0) {
+                        $('#anuncios').append('<div class="well well-sm">No has publicado ningun anuncio aún</div>');
+                    }
+                    for (var i in lista) {
+                        //alert(json[i].fechaHora)
+
+                        $('#anuncios').append('<div class="row"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">' +
+                            '<div class="pull-left image"><img src="/imagenes/mila.jpg" class="img-circle avatar" alt="user profile image">' +
+                            '</div><div class="pull-left meta"><div class="title h5"><a href="#"><b>' + lista[i].titulo + '</b></a></div>' +
+                            '<h6 class="text-muted time"' + lista[i].fechaHora + '</h6></div></div><div class="post-description"><p>' + lista[i].contenido + '</p>' +
+                            '</div></div></div></div>');
+
+
+
+                    }
+
+
+                  }
+
+
+
+            });
+
+
+        }
+
+    });
+
+</script>

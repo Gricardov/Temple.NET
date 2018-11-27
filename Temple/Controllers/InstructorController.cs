@@ -15,7 +15,61 @@ namespace Temple.Controllers
     public class InstructorController : Controller
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
-		private List<Usuario> InformeInstructor()
+
+        public ActionResult Inicio()
+        {
+            ViewBag.usuario = Session["usuario"];
+
+            return View();
+
+
+        }
+
+        private List<Anuncio> ListadoAnuncios()
+        {
+            List<Anuncio> lista = new List<Anuncio>();
+            con.Open();
+            SqlCommand cmd = new SqlCommand("SELECT*FROM TB_ANUNCIO_INSTRUCTOR", con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Anuncio a = new Anuncio();
+                a.id = reader.GetInt32(0);
+                a.codInstr = reader.GetInt32(1);
+                a.titulo = reader.GetString(2);
+                a.contenido = reader.GetString(3);
+                a.fechaHora = reader.GetDateTime(4);
+                lista.Add(a);
+            }
+
+            con.Close();
+            reader.Close();
+
+
+            return lista;
+        }
+
+        private int InsertarAnuncio(string titulo, string contenido)
+        {
+            Usuario u = (Usuario) Session["usuario"];
+            con.Open();
+            SqlCommand cmd = new SqlCommand("USP_INSERTAR_ANUNCIO", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODINSTR", u.codigo);
+            cmd.Parameters.AddWithValue("@CONTENIDO", contenido);
+            cmd.Parameters.AddWithValue("@TITULO", titulo);
+
+            int rs= cmd.ExecuteNonQuery();
+            
+
+            con.Close();
+
+            return rs;
+        }
+
+        // ?
+
+        private List<Usuario> InformeInstructor()
 		{
 			List<Usuario> lista = new List<Usuario>();
 			con.Open();
@@ -115,5 +169,16 @@ namespace Temple.Controllers
 			}
 			return View(usu);
 		}
-	}
+        // ¿
+
+                
+        [HttpPost]
+        public JsonResult insertarAnuncio(string contenido)
+        {
+            int rs = InsertarAnuncio("Ven magdalena", contenido);
+            string json = new JavaScriptSerializer().Serialize((ListadoAnuncios()));
+            return Json(json);
+        }
+
+    }
 }

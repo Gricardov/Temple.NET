@@ -30,10 +30,14 @@ namespace Temple.Controllers
                 u.nombres = reader.GetString(1);
                 u.apPaterno = reader.GetString(2);
                 u.apMaterno = reader.GetString(3);
-                u.login = reader.GetString(4);
+                u.correo = reader.GetString(4);
+                u.edad = reader.GetInt32(5);
+                u.idGen = reader.GetInt32(6);
+                u.telefono = reader.GetString(7);
+                u.login = reader.GetString(8);
                 // u.clave
-                u.idRol = reader.GetInt32(6);
-                u.desRol = reader.GetString(7);
+                u.idRol = reader.GetInt32(9);
+                u.desRol = reader.GetString(10);
 
             }
 
@@ -63,24 +67,40 @@ namespace Temple.Controllers
         [HttpPost] public ActionResult IniciarSesion(string usuario, string contrasena)
         {
 
-            
-           
 
-                Usuario u = Login(usuario, contrasena);
-                if (u != null)
+            Usuario u = Login(usuario, contrasena);
+            if (u != null)
+            {
+                Session["usuario"] = u;
+
+                if (u.idRol == 2)
                 {
-                    Session["usuario"] = u;
-                    return RedirectToAction("Inicio","Alumno");
 
+                    return RedirectToAction("Inicio", "Alumno");
+
+                }
+                else if (u.idRol == 1)
+                {
+
+                    return RedirectToAction("Inicio", "Instructor");
                 }
                 else
                 {
-                    ViewBag.mensaje = "Usuario o contraseña incorrectos";
+                    ViewBag.mensaje = "Ha ocurrido un error";
                     return View();
 
                 }
 
-            
+            }
+            else
+            {
+                ViewBag.mensaje = "Usuario o contraseña incorrectos";
+                return View();
+
+            }
+
+
+
 
         }
 
