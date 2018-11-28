@@ -369,6 +369,30 @@ namespace Temple.Controllers
 
         }
 
+        private List<Anuncio> ListadoAnuncios()
+        {
+            List<Anuncio> lista = new List<Anuncio>();
+            con.Open();
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_ANUNCIOS_POR_ALUMNO", con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Anuncio a = new Anuncio();
+                a.id = reader.GetInt32(0);
+                a.codInstr = reader.GetInt32(1);
+                a.titulo = reader.GetString(2);
+                a.contenido = reader.GetString(3);
+                a.fechaHora = reader.GetDateTime(4);
+                lista.Add(a);
+            }
+
+            con.Close();
+            reader.Close();
+
+
+            return lista;
+        }
+
         // Action Results
 
         //vista: Cuadrícula=0, Mapa=1
@@ -411,6 +435,12 @@ namespace Temple.Controllers
             ViewBag.cursos = perfil.cursos;
             ViewBag.horarios = perfil.horarios;
             return View(perfil);
+
+        }
+
+        public ActionResult AnunciosInstructores() {
+            ViewBag.usuario = Session["usuario"];
+            return View();
 
         }
 

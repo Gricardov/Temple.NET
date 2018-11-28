@@ -227,6 +227,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="imagenes\iconochat.png" />
+    <Content Include="imagenes\iconoPost.png" />
     <Content Include="imagenes\logo.png" />
     <Content Include="imagenes\mila.jpg" />
     <Content Include="ApplicationInsights.config">
@@ -324,6 +325,7 @@
     <Content Include="Views\Shared\_MenuAlumno.cshtml" />
     <Content Include="Views\Shared\_MenuInstructor.cshtml" />
     <Content Include="Views\Instructor\Inicio.cshtml" />
+    <Content Include="Views\Alumno\AnunciosInstructores.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

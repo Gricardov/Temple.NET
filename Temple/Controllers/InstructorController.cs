@@ -173,11 +173,25 @@ namespace Temple.Controllers
 
                 
         [HttpPost]
-        public JsonResult insertarAnuncio(string contenido)
+        public JsonResult insertarAnuncio(string titulo, string contenido)
         {
-            int rs = InsertarAnuncio("Ven magdalena", contenido);
+            int rs = InsertarAnuncio(titulo, contenido);
             string json = new JavaScriptSerializer().Serialize((ListadoAnuncios()));
             return Json(json);
+        }
+
+        [HttpPost]
+        public JsonResult obtenerAnuncios()
+        {
+            string json = new JavaScriptSerializer().Serialize((ListadoAnuncios()));
+            return Json(json);
+        }
+
+        public ActionResult CerrarSesion()
+        {
+            Session["usuario"] = null;
+            return RedirectToAction("Bienvenida", "Bienvenida");
+
         }
 
     }

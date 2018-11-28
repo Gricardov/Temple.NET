@@ -1,23 +1,14 @@
 ﻿
 @{
-    ViewBag.Title = "Mis anuncios";
+    ViewBag.Title = "Anuncios de mis instructores";
     Layout = "~/Views/Shared/_LayoutTemple.cshtml";
 }
+
 <link rel="stylesheet" href="~/Content/estiloComentarios.css" />
-<h2>Mis anuncios</h2>
+<h2>Anuncios de mis instructores</h2>
 <div class="contenidoControl">
-
-    <div class="form-group">
-        <label for="txtTitulo">Publica algo</label>
-        <input type="text" style="max-width: 100%; margin-bottom: 5px;" class="form-control" rows="5" id="txtTitulo" placeholder="Título de la publicación">
-    </div>
-
-    <div class="form-group">
-        <textarea style="max-width: 100%; margin-bottom: 10px;" class="form-control" rows="5" id="txtPublicacion" placeholder="¿Qué quieres anunciar?"></textarea>
-        <button id="btnPublicar" class="btn btn-primary btn-block btn-md disabled">Publicar</button>
-    </div>
-
-    <label for="anuncios">Tus publicaciones </label>
+    
+    <label for="anuncios">Aquí se mostrarán las publicaciones de los instructores con los que hayas tenido clase</label>
     <div id="anuncios">
 
     </div>
@@ -28,7 +19,7 @@
 <script>
 
     // Cargo los anuncios actuales
-            var url ="@Url.Action("obtenerAnuncios", "Instructor")";
+            var url ="@Url.Action("obtenerAnuncios", "Alumno")";
 
             $.ajax({
                 type: "POST",
@@ -37,7 +28,7 @@
                 success: function (response) {
 
                     $("#anuncios").empty();
-                                   
+
                     var lista = JSON.parse(response);
                     if (lista.length == 0) {
                         $('#anuncios').append('<div class="well well-sm">No has publicado ningun anuncio aún</div>');
@@ -66,7 +57,7 @@
     $('#txtPublicacion').on('click', function () {
 
         $('#btnPublicar').removeClass('disabled');
-                    
+
     });
 
     $('#btnPublicar').on('click', function () {
@@ -91,7 +82,7 @@
 
                     $("#anuncios").empty();
 
-                    
+
                     var lista = JSON.parse(response);
                     if (lista.length == 0) {
                         $('#anuncios').append('<div class="well well-sm">No has publicado ningun anuncio aún</div>');
@@ -126,3 +117,4 @@
     });
 
 </script>
+
