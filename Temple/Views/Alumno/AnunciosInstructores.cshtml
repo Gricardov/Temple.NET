@@ -8,7 +8,7 @@
 <h2>Anuncios de mis instructores</h2>
 <div class="contenidoControl">
     
-    <label for="anuncios">Aquí se mostrarán las publicaciones de los instructores con los que hayas tenido clase</label>
+    <label for="anuncios">Aquí se mostrarán las publicaciones de los instructores que hayas contratado</label>
     <div id="anuncios">
 
     </div>
@@ -18,7 +18,7 @@
 
 <script>
 
-    // Cargo los anuncios actuales
+            // Cargo los anuncios actuales
             var url ="@Url.Action("obtenerAnuncios", "Alumno")";
 
             $.ajax({
@@ -39,7 +39,8 @@
 
                         $('#anuncios').append('<div class="row"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">' +
                             '<div class="pull-left image"><img src="/imagenes/iconoPost.png" class="avatar" alt="user profile image">' +
-                            '</div><div class="pull-left meta"><div class="title h5"><b>' + lista[i].titulo + '</b></div>' +
+                            '</div><div class="pull-left meta"><div class="title h5"><b>' + lista[i].nomInstr + ' ' + lista[i].apPatInstr + ' ' + lista[i].apMatInstr + '</b></div>' +
+                            '<div class="title h5"><b>Título de la publicación: ' + lista[i].titulo + '</b></div>'+
                             '<h6 class="text-muted time">' + fechaHora + '</h6></div></div><div class="post-description"><p>' + lista[i].contenido + '</p>' +
                             '</div></div></div></div>');
 
@@ -54,55 +55,40 @@
 
             });
 
-    $('#txtPublicacion').on('click', function () {
+  
+    // Cada dos segundos verificará la tabla
+    setInterval(function () {
 
-        $('#btnPublicar').removeClass('disabled');
+        $("#anuncios").empty();
 
-    });
-
-    $('#btnPublicar').on('click', function () {
-
-        if ($('#txtPublicacion').val().length <= 0 || $('#txtTitulo').val().length <= 0) {
-
-           alert("El título ni el contenido pueden estar vacíos");
-
-        } else {
-
-            var url ="@Url.Action("insertarAnuncio", "Instructor")";
-            var contenido = $("#txtPublicacion").val();
-            var titulo = $('#txtTitulo').val();
-            var data = { titulo: titulo, contenido: contenido };
+        var url ="@Url.Action("obtenerAnuncios", "Alumno")";
 
             $.ajax({
                 type: "POST",
                 url: url,
-                data: data,
                 dataType: "json",
                 success: function (response) {
 
                     $("#anuncios").empty();
-
 
                     var lista = JSON.parse(response);
                     if (lista.length == 0) {
                         $('#anuncios').append('<div class="well well-sm">No has publicado ningun anuncio aún</div>');
                     }
                     for (var i in lista.reverse()) {
-                        //alert(json[i].fechaHora)
+
                         var fechaHora = moment(parseInt(lista[i].fechaHora.replace("/Date(", "").replace(")/", ""))).format('L LT');
 
                         $('#anuncios').append('<div class="row"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">' +
                             '<div class="pull-left image"><img src="/imagenes/iconoPost.png" class="avatar" alt="user profile image">' +
-                            '</div><div class="pull-left meta"><div class="title h5"><b>' + lista[i].titulo + '</b></div>' +
+                            '</div><div class="pull-left meta"><div class="title h5"><b>' + lista[i].nomInstr + ' ' + lista[i].apPatInstr + ' ' + lista[i].apMatInstr + '</b></div>' +
+                            '<div class="title h5"><b>Título de la publicación: ' + lista[i].titulo + '</b></div>'+
                             '<h6 class="text-muted time">' + fechaHora + '</h6></div></div><div class="post-description"><p>' + lista[i].contenido + '</p>' +
                             '</div></div></div></div>');
 
 
 
                     }
-
-                    $('#txtPublicacion').val("");
-                    $('#txtTitulo').val("");
 
 
                   }
@@ -112,9 +98,8 @@
             });
 
 
-        }
+    }, 2000);
 
-    });
 
 </script>
 

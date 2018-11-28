@@ -374,15 +374,20 @@ namespace Temple.Controllers
             List<Anuncio> lista = new List<Anuncio>();
             con.Open();
             SqlCommand cmd = new SqlCommand("USP_OBTENER_ANUNCIOS_POR_ALUMNO", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODALU", ((Usuario)Session["usuario"]).codigo);
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
                 Anuncio a = new Anuncio();
                 a.id = reader.GetInt32(0);
                 a.codInstr = reader.GetInt32(1);
-                a.titulo = reader.GetString(2);
-                a.contenido = reader.GetString(3);
-                a.fechaHora = reader.GetDateTime(4);
+                a.nomInstr = reader.GetString(2);
+                a.apPatInstr = reader.GetString(3);
+                a.apMatInstr = reader.GetString(4);
+                a.titulo = reader.GetString(5);
+                a.contenido = reader.GetString(6);
+                a.fechaHora = reader.GetDateTime(7);
                 lista.Add(a);
             }
 
@@ -456,6 +461,13 @@ namespace Temple.Controllers
         public JsonResult obtenerSubcategorias(int categoria)
         {
             string json = new JavaScriptSerializer().Serialize((ListadoSubcategorias(categoria)));
+            return Json(json);
+        }
+
+        [HttpPost]
+        public JsonResult obtenerAnuncios()
+        {
+            string json = new JavaScriptSerializer().Serialize((ListadoAnuncios()));
             return Json(json);
         }
 
