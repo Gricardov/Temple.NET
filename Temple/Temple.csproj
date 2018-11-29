@@ -326,6 +326,8 @@
     <Content Include="Views\Shared\_MenuInstructor.cshtml" />
     <Content Include="Views\Instructor\Inicio.cshtml" />
     <Content Include="Views\Alumno\AnunciosInstructores.cshtml" />
+    <Content Include="Views\Instructor\MiPerfil.cshtml" />
+    <Content Include="Views\Instructor\MisHorarios.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

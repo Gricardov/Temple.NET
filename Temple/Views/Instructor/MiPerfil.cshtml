@@ -29,13 +29,12 @@
             <li>324   <span>Clases dictadas</span></li>
             <li>@Html.DisplayFor(model => model.calificacion)/5<span>Calificación</span></li>
         </ul>
-        <button class="btn btn-primary" id="btnConsultar">Consultar</button>
-        <button class="btn btn-primary" id="btnContratar">Contratar</button>
-      
+       
+
     </div>
     <h1>
         @Html.DisplayFor(model => model.nombres) @Html.DisplayFor(model => model.apPaterno) @Html.DisplayFor(model => model.apMaterno)
-        <small>(@Html.DisplayFor(model => model.distancia))</small>
+        
         <i class="fa fa-check-circle check"></i>
 
     </h1>
@@ -51,13 +50,13 @@
 <div class="controlesPerfil">
 
     <input class="pestana" id="tab1" type="radio" name="tabs" checked>
-    <label class="lblPestana" for="tab1">Reseñas</label>
+    <label class="lblPestana" for="tab1">Mis reseñas</label>
 
     <input class="pestana" id="tab2" type="radio" name="tabs">
-    <label class="lblPestana" for="tab2">Cursos</label>
+    <label class="lblPestana" for="tab2">Mis cursos</label>
 
     <input class="pestana" id="tab3" type="radio" name="tabs">
-    <label class="lblPestana" for="tab3">Horarios</label>
+    <label class="lblPestana" for="tab3">Mis horarios</label>
 
     <section class="contenidoControl" id="content1">
         <div id="comentarios">
@@ -82,17 +81,7 @@
 
 </div>
 <div id='overlay'>
-
-    @using (Html.BeginForm("Resumen", "Transaccion", FormMethod.Post, new { id = "formTransaccion" }))
-    {
-        @Html.Hidden("idSub", -1);
-        @Html.Hidden("idCat", -1);
-        @Html.Hidden("idMod", -1);
-        @Html.Hidden("inicioHorario", -1);
-        @Html.Hidden("finHorario", -1);
-        @Html.Hidden("codInstr", Html.DisplayFor(model => model.codigo));
-    }
-
+    
     <p id="txtOverlay" style="color: #ffffff; font-family: 'Raleway',sans-serif; font-size: 30px; font-weight: 800; margin: 0 0 24px; text-align: center; position: absolute; top: 31%; left: 1%;"></p>
     <button id="btnConfirmarOverlay" class="btn btn-primary btn-block" style="position: absolute; top: 35%; left: 1%; width: 48%; z-index: 99999;">Siguiente</button>
     <button id="btnCancelarOverlay" class="btn btn-danger btn-block" style="position: absolute; top: 35%; left: 50%; width: 48%; z-index: 99999;">Cancelar</button>
@@ -124,7 +113,7 @@
         // Muestra las reseñas
 
         if (json.length == 0) {
-            $('#comentarios').append('<div class="well well-sm">Este instructor no tiene reseñas aún</div>');
+            $('#comentarios').append('<div class="well well-sm">No tienes reseñas aún</div>');
         }
 
         for (var i in json) {
@@ -159,7 +148,7 @@
         var json = JSON.parse('@jsonCursos');
 
         if (json.length == 0) {
-            $('#contenidosCursos').append('<div class="well well-sm">Este instructor no ha definido cursos aún</div>');
+            $('#contenidosCursos').append('<div class="well well-sm">Nos has definido cursos aún</div>');
         }
 
         //Muestra los cursos que enseña
@@ -247,6 +236,7 @@
         }
 
         // Para el calendario
+
         var jsonHorarios = JSON.parse('@jsonHorarios');
 
         $('#calendar').fullCalendar({
@@ -311,67 +301,17 @@
             }, rendering: true,
             eventClick: function (calEvent, jsEvent, view) {
 
-                var inicio = moment(calEvent.start).format("HH:mm:ss");
-                var fin = moment(calEvent.end).format("HH:mm:ss");
-
-                alert("Disponibilidad de este horario: \n\nInicio: "+inicio+"\nFin: "+fin);
+                alert("Para editar tus horarios, selecciona la opción 'Mis horarios' de las opciones del menú");
+                $('#calendar').fullCalendar('unselect');
 
             },
-            select: function (start, end, jsEvent, view, resource) {
+            select: function () {
 
-                var contadorHorarios = 0;
-
-                var inicioSeleccionado = parseInt(moment(start).format("x"));
-                var finSeleccionado = parseInt(moment(end).format("x"));
-                // Primero, verifico que el horario seleccionado sea mayor al momento actual
-                //if (inicioSeleccionado >= moment().valueOf()){
-
-                    for (var i in jsonHorarios) {
-
-                        var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
-                        var finMs = parseInt(jsonHorarios[i].fin.replace("/Date(", "").replace(")/", ""));
-
-                        if ((inicioSeleccionado >= inicioMs && inicioSeleccionado <= finMs) ||
-                            (finSeleccionado >= inicioMs && finSeleccionado <= finMs)) {
-
-                                var inicio = moment(start).format("HH:mm:ss");
-                                var fin = moment(end).format("HH:mm:ss");
-
-                                // Establezco las variables globales de inicio y fin
-                                inicioHorarioSeleccionado = parseInt(moment(start).format("x"));
-                                finHorarioSeleccionado = parseInt(moment(end).format("x"));
-
-                                alert("Has seleccionado: \n\nInicio: " + inicio + "\nFin: " + fin);
-                                return;
-
-                           
-
-                        }
-
-                        contadorHorarios++;
-
-
-                    }
-
-                    if (contadorHorarios >= jsonHorarios.length) {
-                        alert("Asegúrate de seleccionar un horario dentro de los disponibles");
-                        $('#calendar').fullCalendar('unselect');
-
-
-                    }
-
-                /*} else {
-
-                    alert("El horario seleccionado debe ser mayor o igual al momento actual");
-                    $('#calendar').fullCalendar('unselect');
-
-
-                }*/
-
-
+                alert("Para editar tus horarios, selecciona la opción 'Mis horarios' de las opciones del menú");
+                $('#calendar').fullCalendar('unselect');
             },
             overlap: false,
-            editable: true,
+            editable: false,
             startEditable: true,
             snapDuration: "00:10:00"
 
@@ -412,114 +352,7 @@
 
         // Todo bugueado me vino el fullcalendar jajaja, debo recurrir a este truco
         $('.fc-next-button').click();
-
-        $('#btnContratar').on('click', function (e) {
-
-            e.preventDefault();
-            pasoActual = 1;
-            // Selecciono la pestaña de cursos
-            $("#tab2").prop("checked", true);
-
-            //Configuro el botón y texto del overlay
-            $("#txtOverlay").text("Primero, selecciona el curso que deseas y presiona Siguiente");
-
-            // Para el overlay
-            $('#pestanasCursos').css('z-index', '99998');
-            $('#pestanasCursos').addClass('enfasis');
-            $('#overlay').fadeIn(300);
-
-            /*
-            $('#overlay').click(function (e) {
-                $('#overlay').fadeOut(300, function () {
-                    $('.expose').css('z-index', '1');
-                });
-            });*/
-
-
-    });
-
-    $('#btnConfirmarOverlay').on('click', function (e) {
-
-        switch (pasoActual) {
-
-            case 1:
-                pasoActual = 2;
-                // Selecciono la pestaña de cursos
-                $("#tab2").prop("checked", true);
-
-                // Para el overlay
-                $('#pestanasCursos').css('z-index', '1');
-                $('#pestanasCursos').removeClass('enfasis');
-
-                $('.cboModalidad').css('z-index', '99998');
-                $('.cboModalidad').addClass('enfasis');
-                $('#overlay').fadeIn(300);
-
-                //Configuro el botón y texto del overlay
-                $("#txtOverlay").text("Ahora, selecciona la modalidad");
-                break;
-
-
-            case 2:
-                pasoActual = 3;
-
-                $('#btnConfirmarOverlay').text("Finalizar");
-                // Selecciono la pestaña de horarios
-                $("#tab3").prop("checked", true);
-                // Para el overlay
-                $('.cboModalidad').css('z-index', '1');
-                $('.cboModalidad').removeClass('enfasis');
-
-                $('#calendario').css('z-index', '99998');
-                $('#calendario').addClass('enfasis');
-                $('#overlay').fadeIn(300);
-
-                //Configuro el botón y texto del overlay
-                $("#txtOverlay").text("Finalmente, selecciona 'ir a hoy' y elige tu horario. Luego, presiona Finalizar");
-                break;
-            case 3:
-                // Aquí, verificaré que los datos sean correctos y luego, haré el submit al formulario
-                if (inicioHorarioSeleccionado != -1 && finHorarioSeleccionado != -1) {
-
-                    $("#idSub").val(idSubSeleccionado);
-                    $("#idCat").val(idCatSeleccionado);
-                    $("#idMod").val(idModalidadSeleccionada);
-                    $("#inicioHorario").val(inicioHorarioSeleccionado);
-                    $("#finHorario").val(finHorarioSeleccionado);
-                    $("#formTransaccion").submit();
-
-                } else {
-
-                    $("#txtOverlay").text("Elige un horario válido y presiona finalizar. Arrastra con el mouse dentro de uno disponible");
-
-                }
-
-                break;
-        }
-
-    });
-
-    $('#btnCancelarOverlay').on('click', function (e) {
-        pasoActual = -1;
-
-        // Vuelvo todo a la normalidad
-        $('#pestanasCursos').removeClass('enfasis');
-        $('.cboModalidad').removeClass('enfasis');
-        $('#calendario').removeClass('enfasis');
-
-
-        $('#btnConfirmarOverlay').text("Siguiente");
-
-        // Selecciono la pestaña de cursos
-        $("#tab1").prop("checked", true);
-        //Configuro el botón y texto del overlay
-        $("#txtOverlay").text("");
-        $('#calendario').css('z-index', '1');
-        $('#pestanasCursos').removeClass('enfasis');
-        $('#overlay').css("display", "none");
-
-    });
-
+    
 </script>
 
 

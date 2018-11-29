@@ -1,0 +1,230 @@
+﻿
+@{
+    ViewBag.Title = "Mis Horarios";
+    Layout = "~/Views/Shared/_LayoutTemple.cshtml";
+}
+
+<!--El calendario-->
+<link rel="stylesheet" href="~/Content/fullcalendar.css" />
+<script src="~/Content/fullcalendar.js" type="text/javascript"></script>
+
+<h2>Editar mis horarios</h2>
+<small>Para editar un horario existente, solo modifíquelo. Para agregar uno nuevo, arrastre sobre un espacio vacío.</small>
+
+<div id="calendario" class="row">
+    <div id='calendar' style="max-height: 1000px; overflow:auto; margin: 5px;"></div>
+</div>
+
+<!--Para el model de confirmación-->
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Confirmar acción</h4>
+            </div>
+            <div class="modal-body">
+                <p id="txtModal"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="modal-btn-si">Sí</button>
+                <button type="button" class="btn btn-primary" id="modal-btn-no">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert" role="alert" id="result"></div>
+
+<script>
+    // Al cargar la página
+         @using System.Web.Script.Serialization;
+
+            @{
+               var jsonHorarios = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.horarios));
+
+            }
+
+            // Para el calendario
+        var jsonHorarios = JSON.parse('@jsonHorarios');
+
+        $('#calendar').fullCalendar({
+
+            defaultView: 'agendaWeek',
+            slotEventOverlap: true,
+            allDaySlot: false,
+            allDayText: false,
+            nowIndicator: true,
+            selectable: true,
+            selectHelper: true,
+            header: {
+                left: 'title',
+                center: '',
+                right: 'today prev,next'
+            },
+            titleFormat: 'D/MM/YYYY',
+            buttonText: {
+                today: 'Ir a hoy',
+                month: 'Ver mes',
+                week: 'Ver semana',
+                day: 'Ver día',
+                list: 'Lista'
+            },
+            eventBackgroundColor: 'blue',
+            themeSystem: 'bootstrap4',
+            contentHeight: '600',
+            columnHeaderFormat: 'ddd M/D',
+            validRange: function (nowDate) {
+                return {
+                    start: nowDate.clone().subtract(1, 'day'),
+                    end: nowDate.clone().add(1, 'months')
+                };
+            },
+            columnHeaderText: function (mom) {
+
+                if (mom.weekday() === 1) {
+                    return 'Lunes';
+                }
+
+                else if (mom.weekday() === 2) {
+                    return 'Martes';
+                }
+                else if (mom.weekday() === 3) {
+                    return 'Miércoles';
+                }
+                else if (mom.weekday() === 4) {
+                    return 'Jueves';
+                }
+                else if (mom.weekday() === 5) {
+                    return 'Viernes';
+                }
+                else if (mom.weekday() === 6) {
+                    return 'Sábado';
+                }
+                else if (mom.weekday() === 0) {
+                    return 'Domingo';
+                }
+                else {
+                    return mom.format('LLL');
+                }
+            }, rendering: true,
+            eventClick: function (calEvent, jsEvent, view) {
+
+                var inicio = moment(calEvent.start).format("HH:mm:ss");
+                var fin = moment(calEvent.end).format("HH:mm:ss");
+
+                alert("Disponibilidad de este horario: \n\nInicio: "+inicio+"\nFin: "+fin);
+
+            },
+            eventResize: function (event, delta, revertFunc) {
+
+                alert("cambiado");
+
+            },
+            select: function (start, end, jsEvent, view, resource) {
+
+                var contadorHorarios = 0;
+
+                var inicioSeleccionado = parseInt(moment(start).format("x"));
+                var finSeleccionado = parseInt(moment(end).format("x"));
+                
+                    for (var i in jsonHorarios) {
+
+                        var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
+                        var finMs = parseInt(jsonHorarios[i].fin.replace("/Date(", "").replace(")/", ""));
+
+                        if ((inicioSeleccionado >= inicioMs && inicioSeleccionado <= finMs) ||
+                            (finSeleccionado >= inicioMs && finSeleccionado <= finMs) ||
+                            (inicioSeleccionado < inicioMs && finSeleccionado > finMs)) {
+
+                                alert("Has seleccionado un horario que se sobrepone a otro. Si quieres modificar uno ya existente, solo modifica su tamaño");
+                                $('#calendar').fullCalendar('unselect');
+
+                                return;
+
+                        }
+
+                        contadorHorarios++;
+
+
+                    }
+
+                if (contadorHorarios >= jsonHorarios.length) {
+                    
+                    var evento = new Object();
+
+                    evento.inicio = start;
+                    evento.fin = end;
+
+                    mostrarModalConfirmacion(evento);                    
+
+                    }
+
+                /*} else {
+
+                    alert("El horario seleccionado debe ser mayor o igual al momento actual");
+                    $('#calendar').fullCalendar('unselect');
+
+
+                }*/
+
+
+            },
+            overlap: false,
+            editable: true,
+            startEditable: true,
+            snapDuration: "00:10:00"
+
+
+    });
+
+    for (var i in jsonHorarios) {
+
+        var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
+        var finMs = parseInt(jsonHorarios[i].fin.replace("/Date(", "").replace(")/", ""));
+        var evento = {
+
+            title: 'Disponible',
+            end: finMs,
+            start: inicioMs,
+            editable: true,
+            startEditable: true,
+            backgroundColor: 'green',
+            //rendering: 'background',
+            selectHelper: true
+        }
+
+
+        $('#calendar').fullCalendar('renderEvent', evento, true);
+
+    }
+
+    // Todo bugueado me vino el fullcalendar jajaja, debo recurrir a este truco
+    $('.fc-next-button').click();
+
+    // Para el modal de confirmación
+
+    function mostrarModalConfirmacion(evento) {
+
+        var inicio = moment(evento.inicio).format("L HH:mm:ss");
+        var fin = moment(evento.fin).format("L HH:mm:ss");
+
+        $("#txtModal").text("Has seleccionado el horario de "+inicio+" hasta "+fin+". ¿Guardar?");
+        $("#mi-modal").modal('show');
+
+        $("#modal-btn-si").on("click", function () {            
+
+            $("#mi-modal").modal('hide');
+            $("#txtModal").text("");
+        });
+
+        $("#modal-btn-no").on("click", function () {
+            $("#mi-modal").modal('hide');
+            $("#txtModal").text("");
+
+        });
+
+    }
+
+</script>
