@@ -89,7 +89,6 @@ namespace Temple.Controllers
 
             if (rs != -1)
             {
-
                 transaccion.Commit();
             }
             else {

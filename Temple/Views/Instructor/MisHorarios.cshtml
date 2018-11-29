@@ -179,27 +179,32 @@
 
     });
 
-    for (var i in jsonHorarios) {
+    cargarHorarios();
 
-        var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
-        var finMs = parseInt(jsonHorarios[i].fin.replace("/Date(", "").replace(")/", ""));
-        var evento = {
+    function cargarHorarios() {
+        $('#calendar').fullCalendar('refetchEvents');
 
-            title: 'Disponible',
-            end: finMs,
-            start: inicioMs,
-            editable: true,
-            startEditable: true,
-            backgroundColor: 'green',
-            //rendering: 'background',
-            selectHelper: true
+        for (var i in jsonHorarios) {
+
+            var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
+            var finMs = parseInt(jsonHorarios[i].fin.replace("/Date(", "").replace(")/", ""));
+            var evento = {
+
+                title: 'Disponible',
+                end: finMs,
+                start: inicioMs,
+                editable: true,
+                startEditable: true,
+                backgroundColor: 'green',
+                //rendering: 'background',
+                selectHelper: true
+            }
+
+
+            $('#calendar').fullCalendar('renderEvent', evento, true);
+
         }
-
-
-        $('#calendar').fullCalendar('renderEvent', evento, true);
-
     }
-
     // Todo bugueado me vino el fullcalendar jajaja, debo recurrir a este truco
     $('.fc-next-button').click();
 
@@ -214,6 +219,26 @@
         $("#mi-modal").modal('show');
 
         $("#modal-btn-si").on("click", function () {            
+
+            // Hago el ajax
+            var url ="@Url.Action("insertarEvento", "Instructor")";
+            var data = { inicio: parseInt(moment(evento.inicio).format("x")),fin:  parseInt(moment(evento.fin).format("x"))};
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                dataType: "json",
+                success: function (response) {
+                    
+                    jsonHorarios = JSON.parse('@jsonHorarios');
+                    cargarHorarios();
+
+                  }
+
+
+
+            });
 
             $("#mi-modal").modal('hide');
             $("#txtModal").text("");

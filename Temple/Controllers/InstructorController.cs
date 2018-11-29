@@ -166,8 +166,15 @@ namespace Temple.Controllers
 
         public List<Evento> ListadoHorarios(SqlConnection con, int codUsu)
         {
+            
+            if (con == null) {
+
+                this.con.Open();
+
+            }
+
             List<Evento> lista = new List<Evento>();
-            SqlCommand cmd = new SqlCommand("SELECT*FROM TB_HORARIO_INSTRUCTOR WHERE COD_USU=@CODUSU", con);
+            SqlCommand cmd = new SqlCommand("SELECT*FROM TB_HORARIO_INSTRUCTOR WHERE COD_USU=@CODUSU", this.con);
             //cmd.CommandType = System.Data.CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@CODUSU", codUsu);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -181,6 +188,12 @@ namespace Temple.Controllers
                 lista.Add(e);
             }
             reader.Close();
+
+            if (con == null) {
+
+                this.con.Close();
+
+            }
 
             return lista;
 
@@ -254,6 +267,36 @@ namespace Temple.Controllers
             con.Close();
 
             return rs;
+        }
+
+        private string InsertarEvento(Evento e)
+        {
+            string mensaje = "";
+            Usuario u = (Usuario)Session["usuario"];
+            con.Open();
+            SqlCommand cmd = new SqlCommand("USP_INSERTAR_EVENTO", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODINSTR", u.codigo);
+            cmd.Parameters.AddWithValue("@INICIO", e.inicio);
+            cmd.Parameters.AddWithValue("@FIN", e.fin);
+
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+            {
+
+                mensaje = reader.GetString(0);
+
+            }
+            else {
+
+                mensaje = "Qué mello";
+
+            }
+
+            con.Close();
+
+            return mensaje;
         }
 
         // ?
@@ -375,8 +418,22 @@ namespace Temple.Controllers
             string json = new JavaScriptSerializer().Serialize((ListadoAnuncios()));
             return Json(json);
         }
+        [HttpPost]
+        public JsonResult insertarEvento(Int64 inicio, Int64 fin)
+        {
 
-        
+            Debug.WriteLine("inicio " + inicio + " fin " + fin);
+
+            Evento e = new Evento();
+            e.inicio = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(inicio);
+            e.fin = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(fin);
+
+            string respuesta = InsertarEvento(e);
+            Debug.WriteLine(respuesta);
+            List<Evento> lista = ListadoHorarios(null, ((Usuario)Session["usuario"]).codigo);
+            return Json(lista);
+        }
+
 
     }
 }
