@@ -17,7 +17,7 @@
 
 <!--Para el model de confirmación-->
 
-<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-modal">
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modalConfirmacion">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
@@ -25,11 +25,28 @@
                 <h4 class="modal-title" id="myModalLabel">Confirmar acción</h4>
             </div>
             <div class="modal-body">
-                <p id="txtModal"></p>
+                <p id="txtModalConfirmacion"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" id="modal-btn-si">Sí</button>
-                <button type="button" class="btn btn-primary" id="modal-btn-no">No</button>
+                <button type="button" class="btn btn-default" id="btnSi">Sí</button>
+                <button type="button" class="btn btn-primary" id="btnNo">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modalMensaje">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Confirmar acción</h4>
+            </div>
+            <div class="modal-body">
+                <p id="txtModalMensaje"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="btnListo">Listo</button>
             </div>
         </div>
     </div>
@@ -140,7 +157,7 @@
 
                                 alert("Has seleccionado un horario que se sobrepone a otro. Si quieres modificar uno ya existente, solo modifica su tamaño");
                                 $('#calendar').fullCalendar('unselect');
-
+                                
                                 return;
 
                         }
@@ -156,7 +173,6 @@
 
                     evento.inicio = start;
                     evento.fin = end;
-
                     mostrarModalConfirmacion(evento);                    
 
                     }
@@ -182,8 +198,7 @@
     cargarHorarios();
 
     function cargarHorarios() {
-        $('#calendar').fullCalendar('refetchEvents');
-
+        var eventos = [];
         for (var i in jsonHorarios) {
 
             var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
@@ -199,11 +214,16 @@
                 //rendering: 'background',
                 selectHelper: true
             }
-
-
-            $('#calendar').fullCalendar('renderEvent', evento, true);
+            eventos.push(evento);
+            //$('#calendar').fullCalendar('renderEvent', evento, true);
 
         }
+
+        $('#calendar').fullCalendar('removeEvents');
+
+        $('#calendar').fullCalendar('removeEventSource', eventos);
+        $('#calendar').fullCalendar('addEventSource', eventos);
+
     }
     // Todo bugueado me vino el fullcalendar jajaja, debo recurrir a este truco
     $('.fc-next-button').click();
@@ -214,12 +234,10 @@
 
         var inicio = moment(evento.inicio).format("L HH:mm:ss");
         var fin = moment(evento.fin).format("L HH:mm:ss");
+        $("#txtModalConfirmacion").text("Has seleccionado el horario de "+inicio+" hasta "+fin+". ¿Guardar?");
+        $("#modalConfirmacion").modal('show');
 
-        $("#txtModal").text("Has seleccionado el horario de "+inicio+" hasta "+fin+". ¿Guardar?");
-        $("#mi-modal").modal('show');
-
-        $("#modal-btn-si").on("click", function () {            
-
+        $("#btnSi").unbind("click").click(function () {            
             // Hago el ajax
             var url ="@Url.Action("insertarEvento", "Instructor")";
             var data = { inicio: parseInt(moment(evento.inicio).format("x")),fin:  parseInt(moment(evento.fin).format("x"))};
@@ -230,8 +248,20 @@
                 data: data,
                 dataType: "json",
                 success: function (response) {
-                    
-                    jsonHorarios = JSON.parse('@jsonHorarios');
+
+                    $("#modalMensaje").modal('show');
+                    $("#txtModalMensaje").text(response.mensaje);
+
+                    // Limpiamos jsonHorarios y lo volvemos a llenar
+                    jsonHorarios = [];
+                    for (var i in response.eventos) {
+
+                        var evento = new Object();
+                        evento.inicio = response.eventos[i].inicio;
+                        evento.fin = response.eventos[i].fin;
+                        jsonHorarios.push(evento);
+                    }
+
                     cargarHorarios();
 
                   }
@@ -240,13 +270,19 @@
 
             });
 
-            $("#mi-modal").modal('hide');
-            $("#txtModal").text("");
+            $("#modalConfirmacion").modal('hide');
+            $("#txtModalConfirmacion").text("");
         });
 
-        $("#modal-btn-no").on("click", function () {
-            $("#mi-modal").modal('hide');
-            $("#txtModal").text("");
+        $("#btnNo").unbind("click").on("click", function () {
+            $("#modalConfirmacion").modal('hide');
+            $("#txtModalConfirmacion").text("");
+
+        });
+
+        $("#btnListo").unbind("click").on("click", function () {
+            $("#modalMensaje").modal('hide');
+            $("#txtModalMensaje").text("");
 
         });
 

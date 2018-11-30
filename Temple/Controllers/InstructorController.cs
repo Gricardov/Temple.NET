@@ -271,7 +271,7 @@ namespace Temple.Controllers
 
         private string InsertarEvento(Evento e)
         {
-            string mensaje = "";
+            string mensaje = "oh";
             Usuario u = (Usuario)Session["usuario"];
             con.Open();
             SqlCommand cmd = new SqlCommand("USP_INSERTAR_EVENTO", con);
@@ -282,18 +282,13 @@ namespace Temple.Controllers
 
             SqlDataReader reader = cmd.ExecuteReader();
 
-            if (reader.Read())
+            while (reader.Read())
             {
 
                 mensaje = reader.GetString(0);
 
             }
-            else {
-
-                mensaje = "Qué mello";
-
-            }
-
+            
             con.Close();
 
             return mensaje;
@@ -421,17 +416,15 @@ namespace Temple.Controllers
         [HttpPost]
         public JsonResult insertarEvento(Int64 inicio, Int64 fin)
         {
-
-            Debug.WriteLine("inicio " + inicio + " fin " + fin);
-
+            //Debug.WriteLine("inicio " + inicio + " fin " + fin);
             Evento e = new Evento();
             e.inicio = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(inicio);
             e.fin = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(fin);
 
             string respuesta = InsertarEvento(e);
-            Debug.WriteLine(respuesta);
-            List<Evento> lista = ListadoHorarios(null, ((Usuario)Session["usuario"]).codigo);
-            return Json(lista);
+            //Debug.WriteLine((ListadoHorarios(null, ((Usuario)Session["usuario"]).codigo)).Count().ToString() + " tamaño");
+            var resultado = new { eventos = ListadoHorarios(null, ((Usuario)Session["usuario"]).codigo), mensaje = respuesta };
+            return Json(resultado,JsonRequestBehavior.AllowGet);
         }
 
 
