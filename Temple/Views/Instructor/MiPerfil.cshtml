@@ -1,4 +1,4 @@
-﻿@model Temple.Models.PerfilInstructor
+﻿@model Temple.Models.Perfil
 
 @{
     ViewBag.Title = ViewBag.titulo;
@@ -58,6 +58,9 @@
     <input class="pestana" id="tab3" type="radio" name="tabs">
     <label class="lblPestana" for="tab3">Mis horarios</label>
 
+    <input class="pestana" id="tab4" type="radio" name="tabs">
+    <label class="lblPestana" for="tab4">Mis transacciones</label>
+
     <section class="contenidoControl" id="content1">
         <div id="comentarios">
 
@@ -76,6 +79,52 @@
     <section class="contenidoControl" id="content3">
         <div id="calendario" class="row">
             <div id='calendar' style="max-height: 600px; overflow:auto; margin: 5px;"></div>
+        </div>
+    </section>
+
+    <section class="contenidoControl" id="content4">
+        <div id="transacciones">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Código transacción</th>
+                        <th>Código instructor</th>
+                        <th>Nombres</th>
+                        <th>Apellido paterno</th>
+                        <th>Aptellido materno</th>
+                        <th>Categoría</th>
+                        <th>Subcategoría</th>
+                        <th>Modalidad</th>
+                        <th>Precio por hora</th>
+                        <th>Horario inicio</th>
+                        <th>Horario fin</th>
+                        <th>Total</th>
+                        <th>Fecha transaccion</th>
+                    <tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var transaccion in ViewBag.transacciones)
+                    {
+                        <tr>
+                            <td>@transaccion.codTran</td>
+                            <td>@transaccion.codInstr</td>
+                            <td>@transaccion.nombresInstr</td>
+                            <td>@transaccion.apPatInstr</td>
+                            <td>@transaccion.apMatInstr</td>
+                            <td>@transaccion.desCat</td>
+                            <td>@transaccion.desSub</td>
+                            <td>@transaccion.desMod</td>
+                            <td>@transaccion.precioHora</td>
+                            <td>@transaccion.inicio</td>
+                            <td>@transaccion.fin</td>
+                            <td>@transaccion.total</td>
+                            <td>@transaccion.fechaHora</td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
         </div>
     </section>
 
@@ -98,16 +147,7 @@
                var jsonHorarios = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.horarios));
 
             }
-
-        // Para guardar los datos seleccionados: El curso, la modalidad y el horario
-        var idSubSeleccionado = -1;
-        var idCatSeleccionado = -1;
-        var idModalidadSeleccionada=-1;
-        var inicioHorarioSeleccionado=-1;
-        var finHorarioSeleccionado=-1;
-
-        var pasoActual = -1;
-
+                
         var json = JSON.parse('@jsonResenas');
 
         // Muestra las reseñas
@@ -317,38 +357,40 @@
 
 
         });
-        //alert(moment(moment().toDate()).format("HH:mm:ss"));
-         //var eventos = [];
+       
+        cargarHorarios();
 
-        for (var i in jsonHorarios) {
+        function cargarHorarios() {
+            var eventos = [];
+            for (var i in jsonHorarios) {
 
-            var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
-            var finMs = parseInt(jsonHorarios[i].fin.replace("/Date(", "").replace(")/", ""));
+                var id = jsonHorarios[i].id;
+                var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
+                var finMs = parseInt(jsonHorarios[i].fin.replace("/Date(", "").replace(")/", ""));
+
                 var evento = {
-
+                    id: id,
                     title: 'Disponible',
-                    end: finMs,
-                    start: inicioMs,
+                    start: moment(inicioMs),
+                    end: moment(finMs),
                     editable: false,
                     startEditable: false,
-                    backgroundColor:'green',
+                    backgroundColor: 'green',
                     //rendering: 'background',
                     selectHelper: true
-
-
                 }
+                eventos.push(evento);
 
-                /*eventos.push({
-
-                    title: 'Ocupado',
-                    start: inicioMs,
-                    end: finMS
-
-                });*/
-
-            $('#calendar').fullCalendar('renderEvent', evento,true);
+                //$('#calendar').fullCalendar('renderEvent', evento, true);
 
             }
+
+            $('#calendar').fullCalendar('removeEvents');
+
+            //$('#calendar').fullCalendar('removeEventSource', eventos);
+            $('#calendar').fullCalendar('addEventSource', eventos);
+
+        }
 
         // Todo bugueado me vino el fullcalendar jajaja, debo recurrir a este truco
         $('.fc-next-button').click();

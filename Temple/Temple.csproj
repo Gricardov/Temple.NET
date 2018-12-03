@@ -170,13 +170,14 @@
     <Compile Include="Models\InstructoresRecomendados.cs" />
     <Compile Include="Models\Modalidad.cs" />
     <Compile Include="Models\Pedido.cs" />
-    <Compile Include="Models\PerfilInstructor.cs" />
+    <Compile Include="Models\Perfil.cs" />
     <Compile Include="Models\PreferenciaAprendizaje.cs" />
     <Compile Include="Models\PreferenciaEnsenanza.cs" />
     <Compile Include="Models\Reseña.cs" />
     <Compile Include="Models\Rol.cs" />
     <Compile Include="Models\Subcategoria.cs" />
     <Compile Include="Models\TarjetaInstructor.cs" />
+    <Compile Include="Models\Transaccion.cs" />
     <Compile Include="Models\Tutor.cs" />
     <Compile Include="Models\Ubicacion.cs" />
     <Compile Include="Models\Usuario.cs" />
@@ -328,6 +329,8 @@
     <Content Include="Views\Alumno\AnunciosInstructores.cshtml" />
     <Content Include="Views\Instructor\MiPerfil.cshtml" />
     <Content Include="Views\Instructor\MisHorarios.cshtml" />
+    <Content Include="Views\Alumno\MiPerfil.cshtml" />
+    <Content Include="Views\Alumno\MisCitas.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

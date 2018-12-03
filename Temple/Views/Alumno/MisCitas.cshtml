@@ -1,0 +1,144 @@
+﻿
+@{
+    ViewBag.Title = "Mis Citas";
+    Layout = "~/Views/Shared/_LayoutTemple.cshtml";
+}
+
+<!--El calendario-->
+<link rel="stylesheet" href="~/Content/fullcalendar.css" />
+<script src="~/Content/fullcalendar.js" type="text/javascript"></script>
+
+<h2>Mis citas</h2>
+<small>Aquí aparecerán todos los horarios que hayas reservado.</small>
+
+<div id="calendario" class="row">
+    <div id='calendar' style="max-height: 1000px; overflow:auto; margin: 5px;"></div>
+</div>
+
+<script>
+
+    @using System.Web.Script.Serialization;
+
+            @{
+                var jsonCitas = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.citas));
+
+            }
+
+    // Para el calendario
+    var jsonCitas = JSON.parse('@jsonCitas');
+        
+        $('#calendar').fullCalendar({
+
+            defaultView: 'agendaWeek',
+            slotEventOverlap: true,
+            allDaySlot: false,
+            allDayText: false,
+            nowIndicator: true,
+            selectable: false,
+            selectHelper: false,
+            header: {
+                left: 'title',
+                center: '',
+                right: 'today prev,next'
+            },
+            titleFormat: 'D/MM/YYYY',
+            buttonText: {
+                today: 'Ir a hoy',
+                month: 'Ver mes',
+                week: 'Ver semana',
+                day: 'Ver día',
+                list: 'Lista'
+            },
+            eventBackgroundColor: 'blue',
+            themeSystem: 'bootstrap4',
+            contentHeight: '600',
+            columnHeaderFormat: 'ddd M/D',
+            /*validRange: function (nowDate) {
+                return {
+                    start: nowDate.clone().subtract(1, 'day'),
+                    end: nowDate.clone().add(1, 'months')
+                };
+            },*/
+            columnHeaderText: function (mom) {
+
+                if (mom.weekday() === 1) {
+                    return 'Lunes';
+                }
+
+                else if (mom.weekday() === 2) {
+                    return 'Martes';
+                }
+                else if (mom.weekday() === 3) {
+                    return 'Miércoles';
+                }
+                else if (mom.weekday() === 4) {
+                    return 'Jueves';
+                }
+                else if (mom.weekday() === 5) {
+                    return 'Viernes';
+                }
+                else if (mom.weekday() === 6) {
+                    return 'Sábado';
+                }
+                else if (mom.weekday() === 0) {
+                    return 'Domingo';
+                }
+                else {
+                    return mom.format('LLL');
+                }
+            }, rendering: true,
+            eventClick: function (calEvent, jsEvent, view) {
+
+                var inicio = moment(calEvent.start).format("HH:mm:ss");
+                var fin = moment(calEvent.end).format("HH:mm:ss");
+
+                alert("Has seleccionado el horario: \n\nInicio: " + inicio + "\nFin: " + fin + "\n Id: " + calEvent.id);
+
+            },
+            overlap: false,
+            editable: false,
+            startEditable: false,
+            snapDuration: "00:01:00"
+
+
+    });
+
+    cargarCitas();
+
+    function cargarCitas() {
+        var eventos = [];
+
+        for (var i in jsonCitas) {
+
+            var id = -1;
+            var inicioMs = parseInt(jsonCitas[i].inicio.replace("/Date(", "").replace(")/", ""));
+            var finMs = parseInt(jsonCitas[i].fin.replace("/Date(", "").replace(")/", ""));
+
+            var evento = {
+                id: id,
+                title: 'Has reservado este horario',
+                start: moment(inicioMs),
+                end: moment(finMs),
+                editable: false,
+                startEditable: false,
+                backgroundColor: 'red',
+                //rendering: 'background',
+                selectHelper: false
+            }
+            eventos.push(evento);
+            //$('#calendar').fullCalendar('renderEvent', evento, true);
+
+        }
+
+        $('#calendar').fullCalendar('removeEvents');
+
+        $('#calendar').fullCalendar('addEventSource', eventos);
+
+    }
+
+
+    // Todo bugueado me vino el fullcalendar jajaja, debo recurrir a este truco
+   $('.fc-next-button').click();
+
+</script>
+

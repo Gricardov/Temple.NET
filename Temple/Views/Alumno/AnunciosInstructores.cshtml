@@ -17,7 +17,7 @@
 
 
 <script>
-
+    var cantAnuncios = -1;
             // Cargo los anuncios actuales
             var url ="@Url.Action("obtenerAnuncios", "Alumno")";
 
@@ -30,6 +30,9 @@
                     $("#anuncios").empty();
 
                     var lista = JSON.parse(response);
+
+                    cantAnuncios = lista.length;
+
                     if (lista.length == 0) {
                         $('#anuncios').append('<div class="well well-sm">No has publicado ningun anuncio aún</div>');
                     }
@@ -59,8 +62,6 @@
     // Cada dos segundos verificará la tabla
     setInterval(function () {
 
-        $("#anuncios").empty();
-
         var url ="@Url.Action("obtenerAnuncios", "Alumno")";
 
             $.ajax({
@@ -68,29 +69,32 @@
                 url: url,
                 dataType: "json",
                 success: function (response) {
-
-                    $("#anuncios").empty();
-
+                    
                     var lista = JSON.parse(response);
-                    if (lista.length == 0) {
-                        $('#anuncios').append('<div class="well well-sm">No has publicado ningun anuncio aún</div>');
+
+                    if (lista.length != cantAnuncios) {
+
+                        $("#anuncios").empty();
+
+                        if (lista.length == 0) {
+                            $('#anuncios').append('<div class="well well-sm">No has publicado ningun anuncio aún</div>');
+                        }
+                        for (var i in lista.reverse()) {
+
+                            var fechaHora = moment(parseInt(lista[i].fechaHora.replace("/Date(", "").replace(")/", ""))).format('L LT');
+
+                            $('#anuncios').append('<div class="row"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">' +
+                                '<div class="pull-left image"><img src="/imagenes/iconoPost.png" class="avatar" alt="user profile image">' +
+                                '</div><div class="pull-left meta"><div class="title h5"><b>' + lista[i].nomInstr + ' ' + lista[i].apPatInstr + ' ' + lista[i].apMatInstr + '</b></div>' +
+                                '<div class="title h5"><b>Título de la publicación: ' + lista[i].titulo + '</b></div>' +
+                                '<h6 class="text-muted time">' + fechaHora + '</h6></div></div><div class="post-description"><p>' + lista[i].contenido + '</p>' +
+                                '</div></div></div></div>');
+
+
+
+                        }
+
                     }
-                    for (var i in lista.reverse()) {
-
-                        var fechaHora = moment(parseInt(lista[i].fechaHora.replace("/Date(", "").replace(")/", ""))).format('L LT');
-
-                        $('#anuncios').append('<div class="row"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">' +
-                            '<div class="pull-left image"><img src="/imagenes/iconoPost.png" class="avatar" alt="user profile image">' +
-                            '</div><div class="pull-left meta"><div class="title h5"><b>' + lista[i].nomInstr + ' ' + lista[i].apPatInstr + ' ' + lista[i].apMatInstr + '</b></div>' +
-                            '<div class="title h5"><b>Título de la publicación: ' + lista[i].titulo + '</b></div>'+
-                            '<h6 class="text-muted time">' + fechaHora + '</h6></div></div><div class="post-description"><p>' + lista[i].contenido + '</p>' +
-                            '</div></div></div></div>');
-
-
-
-                    }
-
-
                   }
 
 

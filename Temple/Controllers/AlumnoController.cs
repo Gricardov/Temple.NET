@@ -222,10 +222,10 @@ namespace Temple.Controllers
         }
 
 
-        private PerfilInstructor ObtenerPerfilInstructor(int codUsu)
+        private Perfil ObtenerPerfilInstructor(int codUsu)
         {
 
-            PerfilInstructor p = new PerfilInstructor();
+            Perfil p = new Perfil();
             con.Open();
             SqlCommand cmd = new SqlCommand("USP_OBTENER_PERFIL_INSTRUCTOR", con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -253,7 +253,7 @@ namespace Temple.Controllers
 
                 p.reseñas = ListadoResenas(con,p.idPerfil);
                 p.cursos = ListadoPreferenciaEnsenanza(con, p.codigo);
-                p.horarios = ListadoHorarios(con, p.codigo);
+                p.horarios = ListadoHorariosInstructor(con, p.codigo);
 
                 int idUsuario = ((Usuario)Session["usuario"]).codigo;
 
@@ -294,7 +294,7 @@ namespace Temple.Controllers
 
         }
 
-        public List<Evento> ListadoHorarios(SqlConnection con, int codUsu)
+        public List<Evento> ListadoHorariosInstructor(SqlConnection con, int codUsu)
         {
             List<Evento> lista = new List<Evento>();
             SqlCommand cmd = new SqlCommand("SELECT*FROM TB_HORARIO_INSTRUCTOR WHERE COD_USU=@CODUSU", con);
@@ -309,6 +309,59 @@ namespace Temple.Controllers
                 e.inicio = reader.GetDateTime(2);
                 e.fin = reader.GetDateTime(3);
                 lista.Add(e);
+            }
+            reader.Close();
+
+            return lista;
+
+        }
+
+        public List<Evento> ListadoMisCitas(SqlConnection con, int codUsu)
+        {
+            List<Evento> lista = new List<Evento>();
+            SqlCommand cmd = new SqlCommand("SELECT INICIO, FIN FROM TB_TRANSACCIONES WHERE CODALUMNO=@CODUSU", con);
+            //cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", codUsu);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Evento e = new Evento();
+                e.inicio = reader.GetDateTime(0);
+                e.fin = reader.GetDateTime(1);
+                lista.Add(e);
+            }
+            reader.Close();
+
+            return lista;
+
+        }
+
+        public List<Transaccion> ListadoTransacciones(SqlConnection con, int codUsu)
+        {
+            List<Transaccion> lista = new List<Transaccion>();
+            SqlCommand cmd = new SqlCommand("USP_TRANSACCIONES_ALUMNO", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", codUsu);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Transaccion t = new Transaccion();
+                t.codTran = reader.GetInt32(0);
+                t.codInstr = reader.GetInt32(1);
+                t.nombresInstr = reader.GetString(2);
+                t.apPatInstr = reader.GetString(3);
+                t.apMatInstr = reader.GetString(4);
+                t.desCat = reader.GetString(5);
+                t.desSub = reader.GetString(6);
+                t.desMod = reader.GetString(7);
+                t.precioHora = reader.GetDecimal(8);
+                t.inicio = reader.GetDateTime(9);
+                t.fin = reader.GetDateTime(10);
+                t.total = reader.GetDecimal(11);
+                t.fechaHora = reader.GetDateTime(12);
+                lista.Add(t);
             }
             reader.Close();
 
@@ -398,6 +451,45 @@ namespace Temple.Controllers
             return lista;
         }
 
+        private Perfil ObtenerMiPerfil()
+        {
+
+            Perfil p = new Perfil();
+            con.Open();
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_PERFIL_ALUMNO", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", (((Usuario)Session["usuario"]).codigo));
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                p.codigo = reader.GetInt32(0);
+                p.nombres = reader.GetString(1);
+                p.apPaterno = reader.GetString(2);
+                p.apMaterno = reader.GetString(3);
+                p.sobreMi = reader.GetString(4);
+                p.buscando = reader.GetString(5);
+                p.verificado = reader.GetBoolean(6);
+                p.conectado = reader.GetBoolean(7);
+
+                Ubicacion u = new Ubicacion();
+                u.latitud = reader.GetDecimal(8);
+                u.longitud = reader.GetDecimal(9);
+                p.idPerfil = reader.GetInt32(10);
+                p.ubicacion = u;
+                p.transacciones = ListadoTransacciones(con, p.codigo);
+                p.citas = ListadoMisCitas(con, p.codigo);
+
+                int idUsuario = ((Usuario)Session["usuario"]).codigo;
+
+            }
+
+            con.Close();
+            reader.Close();
+
+            return p;
+        }
+
         // Action Results
 
         //vista: Cuadrícula=0, Mapa=1
@@ -414,9 +506,6 @@ namespace Temple.Controllers
 
                 cboSubcategoria = (ListadoSubcategorias(cboCategoria).Count()>0?ListadoSubcategorias(cboCategoria).ElementAt(0).id:0);
             }
-    
-            Debug.WriteLine(cboCategoria+" "+cboSubcategoria);
-
             ViewBag.usuario = Session["usuario"];
             ViewBag.recomendados = ListadoInstructoresRecomendados();
             ViewBag.categorias = new SelectList(ListadoCategorias(), "id", "descripcion", cboCategoria);
@@ -433,7 +522,7 @@ namespace Temple.Controllers
         public ActionResult PerfilInstructor(int codUsu)
         {
            
-            PerfilInstructor perfil = ObtenerPerfilInstructor(codUsu);
+            Perfil perfil = ObtenerPerfilInstructor(codUsu);
             ViewBag.usuario = Session["usuario"];
             ViewBag.titulo = perfil.nombres +" "+ perfil.apPaterno +" "+perfil.apMaterno;
             ViewBag.resenas = perfil.reseñas;
@@ -445,6 +534,24 @@ namespace Temple.Controllers
 
         public ActionResult AnunciosInstructores() {
             ViewBag.usuario = Session["usuario"];
+            return View();
+
+        }
+
+        public ActionResult MiPerfil()
+        {
+            Perfil perfil =ObtenerMiPerfil();
+            ViewBag.usuario = Session["usuario"];
+            ViewBag.titulo = perfil.nombres + " " + perfil.apPaterno + " " + perfil.apMaterno;
+            //ViewBag.citas = perfil.citas;
+            ViewBag.transacciones = perfil.transacciones;
+            return View(perfil);
+
+        }
+
+        public ActionResult MisCitas() {
+            ViewBag.usuario = Session["usuario"];
+            ViewBag.citas = ObtenerMiPerfil().citas;
             return View();
 
         }

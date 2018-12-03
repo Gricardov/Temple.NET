@@ -27,12 +27,14 @@ namespace Temple.Controllers
 
         public ActionResult MiPerfil()
         {
-            PerfilInstructor perfil = ObtenerMiPerfil();
+            Perfil perfil = ObtenerMiPerfil();
             ViewBag.usuario = Session["usuario"];
             ViewBag.titulo = perfil.nombres + " " + perfil.apPaterno + " " + perfil.apMaterno;
             ViewBag.resenas = perfil.reseñas;
             ViewBag.cursos = perfil.cursos;
             ViewBag.horarios = perfil.horarios;
+            ViewBag.citas = perfil.citas;
+            ViewBag.transacciones = perfil.transacciones;
             return View(perfil);
 
 
@@ -40,7 +42,10 @@ namespace Temple.Controllers
 
         public ActionResult MisHorarios() {
             ViewBag.usuario = Session["usuario"];
-            ViewBag.horarios = ObtenerMiPerfil().horarios;
+            Perfil perfil = ObtenerMiPerfil();
+
+            ViewBag.horarios = perfil.horarios;
+            ViewBag.citas = perfil.citas;
             return View();
 
         }
@@ -65,10 +70,10 @@ namespace Temple.Controllers
 
         }
 
-        private PerfilInstructor ObtenerMiPerfil()
+        private Perfil ObtenerMiPerfil()
         {
 
-            PerfilInstructor p = new PerfilInstructor();
+            Perfil p = new Perfil();
             con.Open();
             SqlCommand cmd = new SqlCommand("USP_OBTENER_PERFIL_INSTRUCTOR", con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -93,11 +98,11 @@ namespace Temple.Controllers
                 u.longitud = reader.GetDecimal(11);
                 p.idPerfil = reader.GetInt32(12);
                 p.ubicacion = u;
-
+                p.transacciones = ListadoTransacciones(con, p.codigo);
                 p.reseñas = ListadoResenas(con, p.idPerfil);
                 p.cursos = ListadoPreferenciaEnsenanza(con, p.codigo);
                 p.horarios = ListadoHorarios(con, p.codigo);
-
+                p.citas = ListadoMisCitas(con, ((Usuario)Session["usuario"]).codigo);
                 int idUsuario = ((Usuario)Session["usuario"]).codigo;
 
             }
@@ -106,6 +111,70 @@ namespace Temple.Controllers
             reader.Close();
 
             return p;
+        }
+
+        public List<Transaccion> ListadoTransacciones(SqlConnection con, int codUsu)
+        {
+            List<Transaccion> lista = new List<Transaccion>();
+            SqlCommand cmd = new SqlCommand("USP_TRANSACCIONES_INSTRUCTOR", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", codUsu);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Transaccion t = new Transaccion();
+                t.codTran = reader.GetInt32(0);
+                t.codInstr = reader.GetInt32(1);
+                t.nombresInstr = reader.GetString(2);
+                t.apPatInstr = reader.GetString(3);
+                t.apMatInstr = reader.GetString(4);
+                t.desCat = reader.GetString(5);
+                t.desSub = reader.GetString(6);
+                t.desMod = reader.GetString(7);
+                t.precioHora = reader.GetDecimal(8);
+                t.inicio = reader.GetDateTime(9);
+                t.fin = reader.GetDateTime(10);
+                t.total = reader.GetDecimal(11);
+                t.fechaHora = reader.GetDateTime(12);
+                lista.Add(t);
+            }
+            reader.Close();
+
+            return lista;
+
+        }
+
+        public List<Evento> ListadoMisCitas(SqlConnection con, int codUsu)
+        {
+            if (con == null)
+            {
+
+                this.con.Open();
+                //SqlConnection conAux= new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
+            }
+            List<Evento> lista = new List<Evento>();
+            SqlCommand cmd = new SqlCommand("SELECT INICIO, FIN FROM TB_TRANSACCIONES WHERE CODINSTR=@CODUSU", this.con);
+            //cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", codUsu);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Evento e = new Evento();
+                e.inicio = reader.GetDateTime(0);
+                e.fin = reader.GetDateTime(1);
+                lista.Add(e);
+            }
+            reader.Close();
+            if (con == null)
+            {
+
+                this.con.Close();
+
+            }
+            return lista;
+
         }
 
         public List<PreferenciaEnsenanza> ListadoPreferenciaEnsenanza(SqlConnection con, int codUsu)
@@ -294,6 +363,32 @@ namespace Temple.Controllers
             return mensaje;
         }
 
+        private string ModificarEvento(Evento e)
+        {
+            string mensaje = "oh";
+            Usuario u = (Usuario)Session["usuario"];
+            con.Open();
+            SqlCommand cmd = new SqlCommand("USP_MODIFICAR_EVENTO", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODINSTR", u.codigo);
+            cmd.Parameters.AddWithValue("@INICIO", e.inicio);
+            cmd.Parameters.AddWithValue("@FIN", e.fin);
+            cmd.Parameters.AddWithValue("@IDEVEN", e.id);
+
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+
+                mensaje = reader.GetString(0);
+
+            }
+
+            con.Close();
+
+            return mensaje;
+        }
+
         // ?
 
         private List<Usuario> InformeInstructor()
@@ -422,11 +517,33 @@ namespace Temple.Controllers
             e.fin = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(fin);
 
             string respuesta = InsertarEvento(e);
-            //Debug.WriteLine((ListadoHorarios(null, ((Usuario)Session["usuario"]).codigo)).Count().ToString() + " tamaño");
-            var resultado = new { eventos = ListadoHorarios(null, ((Usuario)Session["usuario"]).codigo), mensaje = respuesta };
+
+            Debug.WriteLine("inicio recibido " + e.inicio.ToString() + " fin recibido " + e.fin.ToString());
+            List<Evento> lista = ListadoHorarios(null, ((Usuario)Session["usuario"]).codigo);
+            List<Evento> citas = ListadoMisCitas(null, ((Usuario)Session["usuario"]).codigo);
+
+            var resultado = new { eventos = lista, citas=citas, mensaje = respuesta };
             return Json(resultado,JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult modificarEvento(int id, Int64 inicio, Int64 fin)
+        {
+            //Debug.WriteLine("id recibido " + id + " inicio recibido " + inicio.ToString() + " fin recibido " + fin.ToString());
+
+            Evento e = new Evento();
+            e.id = id;
+            e.inicio = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(inicio);
+            e.fin = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(fin);
+
+            string respuesta = ModificarEvento(e);
+
+            List<Evento> lista = ListadoHorarios(null, ((Usuario)Session["usuario"]).codigo);
+            List<Evento> citas = ListadoMisCitas(null, ((Usuario)Session["usuario"]).codigo);
+
+            var resultado = new { eventos = lista, citas = citas, mensaje = respuesta };
+            return Json(resultado, JsonRequestBehavior.AllowGet);
+        }
 
     }
 }

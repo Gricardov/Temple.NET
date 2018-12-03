@@ -1,4 +1,4 @@
-﻿@model Temple.Models.PerfilInstructor
+﻿@model Temple.Models.Perfil
 
 @{
     ViewBag.Title = ViewBag.titulo;
@@ -321,8 +321,8 @@
 
                 var contadorHorarios = 0;
 
-                var inicioSeleccionado = parseInt(moment(start).format("x"));
-                var finSeleccionado = parseInt(moment(end).format("x"));
+                var inicioSeleccionado = moment(start).add(5, 'hours');
+                var finSeleccionado = moment(end).add(5,'hours');
                 // Primero, verifico que el horario seleccionado sea mayor al momento actual
                 //if (inicioSeleccionado >= moment().valueOf()){
 
@@ -373,22 +373,22 @@
             overlap: false,
             editable: true,
             startEditable: true,
-            snapDuration: "00:10:00"
+            snapDuration: "00:01:00"
 
 
         });
         //alert(moment(moment().toDate()).format("HH:mm:ss"));
-         //var eventos = [];
-
+    //var eventos = [];
         for (var i in jsonHorarios) {
 
             var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
             var finMs = parseInt(jsonHorarios[i].fin.replace("/Date(", "").replace(")/", ""));
+            //alert(inicioMs + " " + finMs);
                 var evento = {
 
                     title: 'Disponible',
-                    end: finMs,
-                    start: inicioMs,
+                    end: moment(finMs),
+                    start: moment(inicioMs),
                     editable: false,
                     startEditable: false,
                     backgroundColor:'green',

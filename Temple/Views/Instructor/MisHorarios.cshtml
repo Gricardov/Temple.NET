@@ -56,17 +56,31 @@
 
 <script>
     // Al cargar la página
-         @using System.Web.Script.Serialization;
+
+    // Defino las constantes para insertar o actualizar horarios
+    const INSERTAR = 0;
+    const MODIFICAR = 1;
+    const ELIMINAR = 2;
+
+    var operacionActual = -1;
+
+    var revertir;
+    // Variable que sirve para revertir la función
+
+    @using System.Web.Script.Serialization;
 
             @{
                var jsonHorarios = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.horarios));
-
+               var jsonCitas = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.citas));
             }
 
-            // Para el calendario
-        var jsonHorarios = JSON.parse('@jsonHorarios');
+        
 
-        $('#calendar').fullCalendar({
+            // Para el calendario
+    var jsonHorarios = JSON.parse('@jsonHorarios');
+    var jsonCitas = JSON.parse('@jsonCitas');
+
+    $('#calendar').fullCalendar({
 
             defaultView: 'agendaWeek',
             slotEventOverlap: true,
@@ -131,34 +145,81 @@
                 var inicio = moment(calEvent.start).format("HH:mm:ss");
                 var fin = moment(calEvent.end).format("HH:mm:ss");
 
-                alert("Disponibilidad de este horario: \n\nInicio: "+inicio+"\nFin: "+fin);
+                alert("Has seleccionado el horario: \n\nInicio: " + inicio + "\nFin: " + fin + "\n Id: " + calEvent.id);
 
             },
             eventResize: function (event, delta, revertFunc) {
+                
+                var contadorHorarios = 0;
 
-                alert("cambiado");
+                var inicioSeleccionado = moment(event.start).add(5, 'hours');
+                var finSeleccionado = moment(event.end).add(5, 'hours');
+
+                for (var i in jsonHorarios) {
+
+                    // Solo va a verificar los que sean diferentes del horario seleccionado
+                    if (event.id != jsonHorarios[i].id) {
+
+                    var inicioMs = parseInt((jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", "")));
+                    var finMs = parseInt((jsonHorarios[i].fin.replace("/Date(", "").replace(")/", "")));
+
+                    if ((inicioSeleccionado >= inicioMs && inicioSeleccionado <= finMs) ||
+                        (finSeleccionado >= inicioMs && finSeleccionado <= finMs) ||
+                        (inicioSeleccionado < inicioMs && finSeleccionado > finMs)) {
+
+                        alert("Este horario se sobrepone a otro");
+
+                        revertFunc();
+
+                        return;
+
+                    }
+
+                    contadorHorarios++;
+                }
+
+                }
+
+                // Le resto 1 porque aquí habría comparado uno menos
+                if (contadorHorarios >= jsonHorarios.length-1) {
+
+                    var evento = new Object();
+                    evento.id = event.id;
+                    evento.inicio = event.start;
+                    evento.fin = event.end;
+                    // Coloco la operación actual
+                    operacionActual = MODIFICAR;
+                    mostrarModalConfirmacion(evento);
+                    revertir = revertFunc;
+                }
 
             },
             select: function (start, end, jsEvent, view, resource) {
 
                 var contadorHorarios = 0;
-
-                var inicioSeleccionado = parseInt(moment(start).format("x"));
-                var finSeleccionado = parseInt(moment(end).format("x"));
                 
+                var inicioSeleccionado = moment(start).add(5, 'hours');
+                var finSeleccionado = moment(end).add(5, 'hours');
+
                     for (var i in jsonHorarios) {
 
-                        var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
-                        var finMs = parseInt(jsonHorarios[i].fin.replace("/Date(", "").replace(")/", ""));
+                        var inicioMs = parseInt((jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", "")));
+                        var finMs = parseInt((jsonHorarios[i].fin.replace("/Date(", "").replace(")/", "")));
 
                         if ((inicioSeleccionado >= inicioMs && inicioSeleccionado <= finMs) ||
                             (finSeleccionado >= inicioMs && finSeleccionado <= finMs) ||
                             (inicioSeleccionado < inicioMs && finSeleccionado > finMs)) {
 
+                            /*alert("obt: "+moment(inicioMs).format("HH:mm:ss") + " " + moment(finMs).format("HH:mm:ss") +
+                                " sel: " + moment(inicioSeleccionado).format("HH:mm:ss") + " " + moment(finSeleccionado).format("HH:mm:ss"));
+                            
+                            /*alert("obt: " + inicioMs + " " + finMs+
+                                " sel: " + inicioSeleccionado + " " + finSeleccionado);*/
                                 alert("Has seleccionado un horario que se sobrepone a otro. Si quieres modificar uno ya existente, solo modifica su tamaño");
-                                $('#calendar').fullCalendar('unselect');
+
+                            $('#calendar').fullCalendar('unselect');
                                 
-                                return;
+                            return;
 
                         }
 
@@ -170,44 +231,87 @@
                 if (contadorHorarios >= jsonHorarios.length) {
                     
                     var evento = new Object();
-
                     evento.inicio = start;
                     evento.fin = end;
+
+                    // Coloco la operación actual
+                    operacionActual = INSERTAR;
+
                     mostrarModalConfirmacion(evento);                    
 
                     }
 
-                /*} else {
+            },
+            eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {
+                var contadorHorarios = 0;
 
-                    alert("El horario seleccionado debe ser mayor o igual al momento actual");
-                    $('#calendar').fullCalendar('unselect');
+                var inicioSeleccionado = moment(event.start).add(5, 'hours');
+                var finSeleccionado = moment(event.end).add(5, 'hours');
 
+                for (var i in jsonHorarios) {
 
-                }*/
+                    // Solo va a verificar los que sean diferentes del horario seleccionado
+                    if (event.id != jsonHorarios[i].id) {
 
+                        var inicioMs = parseInt((jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", "")));
+                        var finMs = parseInt((jsonHorarios[i].fin.replace("/Date(", "").replace(")/", "")));
+
+                        if ((inicioSeleccionado >= inicioMs && inicioSeleccionado <= finMs) ||
+                            (finSeleccionado >= inicioMs && finSeleccionado <= finMs) ||
+                            (inicioSeleccionado < inicioMs && finSeleccionado > finMs)) {
+
+                            alert("Este horario se sobrepone a otro");
+
+                            revertFunc();
+
+                            return;
+
+                        }
+
+                        contadorHorarios++;
+                    }
+
+                }
+
+                // Le resto 1 porque aquí habría comparado uno menos
+                if (contadorHorarios >= jsonHorarios.length - 1) {
+
+                    var evento = new Object();
+                    evento.id = event.id;
+                    evento.inicio = event.start;
+                    evento.fin = event.end;
+                    // Coloco la operación actual
+                    operacionActual = MODIFICAR;
+                    mostrarModalConfirmacion(evento);
+                    revertir = revertFunc;
+                }
 
             },
             overlap: false,
             editable: true,
             startEditable: true,
-            snapDuration: "00:10:00"
+            snapDuration: "00:01:00"
 
 
     });
 
-    cargarHorarios();
+    cargarHorariosYCitas();
+    
 
-    function cargarHorarios() {
+    function cargarHorariosYCitas() {
+
         var eventos = [];
         for (var i in jsonHorarios) {
 
+            var id = jsonHorarios[i].id;
             var inicioMs = parseInt(jsonHorarios[i].inicio.replace("/Date(", "").replace(")/", ""));
             var finMs = parseInt(jsonHorarios[i].fin.replace("/Date(", "").replace(")/", ""));
+            
             var evento = {
-
+                id: id,
                 title: 'Disponible',
-                end: finMs,
-                start: inicioMs,
+                start: moment(inicioMs),
+                end: moment(finMs),
                 editable: true,
                 startEditable: true,
                 backgroundColor: 'green',
@@ -215,16 +319,41 @@
                 selectHelper: true
             }
             eventos.push(evento);
+
+            //$('#calendar').fullCalendar('renderEvent', evento, true);
+
+        }
+
+        for (var i in jsonCitas) {
+
+            var id = -1;
+            var inicioMs = parseInt(jsonCitas[i].inicio.replace("/Date(", "").replace(")/", ""));
+            var finMs = parseInt(jsonCitas[i].fin.replace("/Date(", "").replace(")/", ""));
+
+            var evento = {
+                id: id,
+                title: 'Reservado',
+                start: moment(inicioMs),
+                end: moment(finMs),
+                editable: false,
+                startEditable: false,
+                backgroundColor: 'red',
+                //rendering: 'background',
+                selectHelper: false
+            }
+            eventos.push(evento);
+
             //$('#calendar').fullCalendar('renderEvent', evento, true);
 
         }
 
         $('#calendar').fullCalendar('removeEvents');
 
-        $('#calendar').fullCalendar('removeEventSource', eventos);
+        //$('#calendar').fullCalendar('removeEventSource', eventos);
         $('#calendar').fullCalendar('addEventSource', eventos);
 
     }
+
     // Todo bugueado me vino el fullcalendar jajaja, debo recurrir a este truco
     $('.fc-next-button').click();
 
@@ -234,13 +363,44 @@
 
         var inicio = moment(evento.inicio).format("L HH:mm:ss");
         var fin = moment(evento.fin).format("L HH:mm:ss");
-        $("#txtModalConfirmacion").text("Has seleccionado el horario de "+inicio+" hasta "+fin+". ¿Guardar?");
+
+        switch (operacionActual) {
+
+            case INSERTAR:
+                $("#txtModalConfirmacion").text("Has seleccionado el horario desde las " + inicio + " hasta las " + fin + ". ¿Guardar?");
+                break;
+            case MODIFICAR:
+                $("#txtModalConfirmacion").text("Has modificado este horario desde las " + inicio + " hasta las " + fin + ". ¿Guardar?");
+                break;
+            case ELIMINAR:
+                $("#txtModalConfirmacion").text("¿Estás seguro de que quieres eliminar el horario desde las " + inicio + " hasta las " + fin + "?");
+                break;
+        }
+
+
         $("#modalConfirmacion").modal('show');
 
         $("#btnSi").unbind("click").click(function () {            
             // Hago el ajax
-            var url ="@Url.Action("insertarEvento", "Instructor")";
-            var data = { inicio: parseInt(moment(evento.inicio).format("x")),fin:  parseInt(moment(evento.fin).format("x"))};
+            var url = "";
+            var data;
+            switch (operacionActual) {
+
+                case INSERTAR:
+
+                    url = "@Url.Action("insertarEvento", "Instructor")";
+                    data = { inicio: parseInt(moment(evento.inicio).format("x")), fin: parseInt(moment(evento.fin).format("x")) };
+                    break;
+                case MODIFICAR:
+                    url = "@Url.Action("modificarEvento", "Instructor")";
+                    data = { id: evento.id, inicio: parseInt(moment(evento.inicio).format("x")), fin: parseInt(moment(evento.fin).format("x")) };
+                    break;
+                case ELIMINAR:
+
+                    url = "@Url.Action("eliminarEvento", "Instructor")";
+                    data = { id:evento.id };
+                    break;
+            }
 
             $.ajax({
                 type: "POST",
@@ -254,15 +414,26 @@
 
                     // Limpiamos jsonHorarios y lo volvemos a llenar
                     jsonHorarios = [];
+                    jsonCitas = [];
                     for (var i in response.eventos) {
 
                         var evento = new Object();
+                        evento.id = response.eventos[i].id;
                         evento.inicio = response.eventos[i].inicio;
                         evento.fin = response.eventos[i].fin;
                         jsonHorarios.push(evento);
                     }
 
-                    cargarHorarios();
+                    for (var i in response.citas) {
+                        var evento = new Object();
+                        evento.id = -1;
+                        evento.inicio = response.citas[i].inicio;
+                        evento.fin = response.citas[i].fin;
+                        jsonCitas.push(evento);
+
+                    }
+
+                    cargarHorariosYCitas();
 
                   }
 
@@ -278,11 +449,30 @@
             $("#modalConfirmacion").modal('hide');
             $("#txtModalConfirmacion").text("");
 
+            switch (operacionActual) {
+
+                case INSERTAR:
+                    $('#calendar').fullCalendar('unselect');
+                    break;
+                case MODIFICAR:
+                    revertir();
+                    break;
+                case ELIMINAR:
+                    //revertFunc();
+                    break;
+
+
+            }
+
         });
 
         $("#btnListo").unbind("click").on("click", function () {
             $("#modalMensaje").modal('hide');
             $("#txtModalMensaje").text("");
+
+            
+
+
 
         });
 
