@@ -20,7 +20,8 @@
         <img id="fotoPortada" src="~/imagenes/portada.jpg" alt="Profile banner" />
     </figure>
     <figure class="profile-picture"
-            style="background-image: url('/imagenes/mila.jpg')">
+            style="background-image: url('/imagenes/perfiles/@(ViewBag.usuario.codigo).jpg')">
+
     </figure>
     <div class="profile-stats">
         <ul>
@@ -83,6 +84,16 @@
     </section>
 
     <section class="contenidoControl" id="content4">
+
+        @if (ViewBag.transacciones.Count == 0)
+        {
+
+            <div class="well well-sm">Aún no tienes transacciones registradas</div>
+        }
+
+        else
+        {
+
         <div id="transacciones">
             <table class="table table-striped table-hover">
                 <thead>
@@ -126,6 +137,7 @@
 
             </table>
         </div>
+        }
     </section>
 
 </div>
@@ -147,8 +159,8 @@
                var jsonHorarios = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.horarios));
 
             }
-                
-        var json = JSON.parse('@jsonResenas');
+
+    var json = JSON.parse(JSON.stringify(@jsonResenas));
 
         // Muestra las reseñas
 
@@ -175,17 +187,27 @@
             }
             calificacionDiv += '</div>';
 
-            $('#comentarios').append(   '<div class="row"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">'+
-                                        '<div class="pull-left image"><img src="/imagenes/mila.jpg" class="img-circle avatar" alt="user profile image">'+
-                                        '</div><div class="pull-left meta"><div class="title h5"><a href="#"><b>' + json[i].nombreRemitente + ' ' + json[i].apPaternoRemitente + ' ' +json[i].apMaternoRemitente+'</b></a></div>'+
-                                        '<h6 class="text-muted time"' + json[i].fechaHora + '</h6></div></div><div class="post-description"><p>' + json[i].contenido + '</p>' +
-                                        calificacionDiv+'</div></div></div></div>');
+            // Obtenemos la fecha formateada
+            var fechaHora = moment(parseInt((json[i].fechaHora.replace("/Date(", "").replace(")/", "")))).format("L HH:mm:ss");
+
+            var comentario = '<div class="row"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">' +
+                '<div class="pull-left image"><img src="/imagenes/perfiles/' + json[i].codUsuRemitente + '.jpg" class="img-circle avatar" alt="user profile image">' +
+                '</div><div class="pull-left meta"><div class="title h5"><a href="#"><b>' + json[i].nombreRemitente + ' ' + json[i].apPaternoRemitente + ' ' + json[i].apMaternoRemitente + '</b></a></div>' +
+                '<h6 class="text-muted time">' + fechaHora + '</h6></div>';
+
+            if (json[i].editado == true) {
+
+                comentario += '<div class="pull-right meta"><p class="text-muted">Reseña editada</p></div>';
+            }
+
+            comentario+='<div class="pull-right meta" style="margin-right:10px;"><a href="#">Reportar abuso</a></div></div > <div class="post-description"><p>' + json[i].contenido + '</p>' +
+                                        calificacionDiv+'</div></div></div></div>';
 
 
-
+            $('#comentarios').append(comentario);
         }
 
-        var json = JSON.parse('@jsonCursos');
+    var json = JSON.parse(JSON.stringify(@jsonCursos));
 
         if (json.length == 0) {
             $('#contenidosCursos').append('<div class="well well-sm">Nos has definido cursos aún</div>');
@@ -277,7 +299,7 @@
 
         // Para el calendario
 
-        var jsonHorarios = JSON.parse('@jsonHorarios');
+    var jsonHorarios = JSON.parse(JSON.stringify(@jsonHorarios));
 
         $('#calendar').fullCalendar({
 

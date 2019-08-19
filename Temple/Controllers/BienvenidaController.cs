@@ -15,6 +15,7 @@ namespace Temple.Controllers
 
         public ActionResult AcercaDe()
         {
+            ViewBag.usuario = Session["usuario"];
             return View();
         }
                 

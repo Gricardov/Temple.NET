@@ -29,6 +29,7 @@ namespace Temple.Models
         public string desRol { get; set; }
         public string sobreMi { get; set; }
         public string buscando { get; set; }
+        public string especialidad { get; set; }
 		public Categoria categoria { get; set; }
 		public Subcategoria subcategoria { get; set; }
         

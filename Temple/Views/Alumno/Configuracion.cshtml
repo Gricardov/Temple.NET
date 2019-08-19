@@ -1,0 +1,131 @@
+﻿@model Temple.Models.Usuario
+
+@{
+    ViewBag.Title = "Configuracion";
+    Layout = "~/Views/Shared/_LayoutTemple.cshtml";
+}
+
+<h2>Configuracion de usuario</h2>
+
+@using (Html.BeginForm("Configuracion", "Alumno", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+
+    <div style="padding: 15px;">
+        <div id="step-1" class="m-4">
+            <div id="form-step-0" role="form">
+
+                <div class="form-group">
+                    <label for="nombres">Nombres</label> <input type="text"
+                                                                class="form-control mb-4" id="txtNombres" name="nombres"
+                                                                placeholder="Introduce tus nombres" maxlength=50 required
+                                                                value="@ViewBag.usuario.nombres">
+                    <div class="help-block with-errors"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ap">Apellido paterno</label> <input type="text"
+                                                                    class="form-control mb-4" id="txtApPat" name="apPat"
+                                                                    placeholder="Introduce tu apellido paterno" maxlength=30
+                                                                    required value="@ViewBag.usuario.apPaterno">
+                    <div class="help-block with-errors"></div>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="am">Apellido materno</label> <input type="text"
+                                                                    class="form-control mb-4" id="txtApMat" name="apMat"
+                                                                    placeholder="Introduce tu apellido materno" maxlength=30
+                                                                    required value="@ViewBag.usuario.apMaterno">
+                    <div class="help-block with-errors"></div>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="edad">Edad</label> <input type="number"
+                                                          class="form-control mb-4" id="txtEdad" name="edad"
+                                                          placeholder="Introduce tu edad en años" maxlength=2 required
+                                                          value="@ViewBag.usuario.edad">
+                    <div class="help-block with-errors"></div>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label for="correo">Correo</label> <input type="email"
+                                                              class="form-control mb-4" id="txtCorreo" name="correo"
+                                                              placeholder="Introduce tu correo" maxlength=50 required
+                                                              value="@ViewBag.usuario.correo">
+                    <div class="help-block with-errors"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="correo">Teléfono</label> <input type="tel"
+                                                                class="form-control mb-4" id="txtTelefono" name="telefono"
+                                                                placeholder="Introduce tu teléfono" maxlength=50 required
+                                                                value="@ViewBag.usuario.telefono">
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+        <div id="step-3" class="m-4">
+
+            <div id="form-step-2" role="form">
+
+                <div class="form-group">
+                    <label for="clave">Contraseña</label> <input type="password"
+                                                                 class="form-control mb-4" id="txtClave" name="clave"
+                                                                 placeholder="Introduce una contraseña" maxlength=50
+                                                                 value="@ViewBag.usuario.clave" required>
+                    <div class="help-block with-errors"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtSobreMi">
+                        ¿Cómo te describes a ti
+                        mismo(a)?
+                    </label>
+                    <textarea rows="4" cols="5" class="form-control mb-4"
+                              id="txtSobreMi" name="sobreMi" maxlength=5000 required
+                              placeholder="Introduce cómo te describes">@ViewBag.usuario.sobreMi</textarea>
+
+
+                    <div class="help-block with-errors"></div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="imagen">Selecciona una imagen de perfil</label>
+                    <input type="file" class="form-control-file mb-4" id="flImagen" name="imagen"
+                           aria-describedby="fileHelp" accept=".jpg"> <small id="fileHelp" class="form-text text-muted">
+                        Extensión jpg, buena resolución
+                    </small>
+                </div>
+
+
+            </div>
+
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Actualizar" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    if ('@ViewBag.mensaje' != '') {
+
+    $("#modalMensaje").modal('show');
+    $("#txtModalMensaje").text('@ViewBag.mensaje');
+
+}
+
+</script>
+

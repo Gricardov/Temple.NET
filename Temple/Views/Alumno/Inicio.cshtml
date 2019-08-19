@@ -3,6 +3,23 @@
     ViewBag.Title = "Inicio";
     Layout = "~/Views/Shared/_LayoutTemple.cshtml";
 }
+<!--El modal de mensaje-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modalMensaje">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Mensaje del sistema</h4>
+            </div>
+            <div class="modal-body">
+                <p id="txtModalMensaje"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="btnListo">Listo</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <h2>Recomendados para ti</h2>
 @{
@@ -35,13 +52,11 @@
              data-cycle-slides="> div"
              data-allow-wrap="false">
 
-
-
             @foreach (var ci in r.instructores)
             {
                 <a href="@Url.Action("PerfilInstructor", "Alumno",new { codUsu=ci.codigo})">
                 <div class="thumbnail carta">
-        <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
+        <img src="~/imagenes/perfiles/@(ci.codigo).jpg" class="img-perfil-carta"
              alt="...">
         <div class="caption">
             <h4 class="text-center">@ci.nombres  @ci.apPaterno</h4>
@@ -155,7 +170,7 @@
         <a href="@Url.Action("PerfilInstructor", "Alumno",new { codUsu=i.codigo})">
 
             <div class="thumbnail carta">
-                <img src="~/imagenes/mila.jpg" class="img-perfil-carta"
+                <img src="~/imagenes/perfiles/@(i.codigo).jpg" class="img-perfil-carta"
                      alt="...">
                 <div class="caption">
                     <h4 class="text-center">@i.nombres  @i.apPaterno</h4>
@@ -214,7 +229,7 @@
             default:
                 $('#chkVista').prop('checked', false);
 
-                vistaCuadricula();               
+                vistaCuadricula();
 
         }
 
@@ -264,7 +279,7 @@
         $('#chkVista').change(
             function () {
                 if (this.checked) {
-                    vistaMapa();                    
+                    vistaMapa();
                 } else {
                     vistaCuadricula();
                 }
@@ -297,32 +312,50 @@
                 format: 'jpg70',
                 accessToken: 'sk.eyJ1IjoiZ3JpY2FyZG92IiwiYSI6ImNqbnphd3FicjAwNHAzcG85bmowaWFyMDUifQ.CxTAN8PiT2jZkldTwukmPg'
             }).addTo(map);
-
+            cargarUbicacionGuardada();
+            cargarUbicaciones();
             map.locate({ setView: true, maxZoom: 16 });
 
             map.on('locationfound', onLocationFound);
             map.on('locationerror', onLocationError);
 
-            cargarUbicaciones();
+
+        }
+
+        function cargarUbicacionGuardada() {
+
+            // Luego, el icono de la ubicacion guardada del usuario
+                var icono = new L.Icon({
+            iconUrl: '@Url.Content("~/imagenes/iconos/markerGuardado.png")',
+            shadowUrl: '@Url.Content("~/imagenes/iconos/sombraMarkerGuardado.png")',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var marcador=L.marker({ lat:'@ViewBag.ubicacionGuardada.latitud', lng:'@ViewBag.ubicacionGuardada.longitud'}, { icon: icono }).addTo(map)
+            .bindPopup("Esta es tu ubicación guardada").openPopup();
+        marcador.setOpacity(0.4);
 
         }
 
         function cargarUbicaciones() {
             @using System.Web.Script.Serialization;
 
-           @{
+            @{
 
                var json=@Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.busqueda));
             }
-           
-            var json = JSON.parse('@json');
+
+            var json = JSON.parse(JSON.stringify(@json));
 
             for (var i in json) {
 
                 // Obtengo el div de calificación con las estrellas
                 var calificacionDiv = '<div class="text-center" style="width:100%; display:inline-block;">';
 
-                for (var cal = 1; cal <= 5; cal++){
+                for (var cal = 1; cal <= 5; cal++) {
 
                     if (cal <= json[i].calificacion) {
 
@@ -336,16 +369,39 @@
                 }
                 calificacionDiv += '</div>';
 
-                //alert(json[i].ubicacion.latitud);
+                // El icono para el marcador de instructores encontrados
+                var icono = new L.Icon({
+                iconUrl: '@Url.Content("~/imagenes/iconos/markerObjetivo.png")',
+                shadowUrl: '@Url.Content("~/imagenes/iconos/sombraMarkerGuardado.png")',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+                });
+
                 var arr = [json[i].ubicacion.latitud, json[i].ubicacion.longitud];
-                L.marker(arr).addTo(map)
-                    .bindPopup( '<div class="content"><div class="card"><div class="firstinfo"><img src="/imagenes/mila.jpg" />'+
+                var marcador = L.marker(arr, { icon: icono }).addTo(map).on('click', mostrarRuta);
+                    marcador.bindPopup('<div class="content"><div class="card"><div class="firstinfo"><img src="/imagenes/perfiles/' + json[i].codigo+'.jpg" />'+
                     '<div class="profileinfo"><h1>' + json[i].nombres +' '+json[i].apPaterno+'</h1><h3>' + json[i].especialidad +'<h3><h3> (' + json[i].distancia + ')</h3><p class="bio">' +
                     calificacionDiv+'</div></div></div></div>')
                     .openPopup();
+
+
+
             }
-         
-            
+
+
+        }
+
+        function mostrarRuta(e) {
+
+            L.Routing.control({
+            waypoints: [
+                { lat:'@ViewBag.ubicacionGuardada.latitud', lng:'@ViewBag.ubicacionGuardada.longitud'},
+                { lat:e.latlng.lat, lng:e.latlng.lng}
+            ]
+        }).addTo(map);
+
         }
 
         function onLocationFound(e) {
@@ -364,9 +420,23 @@
         }
 
         function onLocationError(e) {
-            alert(e.message);
+            current_position = L.marker({ lat: -12.088674392992298, lng: -77.21981048583986 }, { draggable: 'true' }).addTo(map)
+                .bindPopup("No se pudo establecer tu ubicación, por eso toma como punto de referencia la isla San Lorenzo").openPopup();
         }
 
+
+    });
+
+    if ('@ViewBag.mensaje' != '') {
+
+        $("#modalMensaje").modal('show');
+        $("#txtModalMensaje").text("@ViewBag.mensaje");
+
+    }
+
+    $("#btnListo").unbind("click").on("click", function () {
+        $("#modalMensaje").modal('hide');
+        $("#txtModalMensaje").text("");
 
     });
 

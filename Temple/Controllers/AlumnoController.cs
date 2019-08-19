@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Configuration;
 using System.Diagnostics;
 using System.Web.Script.Serialization;
+using System.IO;
 
 namespace Temple.Controllers
 {
@@ -44,6 +45,140 @@ namespace Temple.Controllers
             return lista;
         }
 
+        public Usuario ActualizarAlumno(Usuario u)
+        {
+            Usuario res = new Usuario();
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("USP_ACTUALIZAR_USUARIO", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", u.codigo);
+            Debug.WriteLine(u.codigo);
+            cmd.Parameters.AddWithValue("@NOMUSU", u.nombres);
+            Debug.WriteLine(u.nombres);
+            cmd.Parameters.AddWithValue("@APAUSU", u.apPaterno);
+            Debug.WriteLine(u.apPaterno);
+            cmd.Parameters.AddWithValue("@AMAUSU", u.apMaterno);
+            Debug.WriteLine(u.apMaterno);
+            cmd.Parameters.AddWithValue("@CORREO", u.correo);
+            Debug.WriteLine(u.correo);
+            cmd.Parameters.AddWithValue("@EDAD", u.edad);
+            Debug.WriteLine(u.edad);
+            cmd.Parameters.AddWithValue("@TEL", u.telefono);
+            Debug.WriteLine(u.telefono);
+            cmd.Parameters.AddWithValue("@CLAUSU", u.clave);
+            Debug.WriteLine(u.clave);
+            cmd.Parameters.AddWithValue("@SOBREMI", u.sobreMi);
+            Debug.WriteLine(u.sobreMi);
+            int ok = cmd.ExecuteNonQuery();
+            Debug.WriteLine(ok + "");
+            if (ok > 0)
+            {
+                Debug.WriteLine("si");
+                res = u;
+            }
+            else
+            {
+                Debug.WriteLine("no");
+            }
+            con.Close();
+            return res;
+
+        }
+
+
+        [HttpPost]
+        public ActionResult Configuracion(string nombres, string apPat, string apMat, int edad,
+           string correo, string telefono, string clave, string sobreMi,
+           HttpPostedFileBase imagen)
+        {
+            Debug.WriteLine(nombres);
+            Debug.WriteLine(apPat);
+            Debug.WriteLine(apMat);
+            Debug.WriteLine(edad);
+            Debug.WriteLine(correo);
+            Debug.WriteLine(telefono);
+            Debug.WriteLine(clave);
+            Debug.WriteLine(sobreMi);
+
+            ViewBag.usuario = Session["usuario"];
+
+            try
+            {
+                Usuario u = new Usuario();
+                u.codigo = ((Usuario)Session["usuario"]).codigo;
+                u.nombres = nombres;
+                u.apPaterno = apPat;
+                u.apMaterno = apMat;
+                u.edad = edad;
+                u.correo = correo;
+                u.telefono = telefono; ;
+                u.clave = clave;
+                u.sobreMi = sobreMi;
+
+                Usuario res = ActualizarAlumno(u);
+                Debug.WriteLine(res.codigo);
+                Debug.WriteLine(res.nombres);
+                if (res != null)
+                {
+                    if (imagen != null)
+                    {
+                        var originalFilename = Path.GetFileName(imagen.FileName);
+                        string fileId = Guid.NewGuid().ToString().Replace("-", "");
+                        string userId = res.codigo.ToString(); // Function to get user id based on your schema
+
+                        var path = Path.Combine(Server.MapPath("~/imagenes/perfiles/"), userId/*, fileId*/);
+                        imagen.SaveAs(path + Path.GetExtension(imagen.FileName));
+                    }
+
+
+                    ViewBag.mensaje = "¡Actualización exitosa!";
+                    Session["usuario"] = null;
+                    return RedirectToAction("Bienvenida", "Bienvenida");
+                }
+                else
+                {
+
+                    ViewBag.mensaje = "Error al actualizar en la base de datos";
+                    return View();
+                }
+            }
+            catch (Exception e)
+            {
+
+                ViewBag.mensaje = "Error al actualizar. Verifica que has llenado todos los datos correctamente, incluida la foto. Además, verifica que hayas especificado cursos diferentes";
+                return View();
+
+            }
+
+        }
+
+        public ActionResult Configuracion()
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_PERFIL_ALUMNO", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", (((Usuario)Session["usuario"]).codigo));
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                ((Usuario)Session["usuario"]).sobreMi = reader.GetString(4);
+            }
+
+            reader.Close();
+            con.Close();
+
+            ViewBag.usuario = Session["usuario"];
+            return View();
+        }
+
+        public ActionResult AcercaDe()
+        {
+            ViewBag.usuario = Session["usuario"];
+            return View();
+        }
+
         private List<InstructoresRecomendados> ListadoInstructoresRecomendados() {
 
             // Primero obtengo las preferencias de aprendizaje del alumno
@@ -72,14 +207,14 @@ namespace Temple.Controllers
                     i.apPaterno = reader.GetString(2);
                     i.apMaterno = reader.GetString(3);
                     i.especialidad = reader.GetString(4);
-                    i.ubicacion = obtenerUbicacion(con, i.codigo);
+                    i.ubicacion = ObtenerUbicacion(con, i.codigo);
                     i.numResenas = reader.GetInt32(6);
                     i.calificacion = reader.GetInt32(7);
                     i.verificado = reader.GetBoolean(8);
 
                     int idUsuario = ((Usuario) Session["usuario"]).codigo;
 
-                    i.distancia=obtenerDistanciaString(obtenerUbicacion(con, idUsuario),i.ubicacion);
+                    i.distancia=obtenerDistanciaString(ObtenerUbicacion(con, idUsuario),i.ubicacion);
                     g.instructores.Add(i);
                     
                 }
@@ -114,14 +249,14 @@ namespace Temple.Controllers
                     i.apPaterno = reader.GetString(2);
                     i.apMaterno = reader.GetString(3);
                     i.especialidad = reader.GetString(4);
-                    i.ubicacion = obtenerUbicacion(con,i.codigo);
+                    i.ubicacion = ObtenerUbicacion(con,i.codigo);
                     i.numResenas = reader.GetInt32(6);
                     i.calificacion = reader.GetInt32(7);
                     i.verificado = reader.GetBoolean(8);
 
                     int idUsuario = ((Usuario)Session["usuario"]).codigo;
 
-                i.distancia = obtenerDistanciaString(obtenerUbicacion(con,idUsuario), i.ubicacion);
+                i.distancia = obtenerDistanciaString(ObtenerUbicacion(con,idUsuario), i.ubicacion);
 
                 lista.Add(i);
 
@@ -257,7 +392,7 @@ namespace Temple.Controllers
 
                 int idUsuario = ((Usuario)Session["usuario"]).codigo;
 
-                p.distancia = obtenerDistanciaString(obtenerUbicacion(con,idUsuario), u);
+                p.distancia = obtenerDistanciaString(ObtenerUbicacion(con,idUsuario), u);
 
             }
 
@@ -277,14 +412,16 @@ namespace Temple.Controllers
             while (reader.Read()) {
                 Reseña r = new Reseña();
                 r.id = reader.GetInt32(0);
-                r.idPerfilRemitente = reader.GetInt32(1);
-                r.nombreRemitente = reader.GetString(2);
-                r.apPaternoRemitente = reader.GetString(3);
-                r.apMaternoRemitente = reader.GetString(4);
-                r.idPerfilDestinatario = reader.GetInt32(5);
-                r.contenido = reader.GetString(6);
-                r.fechaHora = reader.GetDateTime(7);
-                r.calificacion = reader.GetInt32(8);
+                r.codUsuRemitente = reader.GetInt32(1);
+                r.idPerfilRemitente = reader.GetInt32(2);
+                r.nombreRemitente = reader.GetString(3);
+                r.apPaternoRemitente = reader.GetString(4);
+                r.apMaternoRemitente = reader.GetString(5);
+                r.idPerfilDestinatario = reader.GetInt32(6);
+                r.contenido = reader.GetString(7);
+                r.fechaHora = reader.GetDateTime(8);
+                r.calificacion = reader.GetInt32(9);
+                r.editado = reader.GetBoolean(10);
                 lista.Add(r);
 
             }
@@ -490,12 +627,79 @@ namespace Temple.Controllers
             return p;
         }
 
+        public Boolean puedeResenar(int codDestin) {
+            Boolean puede = false;
+            con.Open();
+            SqlCommand cmd = new SqlCommand("SELECT DBO.UFN_PUEDE_RESENAR (@CODREMIT, @CODDESTIN)", con);
+
+            int codUsuario = ((Usuario)Session["usuario"]).codigo;
+
+
+            cmd.Parameters.AddWithValue("@CODREMIT", codUsuario);
+            cmd.Parameters.AddWithValue("@CODDESTIN", codDestin);
+            puede = (Boolean)cmd.ExecuteScalar();
+            con.Close();
+            return puede;
+
+        }
+
+        public string InsertarResena(int codDestin, string contenido, int calificacion) {
+            string respuesta = "";
+            con.Open();
+            int codUsuario = ((Usuario)Session["usuario"]).codigo;
+            SqlCommand cmd = new SqlCommand("USP_INSERTAR_RESENA", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODREMIT", codUsuario);
+            cmd.Parameters.AddWithValue("@CODDESTIN", codDestin);
+            cmd.Parameters.AddWithValue("@CONTENIDO", contenido);
+            cmd.Parameters.AddWithValue("@CALIFICACION", calificacion);
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read()) {
+
+                respuesta = reader.GetString(0);
+            }
+            reader.Close();
+            con.Close();
+            return respuesta;
+
+        }
+
+        public string ActualizarResena(int idRes, string resena, int calificacion)
+        {
+            string respuesta = "";
+            con.Open();
+            int codUsuario = ((Usuario)Session["usuario"]).codigo;
+            SqlCommand cmd = new SqlCommand("USP_ACTUALIZAR_RESENA", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODREMIT", codUsuario);
+            cmd.Parameters.AddWithValue("@IDRES", idRes);
+            cmd.Parameters.AddWithValue("@CONTENIDO", resena);
+            cmd.Parameters.AddWithValue("@CALIFICACION", calificacion);
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+
+                respuesta = reader.GetString(0);
+            }
+            reader.Close();
+            con.Close();
+            return respuesta;
+
+        }
+
         // Action Results
 
         //vista: Cuadrícula=0, Mapa=1
-        public ActionResult Inicio(int cboCategoria = -1, int cboSubcategoria = -1, string vista="0")
+        public ActionResult Inicio(int cboCategoria = -1, int cboSubcategoria = -1, string vista = "0")
         {
+            // Después de realizar la transacción
+            if (Session["mensaje"] != null) {
 
+                ViewBag.mensaje = Session["mensaje"].ToString();
+                Session["mensaje"] = null;
+
+            }
+            
             if (cboCategoria == -1) {
 
                 cboCategoria = (ListadoCategorias().Count()>0?ListadoCategorias().ElementAt(0).id:0);
@@ -506,12 +710,14 @@ namespace Temple.Controllers
 
                 cboSubcategoria = (ListadoSubcategorias(cboCategoria).Count()>0?ListadoSubcategorias(cboCategoria).ElementAt(0).id:0);
             }
-            ViewBag.usuario = Session["usuario"];
+            Usuario u = (Usuario) Session["usuario"];
+
+            ViewBag.usuario = u;
             ViewBag.recomendados = ListadoInstructoresRecomendados();
             ViewBag.categorias = new SelectList(ListadoCategorias(), "id", "descripcion", cboCategoria);
             ViewBag.subcategorias = new SelectList((ListadoSubcategorias(cboCategoria)), "id", "descripcion", cboSubcategoria);
             ViewBag.vista = vista;
-            //ViewBag.busqueda = ListadoInstructores();
+            ViewBag.ubicacionGuardada = ObtenerUbicacion(null, u.codigo);
             ViewBag.busqueda = ListadoInstructoresBusqueda(cboCategoria, cboSubcategoria);
             
             return View();
@@ -521,14 +727,48 @@ namespace Temple.Controllers
 
         public ActionResult PerfilInstructor(int codUsu)
         {
-           
             Perfil perfil = ObtenerPerfilInstructor(codUsu);
             ViewBag.usuario = Session["usuario"];
             ViewBag.titulo = perfil.nombres +" "+ perfil.apPaterno +" "+perfil.apMaterno;
             ViewBag.resenas = perfil.reseñas;
             ViewBag.cursos = perfil.cursos;
             ViewBag.horarios = perfil.horarios;
+            ViewBag.puedeResenar=puedeResenar(codUsu);
+
+            
             return View(perfil);
+
+        }
+
+        public ActionResult RegistroResena(string resena, int calificacion, int codInstr) {
+
+            if (resena != "" && calificacion >= 1 && calificacion <= 5)
+            {
+                Session["mensaje"] = InsertarResena(codInstr, resena, calificacion);
+
+            }
+            else {
+
+                Session["mensaje"] = "Datos no válidos has insertado";
+            }
+            return RedirectToAction("Inicio");
+
+
+        }
+
+        public ActionResult ActualizacionResena(int idRes, string resena, int calificacion) {
+            Debug.WriteLine(idRes + " " + resena + " " + calificacion);
+            if (resena != "" && calificacion >= 1 && calificacion <= 5 && idRes!=-1)
+            {
+                Session["mensaje"] = ActualizarResena(idRes, resena, calificacion);
+
+            }
+            else
+            {
+
+                Session["mensaje"] = "Datos no válidos has insertado";
+            }
+            return RedirectToAction("Inicio");
 
         }
 
@@ -556,11 +796,70 @@ namespace Temple.Controllers
 
         }
 
+        public ActionResult MiUbicacion() {
+            Usuario u = (Usuario) Session["usuario"];
+            ViewBag.usuario = u;
+            ViewBag.ubicacion = ObtenerUbicacion(null, u.codigo);
+            return View();
+
+        }
+        [HttpPost]
+        public ActionResult MiUbicacion(decimal latitud, decimal longitud)
+        {
+            try
+            {
+                // Actualiza la ubicación
+                int rs = ActualizarUbicacion(latitud, longitud);
+
+                if (rs != -1)
+                {
+
+                    ViewBag.mensaje = "Actualizado correctamente";
+
+                }
+                else
+
+
+                    ViewBag.mensaje = "Error al actualizar";
+
+
+                
+
+            }
+            catch (Exception e) {
+
+                ViewBag.mensaje = "Coordenadas inválidas";
+                this.con.Close();
+
+            }
+            // Actualiza la ubicación
+            Usuario u = (Usuario)Session["usuario"];
+            ViewBag.usuario = u;
+            ViewBag.ubicacion = ObtenerUbicacion(null, u.codigo);
+            return View();
+
+        }
+
+        public ActionResult UbicacionInstructor(int codInstr) {
+            Usuario u = (Usuario)Session["usuario"];
+            ViewBag.usuario = u;
+            ViewBag.ubicacion = ObtenerUbicacion(null, u.codigo);
+            ViewBag.ubicacionInstructor = ObtenerUbicacion(null, codInstr);
+            return View();
+
+        }
+
+
+
+       
+      
         public ActionResult CerrarSesion() {
             Session["usuario"] = null;
             return RedirectToAction("Bienvenida","Bienvenida");
 
         }
+
+
 
         // JSON Result y funciones
 
@@ -607,10 +906,33 @@ namespace Temple.Controllers
 
         }
 
-        private Ubicacion obtenerUbicacion(SqlConnection con,int idUsuarioObjetivo)
+        private int ActualizarUbicacion(decimal latitud, decimal longitud)
         {
+            
+            con.Open();
+            SqlCommand cmd = new SqlCommand("USP_ACTUALIZAR_UBICACION_USUARIO", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            int idUsuario = ((Usuario)Session["usuario"]).codigo;
+            cmd.Parameters.AddWithValue("@CODUSU", idUsuario);
+            cmd.Parameters.AddWithValue("@LATITUD", latitud);
+            cmd.Parameters.AddWithValue("@LONGITUD", longitud);
+            int rs = cmd.ExecuteNonQuery();
+            con.Close();            
+            return rs;
+
+        }
+
+        private Ubicacion ObtenerUbicacion(SqlConnection con,int idUsuarioObjetivo)
+        {
+
+            if (con == null) {
+
+                this.con.Open();
+
+            }
+
             Ubicacion uObjetivo = new Ubicacion();
-            SqlCommand cmd = new SqlCommand("USP_OBTENER_UBICACION_USUARIO", con);
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_UBICACION_USUARIO", this.con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@CODUSU", idUsuarioObjetivo);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -622,8 +944,14 @@ namespace Temple.Controllers
                 uObjetivo.longitud = reader.GetDecimal(1);
 
             }
+            if (con == null)
+            {
+                this.con.Close();
 
+            }
+            
             return uObjetivo;
+            
 
         }
 

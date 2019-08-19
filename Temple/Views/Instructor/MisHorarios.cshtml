@@ -40,7 +40,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Confirmar acción</h4>
+                <h4 class="modal-title" id="myModalLabel">Mensaje del sistema</h4>
             </div>
             <div class="modal-body">
                 <p id="txtModalMensaje"></p>
@@ -140,12 +140,30 @@
                     return mom.format('LLL');
                 }
             }, rendering: true,
-            eventClick: function (calEvent, jsEvent, view) {
+        eventClick: function (calEvent, jsEvent, view) {
+
+            // Primero verifico que no sea una cita (obligatoria)
+            if (calEvent.id != -1) {
+
+                var evento = new Object();
+                evento.id = calEvent.id;
+                evento.inicio = calEvent.start;
+                evento.fin = calEvent.end;
+                // Coloco la operación actual
+                operacionActual = ELIMINAR;
+                mostrarModalConfirmacion(evento);
+
+            } else {
 
                 var inicio = moment(calEvent.start).format("HH:mm:ss");
                 var fin = moment(calEvent.end).format("HH:mm:ss");
 
-                alert("Has seleccionado el horario: \n\nInicio: " + inicio + "\nFin: " + fin + "\n Id: " + calEvent.id);
+                $("#modalMensaje").modal('show');
+                $("#txtModalMensaje").text("Tienes una cita en el siguiente horario: \n\nInicio: " + inicio + "\nFin: " + fin + "\n Id: " + calEvent.id);
+
+            }
+
+                
 
             },
             eventResize: function (event, delta, revertFunc) {
@@ -373,7 +391,7 @@
                 $("#txtModalConfirmacion").text("Has modificado este horario desde las " + inicio + " hasta las " + fin + ". ¿Guardar?");
                 break;
             case ELIMINAR:
-                $("#txtModalConfirmacion").text("¿Estás seguro de que quieres eliminar el horario desde las " + inicio + " hasta las " + fin + "?");
+                $("#txtModalConfirmacion").text("Has seleccionado el horario desde las " + inicio + " hasta las " + fin + ". ¿Quieres eliminarlo?");
                 break;
         }
 
@@ -469,10 +487,6 @@
         $("#btnListo").unbind("click").on("click", function () {
             $("#modalMensaje").modal('hide');
             $("#txtModalMensaje").text("");
-
-            
-
-
 
         });
 

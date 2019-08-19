@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
-  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -68,10 +67,6 @@
     </Reference>
     <Reference Include="Microsoft.AspNet.TelemetryCorrelation, Version=1.0.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.TelemetryCorrelation.1.0.4\lib\net45\Microsoft.AspNet.TelemetryCorrelation.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -148,6 +143,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AlumnoController.cs" />
     <Compile Include="Controllers\AlumnoRegController.cs" />
+    <Compile Include="Controllers\ChatController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\BienvenidaController.cs" />
     <Compile Include="Controllers\InstructorController.cs" />
@@ -163,11 +159,13 @@
     <Compile Include="Models\Alumno.cs" />
     <Compile Include="Models\Anuncio.cs" />
     <Compile Include="Models\Categoria.cs" />
+    <Compile Include="Models\Chat.cs" />
     <Compile Include="Models\Curso.cs" />
     <Compile Include="Models\Dia.cs" />
     <Compile Include="Models\Evento.cs" />
     <Compile Include="Models\Hora.cs" />
     <Compile Include="Models\InstructoresRecomendados.cs" />
+    <Compile Include="Models\Mensaje.cs" />
     <Compile Include="Models\Modalidad.cs" />
     <Compile Include="Models\Pedido.cs" />
     <Compile Include="Models\Perfil.cs" />
@@ -190,11 +188,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bd\BDTEMPLE.sql" />
+    <Content Include="Content\bootsnav.js" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.js" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.min.js" />
     <Content Include="Content\estilo.css" />
+    <Content Include="Content\estiloChat.css" />
     <Content Include="Content\estiloComentarios.css" />
     <Content Include="Content\estiloD.css" />
     <Content Include="Content\estiloE.css" />
@@ -206,72 +206,91 @@
     <Content Include="Content\estiloTransaccion.css" />
     <Content Include="Content\fullcalendar.css" />
     <Content Include="Content\fullcalendar.js" />
+    <Content Include="Content\isotope-active.js" />
+    <Content Include="Content\isotope.js" />
     <Content Include="Content\jquery-3.3.1.js" />
     <Content Include="Content\jquery.cycle2.carousel.js" />
     <Content Include="Content\jquery.cycle2.js" />
+    <Content Include="Content\jquery.fancybox.js" />
+    <Content Include="Content\jquery.scrollUp.min.js" />
+    <Content Include="Content\jquery.scrolly.min.js" />
+    <Content Include="Content\main.css" />
+    <Content Include="Content\main.js" />
     <Content Include="Content\material-design-iconic-font.css" />
     <Content Include="Content\moment.js" />
     <Content Include="Content\nouislider.min.css" />
-    <Content Include="Content\scriptPerfil.js" />
-    <Content Include="Content\scriptRegistro.js" />
+    <Content Include="Content\scriptRegistroAlumno.js" />
+    <Content Include="Content\scriptRegistroInstructor.js" />
+    <Content Include="Content\skel.js" />
+    <Content Include="Content\skel.min.js" />
     <Content Include="Content\smartwizard\css\smart_wizard.css" />
     <Content Include="Content\smartwizard\css\smart_wizard_theme_arrows.css" />
     <Content Include="Content\smartwizard\js\jquery.smartWizard.min.js" />
     <Content Include="Content\style.css" />
     <Content Include="Content\style02.css" />
+    <Content Include="Content\util.js" />
     <Content Include="Content\validator.min.js" />
     <Content Include="favicon.ico" />
-    <Content Include="font-awesome-4.7.0\css\font-awesome.css" />
-    <Content Include="font-awesome-4.7.0\css\font-awesome.min.css" />
-    <Content Include="font-awesome-4.7.0\fonts\fontawesome-webfont.svg" />
-    <Content Include="font-awesome-4.7.0\HELP-US-OUT.txt" />
+    <Content Include="Content\font-awesome-4.7.0\css\font-awesome.css" />
+    <Content Include="Content\font-awesome-4.7.0\css\font-awesome.min.css" />
+    <Content Include="Content\font-awesome-4.7.0\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\font-awesome-4.7.0\HELP-US-OUT.txt" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="imagenes\app.jpg" />
+    <Content Include="imagenes\crear.jpg" />
+    <Content Include="imagenes\cuenta.jpeg" />
     <Content Include="imagenes\iconochat.png" />
     <Content Include="imagenes\iconoPost.png" />
+    <Content Include="imagenes\iconos\markerGuardado.png" />
+    <Content Include="imagenes\iconos\markerObjetivo.png" />
+    <Content Include="imagenes\iconos\sombraMarkerGuardado.png" />
     <Content Include="imagenes\logo.png" />
     <Content Include="imagenes\mila.jpg" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="font-awesome-4.7.0\fonts\fontawesome-webfont.eot" />
-    <Content Include="font-awesome-4.7.0\fonts\fontawesome-webfont.ttf" />
-    <Content Include="font-awesome-4.7.0\fonts\fontawesome-webfont.woff" />
-    <Content Include="font-awesome-4.7.0\fonts\fontawesome-webfont.woff2" />
-    <Content Include="font-awesome-4.7.0\fonts\FontAwesome.otf" />
-    <Content Include="font-awesome-4.7.0\less\animated.less" />
-    <Content Include="font-awesome-4.7.0\less\bordered-pulled.less" />
-    <Content Include="font-awesome-4.7.0\less\core.less" />
-    <Content Include="font-awesome-4.7.0\less\fixed-width.less" />
-    <Content Include="font-awesome-4.7.0\less\font-awesome.less" />
-    <Content Include="font-awesome-4.7.0\less\icons.less" />
-    <Content Include="font-awesome-4.7.0\less\larger.less" />
-    <Content Include="font-awesome-4.7.0\less\list.less" />
-    <Content Include="font-awesome-4.7.0\less\mixins.less" />
-    <Content Include="font-awesome-4.7.0\less\path.less" />
-    <Content Include="font-awesome-4.7.0\less\rotated-flipped.less" />
-    <Content Include="font-awesome-4.7.0\less\screen-reader.less" />
-    <Content Include="font-awesome-4.7.0\less\stacked.less" />
-    <Content Include="font-awesome-4.7.0\less\variables.less" />
-    <Content Include="font-awesome-4.7.0\scss\font-awesome.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_animated.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_bordered-pulled.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_core.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_fixed-width.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_icons.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_larger.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_list.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_mixins.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_path.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_rotated-flipped.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_screen-reader.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_stacked.scss" />
-    <Content Include="font-awesome-4.7.0\scss\_variables.scss" />
+    <Content Include="Content\font-awesome-4.7.0\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\font-awesome-4.7.0\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\font-awesome-4.7.0\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\font-awesome-4.7.0\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\font-awesome-4.7.0\fonts\FontAwesome.otf" />
+    <Content Include="Content\font-awesome-4.7.0\less\animated.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\bordered-pulled.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\core.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\fixed-width.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\font-awesome.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\icons.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\larger.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\list.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\mixins.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\path.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\rotated-flipped.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\screen-reader.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\stacked.less" />
+    <Content Include="Content\font-awesome-4.7.0\less\variables.less" />
+    <Content Include="Content\font-awesome-4.7.0\scss\font-awesome.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_animated.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_bordered-pulled.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_core.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_fixed-width.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_icons.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_larger.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_list.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_mixins.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_path.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_rotated-flipped.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_screen-reader.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_stacked.scss" />
+    <Content Include="Content\font-awesome-4.7.0\scss\_variables.scss" />
     <Content Include="Content\style.css.map" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <None Include="Properties\PublishProfiles\TempleMVC.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="imagenes\quees.jpg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -303,8 +322,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_LayoutTemple.cshtml" />
     <Content Include="Views\Shared\_LayoutBienvenida.cshtml" />
-    <Content Include="Views\Bienvenida\Bienvenida.cshtml" />
-    <Content Include="Views\Bienvenida\AcercaDe.cshtml" />
     <Content Include="Views\Bienvenida\Descargar.cshtml" />
     <Content Include="Views\Login\IniciarSesion.cshtml" />
     <Content Include="Views\Alumno\Inicio.cshtml" />
@@ -331,9 +348,21 @@
     <Content Include="Views\Instructor\MisHorarios.cshtml" />
     <Content Include="Views\Alumno\MiPerfil.cshtml" />
     <Content Include="Views\Alumno\MisCitas.cshtml" />
+    <Content Include="Views\Registro\RegistroInstructor.cshtml" />
+    <Content Include="Views\Chat\Chat.cshtml" />
+    <Content Include="Views\Alumno\AcercaDe.cshtml" />
+    <Content Include="Views\Alumno\Configuracion.cshtml" />
+    <Content Include="Views\Instructor\Configuracion.cshtml" />
+    <Content Include="Views\Instructor\AcercaDe.cshtml" />
+    <Content Include="Views\Instructor\MiUbicacion.cshtml" />
+    <Content Include="Views\Alumno\MiUbicacion.cshtml" />
+    <Content Include="Views\Alumno\UbicacionInstructor.cshtml" />
+    <Content Include="Views\Bienvenida\AcercaDe.cshtml" />
+    <Content Include="Views\Bienvenida\Bienvenida.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\cvs\" />
     <Folder Include="imagenes\perfiles\" />
     <Folder Include="imagenes\portadas\" />
   </ItemGroup>
@@ -372,12 +401,6 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

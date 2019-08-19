@@ -1,0 +1,125 @@
+﻿
+@{
+    ViewBag.Title = "Ubicacion Instructor";
+    Layout = "~/Views/Shared/_LayoutTemple.cshtml";
+}
+
+<h2>¿Dónde se encuentra mi instructor?</h2>
+
+<div id="mapid" style="display:block;"></div>
+
+<script>
+    var map;
+
+    // placeholders for the L.marker and L.circle representing user's current position and accuracy
+    var current_position, current_accuracy;
+
+    cargarMapa();
+
+
+    function cargarMapa() {
+
+        try {
+            // Cargo mi mapa
+            map = L.map('mapid');
+
+            map.invalidateSize();
+
+            L.tileLayer('https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.{format}?access_token={accessToken}', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 18,
+                id: 'mapbox.streets',
+                format: 'jpg70',
+                accessToken: 'sk.eyJ1IjoiZ3JpY2FyZG92IiwiYSI6ImNqbnphd3FicjAwNHAzcG85bmowaWFyMDUifQ.CxTAN8PiT2jZkldTwukmPg'
+            }).addTo(map);
+            map.locate({ setView: true, maxZoom: 16 });
+            mostrarUbicacionesGuardadas();
+
+            map.on('locationfound', onLocationFound);
+            map.on('locationerror', onLocationError);
+        } catch (e) { }
+
+
+    }
+
+    function mostrarUbicacionesGuardadas() {
+
+        // if position defined, then remove the existing position marker and accuracy circle from the map
+        if (current_position) {
+            map.removeLayer(current_position);
+            map.removeLayer(current_accuracy);
+        }
+
+        //var radius = e.accuracy / 2;
+
+        L.Routing.control({
+            waypoints: [
+                { lat:'@ViewBag.ubicacion.latitud', lng:'@ViewBag.ubicacion.longitud'},
+                { lat:'@ViewBag.ubicacionInstructor.latitud', lng:'@ViewBag.ubicacionInstructor.longitud'}
+            ]
+        }).addTo(map);
+
+        var icono = new L.Icon({
+            iconUrl: '@Url.Content("~/imagenes/iconos/markerGuardado.png")',
+            shadowUrl: '@Url.Content("~/imagenes/iconos/sombraMarkerGuardado.png")',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var marcador=L.marker({ lat:'@ViewBag.ubicacion.latitud', lng:'@ViewBag.ubicacion.longitud'}, { icon: icono }).addTo(map)
+            .bindPopup("Esta es tu ubicación guardada").openPopup();
+        marcador.setOpacity(0.4);
+
+        // Ahora cargo la ubicación objetivo
+        var icono = new L.Icon({
+            iconUrl: '@Url.Content("~/imagenes/iconos/markerObjetivo.png")',
+            shadowUrl: '@Url.Content("~/imagenes/iconos/sombraMarkerGuardado.png")',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var marcador=L.marker({ lat:'@ViewBag.ubicacionInstructor.latitud', lng:'@ViewBag.ubicacionInstructor.longitud'}, { icon: icono }).addTo(map)
+            .bindPopup("Esta la ubicación de tu instructor").openPopup();
+
+    }
+
+    function onLocationFound(e) {
+
+
+        // if position defined, then remove the existing position marker and accuracy circle from the map
+        if (current_position) {
+            map.removeLayer(current_position);
+            map.removeLayer(current_accuracy);
+        }
+
+        //var radius = e.accuracy / 2;
+
+        current_position = L.marker(e.latlng,).addTo(map)
+            .bindPopup("Se ha detectado tu ubicación en este punto").openPopup();
+        
+    }
+
+    function onLocationError(e) {
+        // Si no me quiere dar su ubicación, lo mando a la isla San Lorenzo JAJAJAJAJA
+        
+
+        // if position defined, then remove the existing position marker and accuracy circle from the map
+        if (current_position) {
+            map.removeLayer(current_position);
+            map.removeLayer(current_accuracy);
+        }
+
+        //var radius = e.accuracy / 2;
+
+        current_position = L.marker({ lat: '-12.088674392992298', lng: '-77.21981048583986' }, { draggable: 'false' }).addTo(map)
+            .bindPopup("No se pudo establecer tu ubicación, así que tu punto de referencia es la isla San Lorenzo").openPopup();
+
+        //current_accuracy = L.circle(e.latlng, radius).addTo(map);
+               
+    }
+
+</script>

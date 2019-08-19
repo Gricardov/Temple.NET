@@ -1,0 +1,506 @@
+﻿
+@{
+    ViewBag.Title = "Chat";
+    Layout = "~/Views/Shared/_LayoutTemple.cshtml";
+}
+
+<body>
+    <div class="container">
+        <h3 class=" text-center">Mis mensajes</h3>
+        <div class="messaging">
+            <div class="inbox_msg">
+                <div class="inbox_people">
+                    <div class="headind_srch">
+                        <div class="recent_heading">
+                            <h4>Chats recientes</h4>
+                        </div>
+                    </div>
+
+                    <!--<div class="srch_bar">
+        <div class="stylish-input-group">
+            <input type="text" class="search-bar" placeholder="Search">
+            <span class="input-group-addon">
+                <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
+            </span>
+        </div>
+    </div>-->
+                    <div class="inbox_chat">
+
+                        @if (ViewBag.chats.Count == 0)
+                        {
+
+                            <p>Aún no tienes mensajes</p>
+
+                        }
+
+                        else
+                        {
+
+                            foreach (var c in ViewBag.chats)
+                            {
+                                
+                                if (ViewBag.chats.IndexOf(c) == 0)
+                                {
+
+
+                                    <div class="chat_list selected_chat" id="chat@(c.idChat)" data-codDestin="@(c.codDestin)">
+                                        <div class="chat_people">
+                                            <div class="chat_img"> <img src="~/imagenes/perfiles/@(c.codDestin).jpg" alt="sunil" class="img-circle"> </div>
+                                            <div class="chat_ib">
+                                                <h5>@c.nombreDestin @c.apPatDestin @c.apMatDestin<span class="chat_date">@c.ultimoMensaje.fechaHora</span></h5>
+                                                <p>
+                                                    @c.ultimoMensaje.contenido
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                }
+                                else
+                                {
+
+                                    <div class="chat_list" id="chat@(c.idChat)" data-codDestin="@(c.codDestin)">
+                                        <div class="chat_people">
+                                            <div class="chat_img"> <img src="~/imagenes/perfiles/@(c.codDestin).jpg" alt="sunil" class="img-circle"> </div>
+                                            <div class="chat_ib">
+                                                <h5>@c.nombreDestin @c.apPatDestin @c.apMatDestin<span class="chat_date">@c.ultimoMensaje.fechaHora</span></h5>
+                                                <p>
+                                                    @c.ultimoMensaje.contenido
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                }
+
+
+
+                            }
+
+
+
+                        }
+
+
+
+                    </div>
+                </div>
+                <div id="mensajes">
+                    @foreach (var c in ViewBag.chats)
+                    {
+
+                        if (ViewBag.chats.IndexOf(c) == 0)
+                        {
+
+                            <div class="mesgs" id="chatMsg@(c.idChat)">
+                                <div class="msg_history">
+
+                                    @foreach (var m in c.mensajes)
+                                    {
+
+                                        if (m.codRemit == ViewBag.usuario.codigo)
+                                        {
+                                            <div class="outgoing_msg">
+                                                <div class="sent_msg">
+                                                    <p>
+                                                        @m.contenido
+                                                    </p>
+                                                    <span class="time_date">@m.fechaHora</span>
+                                                </div>
+                                            </div>
+
+                                        }
+
+                                        else
+                                        {
+
+                                            <div class="incoming_msg">
+                                                <div class="incoming_msg_img"> <img src="~/imagenes/perfiles/@(m.codRemit).jpg" class="img-circle" alt="sunil"> </div>
+                                                <div class="received_msg">
+                                                    <div class="received_withd_msg">
+                                                        <p>
+                                                            @m.contenido
+                                                        </p>
+                                                        <span class="time_date">@m.fechaHora</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+
+
+                                    }
+                                </div>
+
+                                <div class="type_msg">
+                                    <div class="input_msg_write">
+                                        <input type="text" class="write_msg" placeholder="Escribe un mensaje" />
+                                        <button class="msg_send_btn" type="button"><i class="fa fa-play" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        }
+
+                        else
+                        {
+                            <div class="mesgs" style="display:none;" id="chatMsg@(c.idChat)">
+                                <div class="msg_history">
+
+                                    @foreach (var m in c.mensajes)
+                                    {
+
+
+                                        if (m.codRemit == ViewBag.usuario.codigo)
+                                        {
+                                            <div class="outgoing_msg">
+                                                <div class="sent_msg">
+                                                    <p>
+                                                        @m.contenido
+                                                    </p>
+                                                    <span class="time_date">@m.fechaHora</span>
+                                                </div>
+                                            </div>
+
+                                        }
+
+                                        else
+                                        {
+
+                                            <div class="incoming_msg">
+                                                <div class="incoming_msg_img"> <img src="~/imagenes/perfiles/@(m.codRemit).jpg" alt="sunil" class="img-circle"> </div>
+                                                <div class="received_msg">
+                                                    <div class="received_withd_msg">
+                                                        <p>
+                                                            @m.contenido
+                                                        </p>
+                                                        <span class="time_date">@m.fechaHora</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+
+
+                                    }
+                                </div>
+
+                                <div class="type_msg">
+                                    <div class="input_msg_write">
+                                        <input type="text" class="write_msg" placeholder="Escribe un mensaje" />
+                                        <button class="msg_send_btn" type="button"><i class="fa fa-play" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                        }
+
+
+                    }
+                </div>
+            </div>
+
+
+            <p class="text-center top_spac"> Design by <a target="_blank" href="#">Corazón de melón</a></p>
+
+        </div>
+    </div>
+</body>
+
+<link rel="stylesheet" href="~/Content/estiloChat.css" />
+
+<script>
+
+    var chatSeleccionado = -1;
+
+    if ($('.chat_list').length > 0) {
+        // Primero, establecemos el primer chat como seleccionado
+        chatSeleccionado=$($('.chat_list').get(0)).attr('id').replace('chat', '');
+    }
+
+    var infoChats = [];
+
+    @using System.Web.Script.Serialization;
+  
+            @{
+                var json=@Html.Raw(new JavaScriptSerializer().Serialize((ViewBag.chats)));
+            }
+
+    var json = JSON.parse(JSON.stringify(@json));
+    for (var i in json) {
+
+        var infoChat = new Object();
+        infoChat.idChat = json[i].idChat;
+        infoChat.numMensajes = json[i].mensajes.length;
+        //alert(infoChat.numMensajes);
+        infoChats.push(infoChat);
+
+    }
+
+    function actualizarMensajes(chats) {
+
+        // Primero, pregunto si el chat de dicho código tiene el mismo número de mensajes que el almacenado
+                    for (var g in infoChats) {
+
+                        for (var r in chats) {
+                            
+                        // Si coinciden los códigos, pregunto si la cantidad de mensajes para dicho código han variado
+                        if (chats[r].idChat == infoChats[g].idChat) {
+
+                                if (chats[r].mensajes.length != infoChats[g].numMensajes) {
+
+                                    // Primero, actualizamos el estado de la variables infoChat
+                                    infoChats[g].numMensajes = chats[r].mensajes.length;
+
+                                    // Que tome el código para ese chat, borre la caja que lo contiene y pinte los nuevos mensajes
+                                    $('#chatMsg' + chats[r].idChat).empty();
+
+                                    var mensajes = '<div class="msg_history">';
+
+                                    for (m in chats[r].mensajes) {
+
+                                        var fechaHora = moment(parseInt((chats[r].mensajes[m].fechaHora.replace("/Date(", "").replace(")/", "")))).format("L HH:mm:ss");
+
+                                        if (chats[r].mensajes[m].codRemit ==@ViewBag.usuario.codigo) {
+
+                                        mensajes += '<div class="outgoing_msg">' +
+                                        '<div class="sent_msg">' +
+                                        '<p>' +
+                                        chats[r].mensajes[m].contenido +
+                                        '</p>' +
+                                            '<span class="time_date">' + fechaHora+'</span>' +
+                                        '</div>' +
+                                        '</div>';
+
+
+                                        } else {
+
+                                            mensajes += '<div class="incoming_msg">' +
+                                                '<div class="incoming_msg_img"><img src="/imagenes/perfiles/' + chats[r].mensajes[m].codRemit + '.jpg" class="img-circle" alt="sunil"> </div>' +
+                                                '<div class="received_msg">' +
+                                                '<div class="received_withd_msg">' +
+                                                '<p>' +
+                                                chats[r].mensajes[m].contenido +
+                                                '</p>' +
+                                                '<span class="time_date">' + fechaHora +'</span>' +
+                                                '</div>' +
+                                                '</div>' +
+                                                '</div>';
+
+
+                                        }
+                                        
+                                        
+                                    }
+                                    
+                                    mensajes += '</div><div class= "type_msg">' +
+                                        '<div class="input_msg_write"><input type="text" class="write_msg" placeholder="Type a message" />' +
+                                        '<button class="msg_send_btn" type="button"><i class="fa fa-play" aria-hidden="true"></i></button>' +
+                                        '</div></div>';
+                                    $('#chatMsg' + chats[r].idChat).append(mensajes);
+
+                                    var msgDiv = $('#chatMsg' + chats[r].idChat).find('.msg_history');
+                                    $(msgDiv).scrollTop($(msgDiv)[0].scrollHeight);
+                                    
+                                        $(msgDiv).show('slow');
+                                    
+
+                                }
+                                
+                            }
+
+                        }
+
+                    }
+
+    }
+
+    function actualizarChats(chats) {
+
+        // Luego, verifico si se ha agregado un nuevo chat. Se contrasta con la variable almacenada en el cliente (infoChats)
+                    if (chats.length != infoChats.length) {
+
+                        $("#mensajes").empty();
+
+                        $(".inbox_chat").empty();
+
+                        if (chats.length == 0) {
+                            $('.inbox_chat').append('<p>No tienes mensajes</p>');
+                        }
+                        // ¿Por qué nunca te enamoraste de mí, Milagros?
+                        infoChats = [];
+
+                        // Llena la parte de los chats con su último mensaje
+                        for (var i in chats.reverse()) {
+
+                            var infoChat = new Object();
+                            infoChat.idChat = chats[i].idChat;
+                            infoChat.numMensajes = chats[i].mensajes.length;
+                            infoChats.push(infoChat);
+                            var fechaHora = moment(parseInt((chats[i].ultimoMensaje.fechaHora.replace("/Date(", "").replace(")/", "")))).format("L HH:mm:ss");
+
+                            $('.inbox_chat').append('<div class="chat_list" id="chat' + chats[i].idChat + '" data-codDestin="' + chats[i].codDestin + '">' +
+                                '<div class="chat_people">' +
+                                '<div class="chat_img"> <img src="/imagenes/perfiles/' + chats[i].codDestin + '.jpg" alt="sunil" class="img-circle"> </div>' +
+                                '<div class="chat_ib">' +
+                                '<h5>' + chats[i].nombreDestin + ' ' + chats[i].apPatDestin + ' ' + chats[i].apMatDestin + '<span class="chat_date">' + fechaHora+'</span></h5>' +
+                                '<p>' +
+                                chats[i].ultimoMensaje.contenido +
+                                '</p>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>');
+
+                            var mensajes='<div class="mesgs" style="display:none;" id="chatMsg' + chats[i].idChat + '"><div class="msg_history">';
+                                              
+                            // Ahora, por cada chat, agrego sus mensajes
+                            for (var m in chats[i].mensajes) {
+                                var fechaHora = moment(parseInt((chats[i].mensajes[m].fechaHora.replace("/Date(", "").replace(")/", "")))).format("L HH:mm:ss");
+
+                                if (chats[i].mensajes[m].codRemit ==@ViewBag.usuario.codigo) {
+ 
+                                    mensajes += '<div class="outgoing_msg">' +
+                                        '<div class="sent_msg">' +
+                                        '<p>' +
+                                        chats[i].mensajes[m].contenido +
+                                        '</p>' +
+                                        '<span class="time_date">' + fechaHora +
+                                        '</div>' +
+                                        '</div>';
+
+
+                                } else {
+
+                                    mensajes+='<div class="incoming_msg">' +
+                                        '<div class="incoming_msg_img"><img src="/imagenes/perfiles/' + chats[i].mensajes[m].codRemit + '.jpg" class="img-circle" alt="sunil"> </div>' +
+                                        '<div class="received_msg">' +
+                                        '<div class="received_withd_msg">' +
+                                        '<p>' +
+                                        chats[i].mensajes[m].contenido +
+                                        '</p>' +
+                                        '<span class="time_date">' + fechaHora +'</span>' +
+                                        '</div>' +
+                                        '</div>' +
+                                        '</div>';
+
+
+                                }
+
+                               
+                            }
+                            mensajes += '</div><div class= "type_msg">' +
+                                '<div class="input_msg_write"><input type="text" class="write_msg" placeholder="Escribe un mensaje" />' +
+                                '<button class="msg_send_btn" type="button"><i class="fa fa-play" aria-hidden="true"></i></button>' +
+                                '</div></div></div>';
+                            $('#mensajes').append(mensajes);
+
+                            var msgDiv = $('#chatMsg' + chats[i].idChat).find('.msg_history');
+                            $(msgDiv).scrollTop($(msgDiv)[0].scrollHeight);
+                            $(msgDiv).show('slow');
+
+                                                        
+                        }
+                    }
+    }
+
+    // Y esto verificará si hay nuevos mensajes en el chat
+    setInterval(function () {
+
+        var url ="@Url.Action("obtenerChats", "Chat")";
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                dataType: "json",
+                success: function (response) {
+
+                    // Verifico el arreglo infoChats para ver si algo ha cambiado. Primero si es que se ha agregado una nueva serie de mensajes para cada conversación
+                    var chats = JSON.parse(response);
+
+                    actualizarMensajes(chats);
+                    
+                    actualizarChats(chats);
+
+                    // Finalmente, debo seleccionar el que estaba seleccionado antes
+                    if ($('.chat_list').length >= chatSeleccionado) {
+                        $('#chat' + chatSeleccionado).click();
+
+
+                    } else {
+
+                        chatSeleccionado = -1;
+
+                    }
+
+                  }
+
+
+
+            });
+
+
+    }, 3000);
+    
+    $('.inbox_chat').on('mouseover', '.chat_list', function () {
+
+        $(this).addClass('active_chat');
+
+    });
+    
+    $('.inbox_chat').on('mouseout', '.chat_list', function () {
+
+        $(this).removeClass('active_chat');
+
+    });
+    $('.inbox_chat').on('click','.chat_list',function () {
+        $('.chat_list').removeClass('selected_chat');
+        $(this).addClass('selected_chat');
+
+        $('.mesgs').hide();
+        var id = ($(this).attr('id').replace("chat", "chatMsg"));
+
+        chatSeleccionado = ($(this).attr('id').replace("chat", ""));
+
+        $('#' + id).show();
+
+    });
+
+    $('.inbox_msg').on('click', '.msg_send_btn', function () {
+
+        var mensaje = $($(this).prev()).val();
+        var codDestin = $('#chat' + chatSeleccionado).data('coddestin');
+        // Si el campo de texto para enviar está lleno y hay un chat seleccionado, que envíe. Si no, que muestre mensaje de error
+        if (mensaje != '' && chatSeleccionado != -1) {
+
+            var url = "@Url.Action("enviarMensaje", "Chat")";
+            var data = { contenido: mensaje, codChat: chatSeleccionado, codDestin: codDestin };
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                dataType: "json",
+                success: function (response) {
+
+                    $($(this).prev()).empty();
+
+
+                }
+
+
+
+            });
+
+        } else {
+
+            alert("Asegúrese de que el mensaje a enviar no esté vacío y haya un chat seleccionado");
+
+        }
+    });
+
+    
+
+</script>

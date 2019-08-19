@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Configuration;
 using System.Diagnostics;
 using System.Web.Script.Serialization;
+using System.IO;
 
 namespace Temple.Controllers
 {
@@ -19,7 +20,7 @@ namespace Temple.Controllers
         public ActionResult Inicio()
         {
             ViewBag.usuario = Session["usuario"];
-            
+
             return View();
 
 
@@ -40,7 +41,8 @@ namespace Temple.Controllers
 
         }
 
-        public ActionResult MisHorarios() {
+        public ActionResult MisHorarios()
+        {
             ViewBag.usuario = Session["usuario"];
             Perfil perfil = ObtenerMiPerfil();
 
@@ -50,23 +52,240 @@ namespace Temple.Controllers
 
         }
 
+        public ActionResult MiUbicacion()
+        {
+            Usuario u = (Usuario)Session["usuario"];
+            ViewBag.usuario = u;
+            ViewBag.ubicacion = ObtenerUbicacion(null, u.codigo);
+            return View();
+
+        }
+
+        [HttpPost]
+        public ActionResult MiUbicacion(decimal latitud, decimal longitud)
+        {
+            try
+            {
+                // Actualiza la ubicación
+                int rs = ActualizarUbicacion(latitud, longitud);
+
+                if (rs != -1)
+                {
+
+                    ViewBag.mensaje = "Actualizado correctamente";
+
+                }
+                else
+
+
+                    ViewBag.mensaje = "Error al actualizar";
+
+
+
+
+            }
+            catch (Exception e)
+            {
+
+                ViewBag.mensaje = "Coordenadas inválidas";
+                this.con.Close();
+
+            }
+            // Actualiza la ubicación
+            Usuario u = (Usuario)Session["usuario"];
+            ViewBag.usuario = u;
+            ViewBag.ubicacion = ObtenerUbicacion(null, u.codigo);
+            return View();
+
+        }
+
         public ActionResult Configuracion()
         {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_PERFIL_INSTRUCTOR", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", (((Usuario)Session["usuario"]).codigo));
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                ((Usuario)Session["usuario"]).sobreMi = reader.GetString(4);
+            }
+
+            reader.Close();
+            con.Close();
+
+            ViewBag.usuario = Session["usuario"];
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult Configuracion(string nombres, string apPat, string apMat, int edad,
+           string correo, string telefono, string clave, string sobreMi,
+           HttpPostedFileBase imagen)
+        {
+            Debug.WriteLine(nombres);
+            Debug.WriteLine(apPat);
+            Debug.WriteLine(apMat);
+            Debug.WriteLine(edad);
+            Debug.WriteLine(correo);
+            Debug.WriteLine(telefono);
+            Debug.WriteLine(clave);
+            Debug.WriteLine(sobreMi);
+
+            ViewBag.usuario = Session["usuario"];
+
+            try
+            {
+                Usuario u = new Usuario();
+                u.codigo = ((Usuario)Session["usuario"]).codigo;
+                u.nombres = nombres;
+                u.apPaterno = apPat;
+                u.apMaterno = apMat;
+                u.edad = edad;
+                u.correo = correo;
+                u.telefono = telefono; ;
+                u.clave = clave;
+                u.sobreMi = sobreMi;
+
+                Usuario res = ActualizarInstructor(u);
+                Debug.WriteLine(res.codigo);
+                Debug.WriteLine(res.nombres);
+                if (res != null)
+                {
+                    if (imagen != null)
+                    {
+                        var originalFilename = Path.GetFileName(imagen.FileName);
+                        string fileId = Guid.NewGuid().ToString().Replace("-", "");
+                        string userId = res.codigo.ToString(); // Function to get user id based on your schema
+
+                        var path = Path.Combine(Server.MapPath("~/imagenes/perfiles/"), userId/*, fileId*/);
+                        imagen.SaveAs(path + Path.GetExtension(imagen.FileName));
+                    }
+
+
+                    ViewBag.mensaje = "¡Actualización exitosa!";
+                    Session["usuario"] = null;
+                    return RedirectToAction("Bienvenida", "Bienvenida");
+                }
+                else
+                {
+
+                    ViewBag.mensaje = "Error al actualizar en la base de datos";
+                    return View();
+                }
+            }
+            catch (Exception e)
+            {
+
+                ViewBag.mensaje = "Error al actualizar. Verifica que has llenado todos los datos correctamente, incluida la foto. Además, verifica que hayas especificado cursos diferentes";
+                return View();
+
+            }
+
+        }
+
+        public Usuario ActualizarInstructor(Usuario u)
+        {
+            Usuario res = new Usuario();
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand("USP_ACTUALIZAR_USUARIO", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", u.codigo);
+            Debug.WriteLine(u.codigo);
+            cmd.Parameters.AddWithValue("@NOMUSU", u.nombres);
+            Debug.WriteLine(u.nombres);
+            cmd.Parameters.AddWithValue("@APAUSU", u.apPaterno);
+            Debug.WriteLine(u.apPaterno);
+            cmd.Parameters.AddWithValue("@AMAUSU", u.apMaterno);
+            Debug.WriteLine(u.apMaterno);
+            cmd.Parameters.AddWithValue("@CORREO", u.correo);
+            Debug.WriteLine(u.correo);
+            cmd.Parameters.AddWithValue("@EDAD", u.edad);
+            Debug.WriteLine(u.edad);
+            cmd.Parameters.AddWithValue("@TEL", u.telefono);
+            Debug.WriteLine(u.telefono);
+            cmd.Parameters.AddWithValue("@CLAUSU", u.clave);
+            Debug.WriteLine(u.clave);
+            cmd.Parameters.AddWithValue("@SOBREMI", u.sobreMi);
+            Debug.WriteLine(u.sobreMi);
+            int ok = cmd.ExecuteNonQuery();
+            Debug.WriteLine(ok + "");
+            if (ok > 0)
+            {
+                Debug.WriteLine("si");
+                res = u;
+            }
+            else
+            {
+                Debug.WriteLine("no");
+            }
+            con.Close();
+            return res;
 
         }
 
         public ActionResult AcercaDe()
         {
+            ViewBag.usuario = Session["usuario"];
             return View();
 
 
         }
-
+                
         public ActionResult CerrarSesion()
         {
             Session["usuario"] = null;
             return RedirectToAction("Bienvenida", "Bienvenida");
+
+        }
+
+        private int ActualizarUbicacion(decimal latitud, decimal longitud) {
+
+            con.Open();
+            SqlCommand cmd = new SqlCommand("USP_ACTUALIZAR_UBICACION_USUARIO", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", ((Usuario)Session["usuario"]).codigo);
+            cmd.Parameters.AddWithValue("@LATITUD", latitud);
+            cmd.Parameters.AddWithValue("@LONGITUD", longitud);
+            int rs = cmd.ExecuteNonQuery();
+            con.Close();
+            return rs;
+
+        }
+
+        private Ubicacion ObtenerUbicacion(SqlConnection con, int idUsuarioObjetivo)
+        {
+
+            if (con == null)
+            {
+
+                this.con.Open();
+
+            }
+
+            Ubicacion uObjetivo = new Ubicacion();
+            SqlCommand cmd = new SqlCommand("USP_OBTENER_UBICACION_USUARIO", this.con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@CODUSU", idUsuarioObjetivo);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+
+                uObjetivo.latitud = reader.GetDecimal(0);
+                uObjetivo.longitud = reader.GetDecimal(1);
+
+            }
+            if (con == null)
+            {
+                this.con.Close();
+
+            }
+
+            return uObjetivo;
+
 
         }
 
@@ -77,7 +296,7 @@ namespace Temple.Controllers
             con.Open();
             SqlCommand cmd = new SqlCommand("USP_OBTENER_PERFIL_INSTRUCTOR", con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@CODUSU", (((Usuario) Session["usuario"]).codigo));
+            cmd.Parameters.AddWithValue("@CODUSU", (((Usuario)Session["usuario"]).codigo));
             SqlDataReader reader = cmd.ExecuteReader();
 
             while (reader.Read())
@@ -216,14 +435,16 @@ namespace Temple.Controllers
             {
                 Reseña r = new Reseña();
                 r.id = reader.GetInt32(0);
-                r.idPerfilRemitente = reader.GetInt32(1);
-                r.nombreRemitente = reader.GetString(2);
-                r.apPaternoRemitente = reader.GetString(3);
-                r.apMaternoRemitente = reader.GetString(4);
-                r.idPerfilDestinatario = reader.GetInt32(5);
-                r.contenido = reader.GetString(6);
-                r.fechaHora = reader.GetDateTime(7);
-                r.calificacion = reader.GetInt32(8);
+                r.codUsuRemitente = reader.GetInt32(1);
+                r.idPerfilRemitente = reader.GetInt32(2);
+                r.nombreRemitente = reader.GetString(3);
+                r.apPaternoRemitente = reader.GetString(4);
+                r.apMaternoRemitente = reader.GetString(5);
+                r.idPerfilDestinatario = reader.GetInt32(6);
+                r.contenido = reader.GetString(7);
+                r.fechaHora = reader.GetDateTime(8);
+                r.calificacion = reader.GetInt32(9);
+                r.editado = reader.GetBoolean(10);
                 lista.Add(r);
 
             }
@@ -235,8 +456,9 @@ namespace Temple.Controllers
 
         public List<Evento> ListadoHorarios(SqlConnection con, int codUsu)
         {
-            
-            if (con == null) {
+
+            if (con == null)
+            {
 
                 this.con.Open();
 
@@ -258,7 +480,8 @@ namespace Temple.Controllers
             }
             reader.Close();
 
-            if (con == null) {
+            if (con == null)
+            {
 
                 this.con.Close();
 
@@ -322,7 +545,7 @@ namespace Temple.Controllers
 
         private int InsertarAnuncio(string titulo, string contenido)
         {
-            Usuario u = (Usuario) Session["usuario"];
+            Usuario u = (Usuario)Session["usuario"];
             con.Open();
             SqlCommand cmd = new SqlCommand("USP_INSERTAR_ANUNCIO", con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -330,8 +553,8 @@ namespace Temple.Controllers
             cmd.Parameters.AddWithValue("@CONTENIDO", contenido);
             cmd.Parameters.AddWithValue("@TITULO", titulo);
 
-            int rs= cmd.ExecuteNonQuery();
-            
+            int rs = cmd.ExecuteNonQuery();
+
 
             con.Close();
 
@@ -357,7 +580,7 @@ namespace Temple.Controllers
                 mensaje = reader.GetString(0);
 
             }
-            
+
             con.Close();
 
             return mensaje;
@@ -389,111 +612,138 @@ namespace Temple.Controllers
             return mensaje;
         }
 
+        private string EliminarEvento(int idEvento)
+        {
+            string mensaje = "";
+            Usuario u = (Usuario)Session["usuario"];
+            con.Open();
+            SqlCommand cmd = new SqlCommand("DELETE FROM TB_HORARIO_INSTRUCTOR WHERE COD_USU=@CODUSU AND ID_HOR=@IDEVEN", con);
+            cmd.Parameters.AddWithValue("@CODUSU", u.codigo);
+            cmd.Parameters.AddWithValue("@IDEVEN", idEvento);
+
+            int rs = cmd.ExecuteNonQuery();
+
+            if (rs > 0)
+            {
+
+                mensaje = "Se eliminó correctamente";
+            }
+            else
+            {
+                mensaje = "No se pudo eliminar";
+
+            }
+
+            con.Close();
+
+            return mensaje;
+        }
+
         // ?
 
         private List<Usuario> InformeInstructor()
-		{
-			List<Usuario> lista = new List<Usuario>();
-			con.Open();
-			SqlCommand cmd = new SqlCommand("sp_ListaAlumno", con);
-			cmd.CommandType = System.Data.CommandType.StoredProcedure;
-			SqlDataReader reader = cmd.ExecuteReader();
+        {
+            List<Usuario> lista = new List<Usuario>();
+            con.Open();
+            SqlCommand cmd = new SqlCommand("sp_ListaAlumno", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            SqlDataReader reader = cmd.ExecuteReader();
 
 
-			while (reader.Read())
-			{
-				Usuario us = new Usuario();
-				us.codigo = reader.GetInt32(0);
-				us.nombres = reader.GetString(1);
-				us.apPaterno = reader.GetString(2);
-				us.apMaterno = reader.GetString(3);
-				us.correo = reader.GetString(4);
-				us.telefono = reader.GetString(5);
-				us.login = reader.GetString(6);
-				us.clave = reader.GetString(7);
-				us.idRol = reader.GetInt32(8);
-				us.desRol = reader.GetString(9);
+            while (reader.Read())
+            {
+                Usuario us = new Usuario();
+                us.codigo = reader.GetInt32(0);
+                us.nombres = reader.GetString(1);
+                us.apPaterno = reader.GetString(2);
+                us.apMaterno = reader.GetString(3);
+                us.correo = reader.GetString(4);
+                us.telefono = reader.GetString(5);
+                us.login = reader.GetString(6);
+                us.clave = reader.GetString(7);
+                us.idRol = reader.GetInt32(8);
+                us.desRol = reader.GetString(9);
 
 
-				lista.Add(us);
+                lista.Add(us);
 
 
-			}
+            }
 
-			con.Close();
-			reader.Close();
+            con.Close();
+            reader.Close();
 
-			return lista;
-		}
+            return lista;
+        }
 
-		private List<Categoria> categorias()
-		{
-			List<Categoria> lista = new List<Categoria>();
-			con.Open();
-			SqlCommand cmd = new SqlCommand("sp_Curso", con);
-			cmd.CommandType = System.Data.CommandType.StoredProcedure;
-			SqlDataReader reader = cmd.ExecuteReader();
-			while (reader.Read())
-			{
-				Categoria cu = new Categoria();
-				cu.id = reader.GetInt32(0);
-				cu.descripcion = reader.GetString(1);
-			
-				lista.Add(cu);
-			}
+        private List<Categoria> categorias()
+        {
+            List<Categoria> lista = new List<Categoria>();
+            con.Open();
+            SqlCommand cmd = new SqlCommand("sp_Curso", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Categoria cu = new Categoria();
+                cu.id = reader.GetInt32(0);
+                cu.descripcion = reader.GetString(1);
 
-			con.Close();
-			reader.Close();
+                lista.Add(cu);
+            }
+
+            con.Close();
+            reader.Close();
 
 
-			return lista;
-		}
+            return lista;
+        }
 
-		// GET: Instructor
-		public ActionResult Index()
+        // GET: Instructor
+        public ActionResult Index()
         {
             return View();
         }
 
-		public ActionResult NuevoInstructor()
-		{
-			ViewBag.categorias = new SelectList(categorias(), "id", "descripcion");
-			return View(new Usuario());
-		}
+        public ActionResult NuevoInstructor()
+        {
+            ViewBag.categorias = new SelectList(categorias(), "id", "descripcion");
+            return View(new Usuario());
+        }
 
-		[HttpPost]
-		public ActionResult NuevoAlumno(Usuario usu)
-		{
-			ViewBag.mensaje = "";
-			con.Open();
-			try
-			{
-				SqlCommand cmd = new SqlCommand("insert into tb_usuarios values (@id,@nom,@app,@apm,@co,@u,@cla,@rol)", con);
-				cmd.Parameters.AddWithValue("@id", usu.codigo);
-				cmd.Parameters.AddWithValue("@nom", usu.nombres);
-				cmd.Parameters.AddWithValue("@app", usu.apPaterno);
-				cmd.Parameters.AddWithValue("@apm", usu.apMaterno);
-				cmd.Parameters.AddWithValue("@co", usu.correo);
-				cmd.Parameters.AddWithValue("@u", usu.login);
-				cmd.Parameters.AddWithValue("@cla", usu.clave);
-				cmd.Parameters.AddWithValue("@rol", usu.idRol);
-				cmd.ExecuteNonQuery();
-				ViewBag.mensaje = "se registra";
-			}
-			catch (SqlException ex)
-			{
-				ViewBag.mensaje = ex.Message;
-			}
-			finally
-			{
-				ViewBag.categorias = new SelectList(categorias(), "id", "descripcion");
-				con.Close();
-			}
-			return View(usu);
-		}
+        [HttpPost]
+        public ActionResult NuevoAlumno(Usuario usu)
+        {
+            ViewBag.mensaje = "";
+            con.Open();
+            try
+            {
+                SqlCommand cmd = new SqlCommand("insert into tb_usuarios values (@id,@nom,@app,@apm,@co,@u,@cla,@rol)", con);
+                cmd.Parameters.AddWithValue("@id", usu.codigo);
+                cmd.Parameters.AddWithValue("@nom", usu.nombres);
+                cmd.Parameters.AddWithValue("@app", usu.apPaterno);
+                cmd.Parameters.AddWithValue("@apm", usu.apMaterno);
+                cmd.Parameters.AddWithValue("@co", usu.correo);
+                cmd.Parameters.AddWithValue("@u", usu.login);
+                cmd.Parameters.AddWithValue("@cla", usu.clave);
+                cmd.Parameters.AddWithValue("@rol", usu.idRol);
+                cmd.ExecuteNonQuery();
+                ViewBag.mensaje = "se registra";
+            }
+            catch (SqlException ex)
+            {
+                ViewBag.mensaje = ex.Message;
+            }
+            finally
+            {
+                ViewBag.categorias = new SelectList(categorias(), "id", "descripcion");
+                con.Close();
+            }
+            return View(usu);
+        }
         // ¿
 
-                
+
         [HttpPost]
         public JsonResult insertarAnuncio(string titulo, string contenido)
         {
@@ -522,8 +772,8 @@ namespace Temple.Controllers
             List<Evento> lista = ListadoHorarios(null, ((Usuario)Session["usuario"]).codigo);
             List<Evento> citas = ListadoMisCitas(null, ((Usuario)Session["usuario"]).codigo);
 
-            var resultado = new { eventos = lista, citas=citas, mensaje = respuesta };
-            return Json(resultado,JsonRequestBehavior.AllowGet);
+            var resultado = new { eventos = lista, citas = citas, mensaje = respuesta };
+            return Json(resultado, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -545,5 +795,15 @@ namespace Temple.Controllers
             return Json(resultado, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult eliminarEvento(int id)
+        {
+            string respuesta = EliminarEvento(id);
+            List<Evento> lista = ListadoHorarios(null, ((Usuario)Session["usuario"]).codigo);
+            List<Evento> citas = ListadoMisCitas(null, ((Usuario)Session["usuario"]).codigo);
+            var resultado = new { eventos = lista, citas = citas, mensaje = respuesta };
+            return Json(resultado, JsonRequestBehavior.AllowGet);
+
+        }
     }
 }

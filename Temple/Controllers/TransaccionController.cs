@@ -39,7 +39,7 @@ namespace Temple.Controllers
 
         public ActionResult RegistrarTransaccion() {
             ViewBag.usuario = (Usuario)Session["usuario"];
-
+            string mensaje = "";
             Pedido p = ((Pedido)Session["pedido"]);
             if (p != null)
             {
@@ -49,22 +49,22 @@ namespace Temple.Controllers
                 if (rs != -1)
                 {
 
-                    ViewBag.mensaje = "Pedido registrado";
+                    mensaje = "Pedido registrado correctamente";
 
                 }
                 else
                 {
 
-                    ViewBag.mensaje = "Error al registrar";
+                    mensaje = "Error al registrar el pedido";
                 }
-                return View();
             }
             else {
 
-                return RedirectToAction("Inicio", "Alumno");
+                mensaje = "Error interno. No se encontró el pedido";
+                
             }
-
-
+            Session["mensaje"] = mensaje;
+            return RedirectToAction("Inicio", "Alumno");
 
         }
 

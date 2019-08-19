@@ -3,24 +3,139 @@
     ViewBag.Title = "Bienvenida";
     Layout = "~/Views/Shared/_LayoutBienvenida.cshtml";
 }
+<link rel="stylesheet" href="~/Content/main.css" />
 
-<h1>Página de bienvenida Temple</h1>
+<style>
+    /*Sobreescribimos el estilo del marco*/
+    #marco {
+        width: 100%;
+        margin: 0px;
+    }
+</style>
+<!-- Banner -->
+<section id="banner">
+    <div>
+        <h1>
+            Bienvenido a Temple. Porque aprender nunca fue tan fácil
+        </h1>
+        <ul class="actions">
+            <li><a href="@Url.Action("RegistroInstructor","Registro")" class="button alt scrolly big">Registrarse como instructor</a></li>
 
-<div class="bparte" style="height:40px">
-    <h1><b>Bienvenido a Temple</b></h1>
-    <h2>Porque aprender nunca fue tan práctico</h2>
-</div>
-<div class="bparte" style="height:40px">
-    <p>Temple te contacta con instructores expertos cercanos a tu localidad para que logres dominar tus cursos.</p>
-</div>
-<div class="bparte">
-    <div id="parteMarco">
-        <h2 style="text-align:center"><b>Regístrate ahora</b></h2>
-        <a href="@Url.Action("RegistroAlumno","Registro")" class="btn btn-primary">Soy un alumno</a>
-        <a href="@Url.Action("RegistroInstructor","Registro")" class="btn btn-primary">Soy un instructor</a>
+            <li><a href="@Url.Action("RegistroAlumno","Registro")" class="button alt scrolly big">Registrarse como alumno</a></li>
+        </ul>
     </div>
-</div>
-<div class="bparte">
-    <div id="imagenMapa">
+</section>
+
+<!-- One -->
+<article id="one" class="post style1">
+    <div class="image">
+        <img src="~/imagenes/quees.jpg" alt="" data-position="75% center" />
     </div>
-</div>
+    <div class="content">
+        <div class="inner">
+            <header>
+                <h2><a href="#">¿Qué es Temple?</a></h2>
+                <p class="info">Publicado por <a href="#">Giovanni Ricardo</a></p>
+            </header>
+            <p>
+                Temple es la primera plataforma que permite a estudiantes libres contactar con instructores libres sin necesidad de intermediarios.
+                Basamos nuestro modelo en la enseñanza física porque esta tiene características que son irremplazables por modalidades virtuales.
+                Con nuestra ayuda, puedes contactar a instructores expertos cercanos a tu localidad para que logres dominar tus cursos.
+                Registrate hoy!
+            </p>
+            <ul class="actions">
+                <li><a href="@Url.Action("AcercaDe","Bienvenida")" class="button alt">Más información</a></li>
+            </ul>
+        </div>
+        <div class="postnav">
+            <a href="#" class="prev disabled"><span class="icon fa-chevron-up"></span></a>
+            <a href="#two" class="scrolly next"><span class="icon fa-chevron-down"></span></a>
+        </div>
+    </div>
+</article>
+
+<!-- Two -->
+<article id="two" class="post invert style1 alt">
+    <div class="image">
+        <img src="~/imagenes/cuenta.jpeg" alt="" data-position="10% center" />
+    </div>
+    <div class="content">
+        <div class="inner">
+            <header>
+                <h2><a href="generic.html">¿Ya tienes una cuenta?</a></h2>
+
+            </header>
+            <p>Si ya tienes una cuenta Temple, puedes acceder hoy mismo a las mejores opciones de aprendizaje</p>
+            <ul class="actions">
+                <li>@Html.ActionLink("Iniciar sesión", "IniciarSesion", "Login", null, new { @class = "button alt" })</li>
+            </ul>
+        </div>
+        <div class="postnav">
+            <a href="#one" class="scrolly prev"><span class="icon fa-chevron-up"></span></a>
+            <a href="#three" class="scrolly next"><span class="icon fa-chevron-down"></span></a>
+        </div>
+    </div>
+</article>
+
+<!-- Three -->
+<article id="three" class="post style2">
+    <div class="image">
+        <img src="~/imagenes/crear.jpg" alt="" data-position="80% center" />
+    </div>
+    <div class="content">
+        <div class="inner">
+            <header>
+                <h2><a href="#">¿No tienes cuenta?</a></h2>
+
+            </header>
+            <p>Regístrate ahora como un <a href="@Url.Action("RegistroInstructor","Registro")">Instructor</a> o como un <a href="@Url.Action("RegistroAlumno","Registro")">Alumno</a></p>
+
+        </div>
+        <div class="postnav">
+            <a href="#two" class="scrolly prev"><span class="icon fa-chevron-up"></span></a>
+            <a href="#four" class="scrolly next"><span class="icon fa-chevron-down"></span></a>
+        </div>
+    </div>
+</article>
+
+<!-- Four -->
+<article id="four" class="post invert style2 alt">
+    <div class="image">
+        <img src="~/imagenes/app.jpg" alt="" data-position="60% center" />
+    </div>
+    <div class="content">
+        <div class="inner">
+            <header>
+                <h2><a href="generic.html">¿Quieres la app?</a></h2>
+
+            </header>
+            <p>Lleva el mejor aprendizaje a donde vayas. Descarga nuestra aplicación</p>
+            <ul class="actions">
+                <li><a href="#" class="button alt">Descargar aquí</a></li>
+            </ul>
+        </div>
+        <div class="postnav">
+            <a href="#three" class="scrolly prev"><span class="icon fa-chevron-up"></span></a>
+            <a href="#five" class="scrolly next"><span class="icon fa-chevron-down"></span></a>
+        </div>
+    </div>
+</article>
+
+<!-- Footer -->
+<footer id="footer">
+    <ul class="icons">
+        <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+        <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+        <li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+    </ul>
+    <div class="copyright">
+        &copy; Untitled. Design: <a href="https://templated.co">TEMPLATED</a>. Images: <a href="https://unsplash.com">Unsplash</a>.
+    </div>
+</footer>
+
+
+<script src="~/Content/jquery.scrolly.min.js"></script>
+<script src="~/Content/skel.js"></script>
+<script src="~/Content/util.js"></script>
+<script src="~/Content/main.js"></script>
+

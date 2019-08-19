@@ -17,7 +17,7 @@
         <button id="btnPublicar" class="btn btn-primary btn-block btn-md disabled">Publicar</button>
     </div>
 
-    <label for="anuncios">Tus publicaciones </label>
+    <label for="anuncios">Publicaciones de la red</label>
     <div id="anuncios">
 
     </div>
@@ -37,10 +37,10 @@
                 success: function (response) {
 
                     $("#anuncios").empty();
-                                   
+
                     var lista = JSON.parse(response);
                     if (lista.length == 0) {
-                        $('#anuncios').append('<div class="well well-sm">No has publicado ningun anuncio aún</div>');
+                        $('#anuncios').append('<div class="well well-sm">Aún no hay anuncios publicados</div>');
                     }
                     for (var i in lista.reverse()) {
 
@@ -91,7 +91,7 @@
 
                     $("#anuncios").empty();
 
-                    
+
                     var lista = JSON.parse(response);
                     if (lista.length == 0) {
                         $('#anuncios').append('<div class="well well-sm">No has publicado ningun anuncio aún</div>');

@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewBag.Title = "AcercaDe";
+    Layout = "~/Views/Shared/_LayoutTemple.cshtml";
+}
+
+<!--<h2>AcercaDe</h2>-->
+<style type="text/css">
+    .zoom {
+        /* Aumentamos la anchura y altura durante 2 segundos */
+        transition: width 2s, height 2s, transform 2s;
+        -moz-transition: width 2s, height 2s, -moz-transform 2s;
+        -webkit-transition: width 2s, height 2s, -webkit-transform 2s;
+        -o-transition: width 2s, height 2s,-o-transform 2s;
+        text-align: center;
+        float: left;
+        width: 29.333%;
+        height: 400px;
+        margin: 2%;
+        border-radius: 38px 38px 38px 38px;
+        -moz-border-radius: 38px 38px 38px 38px;
+        -webkit-border-radius: 38px 38px 38px 38px;
+        border: 4px solid #000000;
+    }
+
+        .zoom:hover {
+            /* tranformamos el elemento al pasar el mouse por encima al doble de
+           su tamaño con scale(2). */
+            transform: scale(1.2);
+            -moz-transform: scale(1.2); /* Firefox */
+            -webkit-transform: scale(1.2); /* Chrome - Safari */
+            -o-transform: scale(1.2); /* Opera */
+        }
+</style>
+
+<div style="width:90%;float:left;margin-left:5%;margin-top:50px;">
+    <div class="zoom">
+        <div style="height:10%;font-weight:bold;font-size:xx-large;font-family:'Times New Roman'">Misión</div>
+        <img style="height:10%;" src="~/imagenes/mision.png" />
+        <div style="height:76%;text-align:justify;margin-bottom:2%;margin-top:2%;margin-left:5%;margin-right:5%">
+            <p>Formar profesionales íntegros y competentes brindando una educación superior de alta calidad que contribuya al desarrollo económico y ambiental del país.</p>
+            <p>Formar profesionales íntegros y competentes brindando una educación superior de alta calidad que contribuya al desarrollo económico y ambiental del país.</p>
+            <p>Formar profesionales íntegros y competentes brindando una educación superior de alta calidad que contribuya al desarrollo económico y ambiental del país.</p>
+        </div>
+    </div>
+
+    <div class="zoom">
+        <div style="height:10%;font-weight:bold;font-size:xx-large;font-family:'Times New Roman'">Visión</div>
+        <img style="height:10%;" src="~/imagenes/vision.png" />
+        <div style="height:76%;text-align:justify;margin-bottom:2%;margin-top:2%;margin-left:5%;margin-right:5%">
+            <p>Nuestra Visión es ser la institución líder de educación superior técnica en el Perú con alcance a nivel nacional.</p>
+            <p>Nuestra Visión es ser la institución líder de educación superior técnica en el Perú con alcance a nivel nacional.</p>
+            <p>Nuestra Visión es ser la institución líder de educación superior técnica en el Perú con alcance a nivel nacional.</p>
+        </div>
+    </div>
+
+    <div class="zoom">
+        <div style="height:10%;font-weight:bold;font-size:xx-large;font-family:'Times New Roman'">Valores</div>
+        <img style="height:10%;" src="~/imagenes/valores.png" />
+        <div style="height:76%;text-align:justify;margin-bottom:2%;margin-top:2%;margin-left:5%;margin-right:5%">
+            <ul>
+                <li>INTEGRIDAD: Comportarse y expresarse siempre con la verdad.</li>
+                <li>RESPETO: Consideración y reconocimiento de la dignidad de las personas y la integridad de la empresa.</li>
+                <li>COMPROMISO: Promesa de cumplimiento de una responsabilidad o rol asignado.</li>
+                <!--<li>TRABAJO EN EQUIPO: Obrar en unión de otros con un mismo fin.</li>
+                 <li>PASIÓN POR LA CALIDAD: Afición vehemente hacia la excelencia de nuestros productos, servicios y procesos.</li>
+                 <li>LIDERAZGO: Motivación a conseguir la concreción de nuestros objetivos transformando el potencial individual en desempeño colectivo.</li>-->
+            </ul>
+            <p>Contamos con un instrumento de gestión que regula la organización, el comportamiento general y el funcionamiento integral de la institución.</p>
+        </div>
+    </div>
+</div>

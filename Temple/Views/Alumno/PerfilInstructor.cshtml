@@ -15,12 +15,58 @@
 <link rel="stylesheet" href="~/Content/fullcalendar.css" />
 <script src="~/Content/fullcalendar.js" type="text/javascript"></script>
 
+<!--El modal de envío de mensaje-->
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modalEnviarMensaje">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Enviar mensaje al profesor</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="txtMensaje">
+                        Escribe tu consulta al profesor
+                    </label>
+                    <textarea rows="4" cols="5" class="form-control mb-4"
+                              id="txtMensaje" maxlength=5000 required>
+
+                            </textarea>
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnEnviar">Enviar</button>
+                <button type="button" class="btn btn-danger" id="btnCancelar">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--El modal de mensaje del sistema-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modalMensajeSistema">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Mensaje del sistema</h4>
+            </div>
+            <div class="modal-body">
+                <p id="txtMensajeSistema"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="btnListo">Listo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <header style="margin-top:0px;">
     <figure class="profile-banner">
         <img id="fotoPortada" src="~/imagenes/portada.jpg" alt="Profile banner" />
     </figure>
     <figure class="profile-picture"
-            style="background-image: url('/imagenes/mila.jpg')">
+            style="background-image: url('/imagenes/perfiles/@(Html.DisplayFor(model => model.codigo)).jpg')">
     </figure>
     <div class="profile-stats">
         <ul>
@@ -31,7 +77,7 @@
         </ul>
         <button class="btn btn-primary" id="btnConsultar">Consultar</button>
         <button class="btn btn-primary" id="btnContratar">Contratar</button>
-      
+
     </div>
     <h1>
         @Html.DisplayFor(model => model.nombres) @Html.DisplayFor(model => model.apPaterno) @Html.DisplayFor(model => model.apMaterno)
@@ -40,7 +86,11 @@
 
     </h1>
 </header>
-
+<style>
+    .lblPestana {
+        width: 30%;
+    }
+</style>
 <div class="datosPerfil">
 
     <small class="datosPerfil">Especialidad:</small>
@@ -60,7 +110,74 @@
     <label class="lblPestana" for="tab3">Horarios</label>
 
     <section class="contenidoControl" id="content1">
+
+        @if (ViewBag.puedeResenar)
+        {
+
+            using (Html.BeginForm("RegistroResena", "Alumno", FormMethod.Post, null))
+            {
+
+                @Html.Hidden("codInstr", Html.DisplayFor(model => model.codigo));
+                <div class="row">
+                    <label for="txtResena">¿Cómo ha sido tu experiencia con este profesor?</label>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <div class="col-sm-1">
+                            <img src="/imagenes/perfiles/@(ViewBag.usuario.codigo).jpg" class="img-circle avatar" alt="user profile image" style="width: 60px; height: 60px; margin-left: 20%;">
+                        </div>
+                        <div class="col-sm-11">
+                            <textarea style="max-width: 100%; margin-bottom: 10px;" class="form-control" rows="2" id="txtResena" placeholder="Escribe aquí..." name="resena" required></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-1">
+                            <label style="padding-top: 13%;">Calificación: </label>
+                        </div>
+                        <div class="col-sm-11">
+                            <div class="rating">
+                                <label>
+                                    <input type="radio" name="calificacion" value="1" checked />
+                                    <span class="icon">★</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="calificacion" value="2" />
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="calificacion" value="3" />
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+
+                                </label>
+                                <label>
+                                    <input type="radio" name="calificacion" value="4" />
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="calificacion" value="5" />
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                    <span class="icon">★</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" id="btnResenar" class="btn btn-primary btn-block btn-md" value="Publicar">
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
         <div id="comentarios">
+
 
         </div>
     </section>
@@ -97,7 +214,22 @@
     <button id="btnConfirmarOverlay" class="btn btn-primary btn-block" style="position: absolute; top: 35%; left: 1%; width: 48%; z-index: 99999;">Siguiente</button>
     <button id="btnCancelarOverlay" class="btn btn-danger btn-block" style="position: absolute; top: 35%; left: 50%; width: 48%; z-index: 99999;">Cancelar</button>
 </div>
+
+<!--Formulario para la actualización de la reseña-->
+@using (Html.BeginForm("ActualizacionResena", "Alumno", FormMethod.Post, new { id = "formActualizacionResena" }))
+{
+    @Html.Hidden("idRes", -1);
+    @Html.Hidden("resena", "");
+    @Html.Hidden("calificacion", -1);
+    
+}
+
 <script>
+
+        // Control de las estrellitas
+        $(':radio').change(function () {
+            console.log('New star rating: ' + this.value);
+        });
 
         // Al cargar la página
          @using System.Web.Script.Serialization;
@@ -117,50 +249,67 @@
         var inicioHorarioSeleccionado=-1;
         var finHorarioSeleccionado=-1;
 
+        var resenaSeleccionada = -1;
+
         var pasoActual = -1;
 
         var json = JSON.parse('@jsonResenas');
 
         // Muestra las reseñas
-
         if (json.length == 0) {
             $('#comentarios').append('<div class="well well-sm">Este instructor no tiene reseñas aún</div>');
         }
 
-        for (var i in json) {
-            //alert(json[i].fechaHora)
+    for (var i in json) {
 
-            var calificacionDiv = '<div class="text-left stats" style="width:100%; display:inline-block;"><b>Calificación: </b> ';
+        var calificacionDiv = '<div class="text-left stats calificacion" style="width:100%; display:inline-block;"><b>Calificación: </b> ';
 
-            for (var cal = 1; cal <= 5; cal++) {
+        for (var cal = 1; cal <= 5; cal++) {
 
-                if (cal <= json[i].calificacion) {
+            if (cal <= json[i].calificacion) {
 
-                    calificacionDiv += '<span class="fa fa-star checked" style="margin-right:5px;"></span>';
-                }
-                else {
-
-                    calificacionDiv += '<span class="fa fa-star" style="margin-right:5px;"></span>';
-                }
-
+                calificacionDiv += '<span class="fa fa-star checked" style="margin-right:5px;"></span>';
             }
-            calificacionDiv += '</div>';
+            else {
 
-            $('#comentarios').append(   '<div class="row"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">'+
-                                        '<div class="pull-left image"><img src="/imagenes/mila.jpg" class="img-circle avatar" alt="user profile image">'+
-                                        '</div><div class="pull-left meta"><div class="title h5"><a href="#"><b>' + json[i].nombreRemitente + ' ' + json[i].apPaternoRemitente + ' ' +json[i].apMaternoRemitente+'</b></a></div>'+
-                                        '<h6 class="text-muted time"' + json[i].fechaHora + '</h6></div></div><div class="post-description"><p>' + json[i].contenido + '</p>' +
-                                        calificacionDiv+'</div></div></div></div>');
+                calificacionDiv += '<span class="fa fa-star" style="margin-right:5px;"></span>';
+            }
 
+        }
+        calificacionDiv += '</div>';
+
+        // Obtenemos la fecha formateada
+        var fechaHora = moment(parseInt((json[i].fechaHora.replace("/Date(", "").replace(")/", "")))).format("L HH:mm:ss");
+
+        var comentario = '<div class="row" id="res' + json[i].id + '"><div class="col-sm-12"><div class="panel panel-white post panel-shadow"><div class="post-heading">' +
+            '<div class="pull-left image"><img src="/imagenes/perfiles/' + json[i].codUsuRemitente + '.jpg" class="img-circle avatar" alt="user profile image">' +
+            '</div><div class="pull-left meta"><div class="title h5"><a href="#"><b>' + json[i].nombreRemitente + ' ' + json[i].apPaternoRemitente + ' ' + json[i].apMaternoRemitente + '</b></a></div>' +
+            '<h6 class="text-muted time">' + fechaHora + '</h6></div>';
+
+        if (json[i].codUsuRemitente ==@ViewBag.usuario.codigo && json[i].editado == false) {
+
+            comentario += '<div class="pull-right meta"><a class="editarResena" id="a-res' + json[i].id + '">Editar</a></div>';
+
+        }
+
+        if (json[i].editado==true) {
+
+            comentario += '<div class="pull-right meta"><p class="text-muted">Reseña editada</p></div>';
 
 
         }
 
-        var json = JSON.parse('@jsonCursos');
+        comentario += '</div><div class="post-description"><p class="resena" id="resPar' + json[i].id + '">' + json[i].contenido + '</p>' + calificacionDiv + '</div></div></div></div>';
+
+        $('#comentarios').append(comentario);
+    }
+
+        var json = JSON.parse(JSON.stringify(@jsonCursos));
 
         if (json.length == 0) {
             $('#contenidosCursos').append('<div class="well well-sm">Este instructor no ha definido cursos aún</div>');
-        }
+            }
+
 
         //Muestra los cursos que enseña
         for (var i in json) {
@@ -344,7 +493,7 @@
                                 alert("Has seleccionado: \n\nInicio: " + inicio + "\nFin: " + fin);
                                 return;
 
-                           
+
 
                         }
 
@@ -501,6 +650,8 @@
 
     $('#btnCancelarOverlay').on('click', function (e) {
         pasoActual = -1;
+        inicioHorarioSeleccionado = -1;
+        finHorarioSeleccionado = -1;
 
         // Vuelvo todo a la normalidad
         $('#pestanasCursos').removeClass('enfasis');
@@ -519,6 +670,169 @@
         $('#overlay').css("display", "none");
 
     });
+
+    $('#btnConsultar').on('click', function (e) {
+
+        e.preventDefault();
+        $("#modalEnviarMensaje").modal('show');
+
+
+    });
+
+    $('#btnEnviar').on('click', function (e) {
+
+        e.preventDefault();
+
+        var url = "@Url.Action("enviarConsulta", "Chat")";
+        var data = { contenido: $('#txtMensaje').val(),codDestin:@(Html.DisplayFor(model => model.codigo))};
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            dataType: "json",
+            success: function (response) {
+
+                $("#modalEnviarMensaje").modal('hide');
+                $("#txtMensaje").val("");
+
+                $("#modalMensajeSistema").modal('show');
+                $("#txtMensajeSistema").text(response);
+
+            }
+
+
+
+        });
+
+
+    });
+
+    $('#btnCancelar').on('click', function (e) {
+
+        e.preventDefault();
+        $("#modalEnviarMensaje").modal('hide');
+
+
+    });
+
+    $("#btnListo").unbind("click").on("click", function () {
+        $("#modalMensajeSistema").modal('hide');
+        $("#txtMensajeSistema").text("");
+
+        });
+
+    $("#comentarios").on("click","#btnCancelarResena", function () {
+
+
+        $('#' + resenaSeleccionada).show();
+        $('#editarResena').remove();
+        resenaSeleccionada = -1;
+
+
+    });
+
+    $("#comentarios").on("click", "#btnActualizarResena", function () {
+
+        var contenido=$('#txtResena').val();
+        var calificacion=$('input[name=calificacion]:checked').val();
+
+        if (resenaSeleccionada != -1 && contenido != "" && calificacion!=-1) {
+
+            $("#idRes").val(resenaSeleccionada.replace("res",""));
+            $("#resena").val(contenido);
+            $("#calificacion").val(calificacion);
+
+            $("#formActualizacionResena").submit();
+
+        } else {
+
+            alert("La reseña ni la calificación pueden estar vacías");
+
+        }
+
+       
+
+    });
+
+    $('.editarResena').on('click', function () {
+
+        // Primero, elimino el comentario para crear un formulario que me permita editarlo
+        var resId = ($(this).attr('id')).replace('a-', '');
+
+        // Obtengo el contenido actual
+        var contenido = document.getElementById("resPar" + resId.replace("res", "")).textContent;
+
+        var calificacion = $($('#' + resId).find('.calificacion')).find('.checked').length;
+        resenaSeleccionada = resId;
+        $('#' + resId).hide();
+
+                $('#comentarios').append('<div class="row" id="editarResena">'+
+            '<label for="txtResena">Editar reseña. Solo puedes hacer esto una vez por cada reseña</label>'+
+            '<div class="form-group" style="margin-top: 10px;">'+
+                '<div class="col-sm-1">'+
+                    '<img src="/imagenes/perfiles/@(ViewBag.usuario.codigo).jpg" class="img-circle avatar" alt="user profile image" style="width: 60px; height: 60px; margin-left: 20%;">'+
+                '</div>'+
+                    '<div class="col-sm-11">' +
+                    '<textarea style="max-width: 100%; margin-bottom: 10px;" class="form-control" rows="2" id="txtResena" name="resena" required>' + contenido + '</textarea>' +
+                '</div>'+
+            '</div>'+
+            '<div class="form-group">'+
+            '<div class="col-sm-1">'+
+                '<label style="padding-top: 13%;">Calificación: </label>'+
+                '</div>'+
+            '<div class="col-sm-11">'+
+                '<div class="rating">'+
+                   '<label>'+
+                        '<input type="radio" name="calificacion" value="1" checked/>'+
+                        '<span class="icon">★</span>'+
+                    '</label>'+
+                    '<label>'+
+                       '<input type="radio" name="calificacion" value="2" />'+
+                       '<span class="icon">★</span>'+
+                       '<span class="icon">★</span>'+
+                    '</label>'+
+                    '<label>'+
+                        '<input type="radio" name="calificacion" value="3" />'+
+                        '<span class="icon">★</span>'+
+                        '<span class="icon">★</span>'+
+                        '<span class="icon">★</span>'+
+                    '</label>'+
+                    '<label>'+
+                        '<input type="radio" name="calificacion" value="4" />'+
+                        '<span class="icon">★</span>'+
+                        '<span class="icon">★</span>'+
+                        '<span class="icon">★</span>'+
+                        '<span class="icon">★</span>'+
+                    '</label>'+
+                    '<label>'+
+                        '<input type="radio" name="calificacion" value="5" />'+
+                        '<span class="icon">★</span>'+
+                        '<span class="icon">★</span>'+
+                        '<span class="icon">★</span>'+
+                        '<span class="icon">★</span>'+
+                        '<span class="icon">★</span>'+
+                    '</label>'+
+                '</div>'+
+            '</div>'+
+                    '<div class="form-group">' +
+                    '<div class="col-md-6">'+
+                    '<button id="btnActualizarResena" class="btn btn-primary btn-block btn-md">Actualizar</button>' +
+                    '</div>' +
+                    '<div class="col-md-6">' +
+                    '<button id="btnCancelarResena" class="btn btn-danger btn-block btn-md">Cancelar</button>' +
+                    '</div>' +
+                '</div>'+
+            '</div>'+
+            '</div>');
+
+        // Y aquí coloco el valor que le corresponde según la reseña existente
+        var radios = $('input:radio[name=calificacion]');
+        $(radios).filter('[value=' + calificacion + ']').prop('checked', true);
+
+            });
+
+
 
 </script>
 
